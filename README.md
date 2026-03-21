@@ -1,116 +1,105 @@
-# Plugin de Gestión de Torneos de Ajedrez
+# WP Events Registration
 
-Plugin de WordPress del Club de Ajedrez Coimbra de Jumilla para la gestión completa de torneos de ajedrez.
-
-## Demo en producción
-
-[ajedrezcoimbra.com/calendario-de-eventos/](https://ajedrezcoimbra.com/calendario-de-eventos/)
+Plugin de gestión de eventos e inscripciones para sitios de WordPress, alineado con el Club de Ajedrez Coimbra de Jumilla.
 
 ## Instalación
 
-1. Sube la carpeta `dp-torneos` a `/wp-content/plugins/`
+1. Sube la carpeta `wp-events-registration` a `/wp-content/plugins/`
 2. Activa el plugin desde **Plugins → Plugins instalados**
-3. Las tablas se crean automáticamente al activar
+3. Las tablas se crean automáticamente al activar con el prefijo `{wp_prefix}wper_`
 
 ## Uso
 
 ### Panel de administración
-Ve a **♟ Torneos** en el menú lateral de WordPress.
+Ve a **♟ Eventos** en el menú lateral de WordPress.
 
-- **Dashboard** — estadísticas generales e inscripciones recientes
-- **Eventos** — listado, alta, edición y borrado de torneos
-- **Inscripciones** — gestión de inscritos por evento, exportar PDF y CSV
-- **Ajustes** — email de notificaciones, moneda
+- **Dashboard** — Estadísticas generales e inscripciones recientes.
+- **Eventos** — Gestión completa de eventos (alta, edición, borrado, observaciones).
+- **Inscripciones** — Listado de inscritos, exportar PDF y CSV.
+- **Ajustes** — Configuración de notificaciones y preferencias.
 
 ### Shortcodes
 
 | Shortcode | Descripción |
 |---|---|
-| `[dp_torneo_calendario]` | Calendario público de eventos |
-| `[dp_torneo_calendario provincia="Murcia" limite="10"]` | Filtrado por provincia |
-| `[dp_torneo_inscripcion id="X"]` | Formulario de inscripción de un evento |
-| `[dp_torneo_ficha id="X"]` | Ficha pública completa de un evento |
+| `[wper_calendario]` | Calendario público de eventos filtrado por estado 'abierto' |
+| `[wper_calendario provincia="Murcia" limite="10"]` | Filtrado avanzado por provincia y límite de visualización |
+| `[wper_inscripcion id="X"]` | Formulario dinámico de inscripción para el evento con ID específico |
+| `[wper_ficha id="X"]` | Ficha pública completa del evento con mapa y detalles detallados |
 
-> El shortcode de cada evento se genera automáticamente y es visible en el listado de eventos del panel de administración.
+## Actualizaciones Automáticas
 
-### Flujo recomendado
+Este plugin incluye un sistema de actualización nativo integrado con **GitHub Releases**. 
 
-1. Crear el evento con estado **Borrador**
-2. Revisar y cambiar a **Abierto** cuando quieras publicarlo
-3. Pegar `[dp_torneo_calendario]` en la página de torneos de tu web
-4. O pegar `[dp_torneo_inscripcion id="X"]` directamente en una página del evento
-5. Gestionar inscritos desde **Torneos → Inscripciones**
-6. Exportar PDF o CSV desde el listado de inscritos
-7. Cerrar inscripciones cambiando el estado a **Cerrado**
+Para lanzar una nueva actualización y que aparezca en el panel de WordPress de los sitios instalados:
+1. **Actualiza la versión** en el código local (encabezado de `wp-events-registration.php` y constante `WPER_VERSION`).
+2. **Crea un Release** en este repositorio de GitHub con el mismo número de versión (ej: `v1.1.1`).
+3. WordPress detectará automáticamente la nueva versión y permitirá actualizar con un solo clic.
 
-## Tablas de base de datos
+## Estructura de Datos (SQL)
 
-- `{prefix}dp_eventos` — torneos y eventos
-- `{prefix}dp_eventos_inscripciones` — inscripciones de socios
+El plugin utiliza dos tablas personalizadas con integridad referencial.
 
-Al **eliminar** el plugin desde WordPress, las tablas y opciones se borran automáticamente.
-
-### Esquema SQL
+### 1. Tabla: `wper_eventos`
+Almacena la configuración y detalles de cada evento.
 ```sql
--- ──────────────────────────────────────────────────
---  TABLA: dp_eventos
--- ──────────────────────────────────────────────────
-CREATE TABLE dp_eventos (
-    id                        INT UNSIGNED                            NOT NULL AUTO_INCREMENT,
-    nombre                    VARCHAR(255)                            NOT NULL,
-    modalidad                 ENUM('Individual', 'Por Equipos')       NOT NULL,
-    cuota_inscripcion         DECIMAL(8,2)                            NULL        COMMENT 'En euros. NULL = gratuito',
-    numero_rondas             TINYINT UNSIGNED                        NULL,
-    poblacion                 VARCHAR(150)                            NOT NULL,
-    provincia                 VARCHAR(100)                            NOT NULL,
-    fecha_inicio              DATE                                    NOT NULL    COMMENT 'Inicio del torneo',
-    fecha_fin                 DATE                                    NOT NULL    COMMENT 'Fin del torneo',
-    fecha_inicio_inscripcion  DATE                                    NOT NULL    COMMENT 'Apertura de inscripciones',
-    fecha_fin_inscripcion     DATE                                    NOT NULL    COMMENT 'Cierre de inscripciones',
-    estado                    ENUM('borrador', 'abierto', 'cerrado')  NOT NULL    DEFAULT 'borrador',
-    url_bases                 VARCHAR(500)                            NULL,
-    google_maps               VARCHAR(500)                            NULL        COMMENT 'URL de Google Maps o coordenadas',
-    created_at                DATETIME                                NOT NULL    DEFAULT CURRENT_TIMESTAMP,
-    updated_at                DATETIME                                NOT NULL    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    INDEX idx_estado             (estado),
-    INDEX idx_fecha_inicio       (fecha_inicio),
-    INDEX idx_fecha_fin_insc     (fecha_fin_inscripcion),
-    INDEX idx_provincia          (provincia)
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci
-  COMMENT='Torneos y eventos de ajedrez';
-
--- ──────────────────────────────────────────────────
---  TABLA: dp_eventos_inscripciones
--- ──────────────────────────────────────────────────
-CREATE TABLE dp_eventos_inscripciones (
-    id            INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-    evento_id     INT UNSIGNED    NOT NULL,
-    nombre        VARCHAR(100)    NOT NULL,
-    apellidos     VARCHAR(150)    NOT NULL,
-    fide_id       VARCHAR(20)     NULL        COMMENT 'ID FIDE, opcional',
-    telefono      VARCHAR(30)     NULL,
-    email         VARCHAR(255)    NULL,
-    alojamiento   TINYINT(1)      NOT NULL    DEFAULT 0   COMMENT '0 = No, 1 = Sí',
-    created_at    DATETIME        NOT NULL    DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    INDEX idx_evento_id   (evento_id),
-    INDEX idx_fide_id     (fide_id),
-    CONSTRAINT fk_inscripcion_evento
-        FOREIGN KEY (evento_id)
-            REFERENCES dp_eventos(id)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci
-  COMMENT='Inscripciones a torneos de ajedrez';
+CREATE TABLE {prefix}wper_eventos (
+    id                        INT UNSIGNED     NOT NULL AUTO_INCREMENT,
+    nombre                    VARCHAR(255)     NOT NULL,
+    modalidad                 ENUM('Individual','Por Equipos') NOT NULL,
+    cuota_inscripcion         DECIMAL(8,2)     NULL,
+    numero_rondas             TINYINT UNSIGNED NULL,
+    poblacion                 VARCHAR(150)     NOT NULL,
+    provincia                 VARCHAR(100)     NOT NULL,
+    fecha_inicio              DATE             NOT NULL,
+    fecha_fin                 DATE             NOT NULL,
+    fecha_inicio_inscripcion  DATE             NOT NULL,
+    fecha_fin_inscripcion     DATE             NOT NULL,
+    estado                    ENUM('borrador','abierto','cerrado') NOT NULL DEFAULT 'borrador',
+    url_bases                 VARCHAR(500)     NULL,
+    google_maps               VARCHAR(500)     NULL,
+    observaciones             TEXT             NULL,
+    created_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
 ```
 
-## Requisitos
+### 2. Tabla: `wper_inscripciones`
+Gestiona los participantes inscritos vinculados a un evento.
+```sql
+CREATE TABLE {prefix}wper_inscripciones (
+    id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    evento_id   INT UNSIGNED  NOT NULL,
+    nombre      VARCHAR(100)  NOT NULL,
+    apellidos   VARCHAR(150)  NOT NULL,
+    fide_id     VARCHAR(20)   NULL,
+    telefono    VARCHAR(30)   NULL,
+    email       VARCHAR(255)  NULL,
+    alojamiento TINYINT(1)    NOT NULL DEFAULT 0,
+    created_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_wper_inscripcion_evento
+        FOREIGN KEY (evento_id)
+        REFERENCES {prefix}wper_eventos(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+```
 
+## Arquitectura del Plugin
+
+El plugin sigue una estructura modular orientada a objetos (OOP) inspirada en el WordPress Plugin Boilerplate:
+
+- **`admin/`**: Contiene la lógica y vistas exclusivas del panel de control de WordPress.
+- **`public/`**: Gestiona la lógica de frontend, activos (CSS/JS) y renderizado de shortcodes.
+- **`includes/`**: Clases de utilidad centralizadas:
+    - `WPER_DB`: Capa de abstracción de base de datos (CRUD).
+    - `WPER_PDF`: Generación de listados de inscritos en PDF.
+    - `WPER_Shortcodes`: Definición y lógica de los shortcodes disponibles.
+    - `WPER_Activator`/`WPER_Deactivator`: Gestión del ciclo de vida del plugin.
+- **`wp-events-registration.php`**: Archivo núcleo que inicializa el plugin y carga sus componentes.
+
+## Requisitos
 - WordPress 5.8+
 - PHP 7.4+
 - MySQL 5.7+ / MariaDB 10.3+

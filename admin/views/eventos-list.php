@@ -1,51 +1,52 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
-<div class="wrap dp-torneos-wrap">
-  <h1 class="wp-heading-inline">♟ <?php _e('Eventos', 'dp-torneos'); ?></h1>
-  <a href="<?php echo admin_url('admin.php?page=dp-torneos-nuevo'); ?>" class="page-title-action">
-    <?php _e('Añadir nuevo', 'dp-torneos'); ?>
+<div class="wrap wper-wrap">
+  <h1 class="wp-heading-inline">♟ <?php _e('Eventos', 'wp-events-registration'); ?></h1>
+  <a href="<?php echo admin_url('admin.php?page=wper-nuevo'); ?>" class="page-title-action">
+    <?php _e('Añadir nuevo', 'wp-events-registration'); ?>
   </a>
 
   <?php if ( $mensaje === 'creado' ) : ?>
-    <div class="notice notice-success is-dismissible"><p><?php _e('✅ Evento creado correctamente.', 'dp-torneos'); ?></p></div>
+    <div class="notice notice-success is-dismissible"><p><?php _e('✅ Evento creado correctamente.', 'wp-events-registration'); ?></p></div>
   <?php elseif ( $mensaje === 'actualizado' ) : ?>
-    <div class="notice notice-success is-dismissible"><p><?php _e('✅ Evento actualizado correctamente.', 'dp-torneos'); ?></p></div>
+    <div class="notice notice-success is-dismissible"><p><?php _e('✅ Evento actualizado correctamente.', 'wp-events-registration'); ?></p></div>
   <?php elseif ( $mensaje === 'eliminado' ) : ?>
-    <div class="notice notice-success is-dismissible"><p><?php _e('🗑️ Evento eliminado.', 'dp-torneos'); ?></p></div>
+    <div class="notice notice-success is-dismissible"><p><?php _e('🗑️ Evento eliminado.', 'wp-events-registration'); ?></p></div>
   <?php endif; ?>
 
   <!-- Filtros -->
   <ul class="subsubsub">
-    <li><a href="<?php echo admin_url('admin.php?page=dp-torneos-eventos'); ?>" <?php echo !$estado_filtro ? 'class="current"' : ''; ?>><?php _e('Todos', 'dp-torneos'); ?></a> |</li>
-    <li><a href="<?php echo admin_url('admin.php?page=dp-torneos-eventos&estado=abierto'); ?>" <?php echo $estado_filtro==='abierto' ? 'class="current"' : ''; ?>><?php _e('Abiertos', 'dp-torneos'); ?></a> |</li>
-    <li><a href="<?php echo admin_url('admin.php?page=dp-torneos-eventos&estado=cerrado'); ?>" <?php echo $estado_filtro==='cerrado' ? 'class="current"' : ''; ?>><?php _e('Cerrados', 'dp-torneos'); ?></a> |</li>
-    <li><a href="<?php echo admin_url('admin.php?page=dp-torneos-eventos&estado=borrador'); ?>" <?php echo $estado_filtro==='borrador' ? 'class="current"' : ''; ?>><?php _e('Borradores', 'dp-torneos'); ?></a></li>
+    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos'); ?>" <?php echo !$estado_filtro ? 'class="current"' : ''; ?>><?php _e('Todos', 'wp-events-registration'); ?></a> |</li>
+    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&estado=abierto'); ?>" <?php echo $estado_filtro==='abierto' ? 'class="current"' : ''; ?>><?php _e('Abiertos', 'wp-events-registration'); ?></a> |</li>
+    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&estado=cerrado'); ?>" <?php echo $estado_filtro==='cerrado' ? 'class="current"' : ''; ?>><?php _e('Cerrados', 'wp-events-registration'); ?></a> |</li>
+    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&estado=borrador'); ?>" <?php echo $estado_filtro==='borrador' ? 'class="current"' : ''; ?>><?php _e('Borradores', 'wp-events-registration'); ?></a></li>
   </ul>
 
+  <div class="dp-table-wrap">
   <table class="wp-list-table widefat fixed striped dp-table">
     <thead><tr>
-      <th style="width:25%"><?php _e('Nombre', 'dp-torneos'); ?></th>
-      <th><?php _e('Modalidad', 'dp-torneos'); ?></th>
-      <th><?php _e('Lugar', 'dp-torneos'); ?></th>
-      <th><?php _e('Inicio torneo', 'dp-torneos'); ?></th>
-      <th><?php _e('Fin inscripción', 'dp-torneos'); ?></th>
-      <th><?php _e('Estado', 'dp-torneos'); ?></th>
-      <th><?php _e('Inscritos', 'dp-torneos'); ?></th>
-      <th><?php _e('Acciones', 'dp-torneos'); ?></th>
+      <th style="width:25%"><?php _e('Nombre', 'wp-events-registration'); ?></th>
+      <th><?php _e('Modalidad', 'wp-events-registration'); ?></th>
+      <th><?php _e('Lugar', 'wp-events-registration'); ?></th>
+      <th><?php _e('Inicio evento', 'wp-events-registration'); ?></th>
+      <th><?php _e('Fin inscripción', 'wp-events-registration'); ?></th>
+      <th><?php _e('Estado', 'wp-events-registration'); ?></th>
+      <th><?php _e('Inscritos', 'wp-events-registration'); ?></th>
+      <th><?php _e('Acciones', 'wp-events-registration'); ?></th>
     </tr></thead>
     <tbody>
     <?php if ( empty( $eventos ) ) : ?>
-      <tr><td colspan="8" style="text-align:center;padding:2rem;"><?php _e('No hay eventos.', 'dp-torneos'); ?></td></tr>
+      <tr><td colspan="8" style="text-align:center;padding:2rem;"><?php _e('No hay eventos.', 'wp-events-registration'); ?></td></tr>
     <?php else : ?>
       <?php foreach ( $eventos as $ev ) :
-        $n_inscritos = DP_Torneos_DB::count_inscripciones( $ev->id );
+        $n_inscritos = WPER_DB::count_inscripciones( $ev->id );
         $estado_class = array('borrador'=>'dp-badge-borrador','abierto'=>'dp-badge-abierto','cerrado'=>'dp-badge-cerrado')[$ev->estado] ?? '';
       ?>
       <tr>
         <td>
           <strong><?php echo esc_html($ev->nombre); ?></strong><br>
-          <small class="dp-shortcode-copy" title="<?php _e('Copiar shortcode','dp-torneos'); ?>"
-            data-shortcode="[dp_torneo_inscripcion id=&quot;<?php echo $ev->id; ?>&quot;]">
-            📋 [dp_torneo_inscripcion id="<?php echo $ev->id; ?>"]
+          <small class="dp-shortcode-copy" title="<?php _e('Copiar shortcode','wp-events-registration'); ?>"
+            data-shortcode="[wper_inscripcion id=&quot;<?php echo $ev->id; ?>&quot;]">
+            📋 [wper_inscripcion id="<?php echo $ev->id; ?>"]
           </small>
         </td>
         <td><?php echo esc_html($ev->modalidad); ?></td>
@@ -54,19 +55,19 @@
         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_fin_inscripcion))); ?></td>
         <td><span class="dp-badge <?php echo $estado_class; ?>"><?php echo esc_html(ucfirst($ev->estado)); ?></span></td>
         <td>
-          <a href="<?php echo admin_url('admin.php?page=dp-torneos-inscripciones&evento_id='.$ev->id); ?>">
-            <?php echo $n_inscritos; ?> <?php _e('inscritos', 'dp-torneos'); ?>
+          <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ev->id); ?>">
+            <?php echo $n_inscritos; ?> <?php _e('inscritos', 'wp-events-registration'); ?>
           </a>
         </td>
         <td class="dp-actions">
-          <a href="<?php echo admin_url('admin.php?page=dp-torneos-nuevo&id='.$ev->id); ?>" class="button button-small">✏️ <?php _e('Editar', 'dp-torneos'); ?></a>
-          <a href="<?php echo admin_url('admin.php?page=dp-torneos-inscripciones&evento_id='.$ev->id); ?>" class="button button-small">👥 <?php _e('Inscritos', 'dp-torneos'); ?></a>
-          <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=dp_export_pdf&evento_id='.$ev->id), 'dp_export_pdf_'.$ev->id ); ?>" class="button button-small" target="_blank">📄 PDF</a>
-          <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=dp_export_csv&evento_id='.$ev->id), 'dp_export_csv_'.$ev->id ); ?>" class="button button-small">📊 CSV</a>
-          <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=dp_delete_evento&id='.$ev->id), 'dp_delete_evento_'.$ev->id ); ?>"
+          <a href="<?php echo admin_url('admin.php?page=wper-nuevo&id='.$ev->id); ?>" class="button button-small">✏️ <?php _e('Editar', 'wp-events-registration'); ?></a>
+          <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ev->id); ?>" class="button button-small">👥 <?php _e('Inscritos', 'wp-events-registration'); ?></a>
+          <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_export_pdf&evento_id='.$ev->id), 'wper_export_pdf_'.$ev->id ); ?>" class="button button-small" target="_blank">📄 PDF</a>
+          <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_export_csv&evento_id='.$ev->id), 'wper_export_csv_'.$ev->id ); ?>" class="button button-small">📊 CSV</a>
+          <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_delete_evento&id='.$ev->id), 'wper_delete_evento_'.$ev->id ); ?>"
             class="button button-small button-link-delete"
-            onclick="return confirm('<?php _e('¿Eliminar este evento y todas sus inscripciones?', 'dp-torneos'); ?>')">
-            🗑️ <?php _e('Eliminar', 'dp-torneos'); ?>
+            onclick="return confirm('<?php _e('¿Eliminar este evento y todas sus inscripciones?', 'wp-events-registration'); ?>')">
+            🗑️ <?php _e('Eliminar', 'wp-events-registration'); ?>
           </a>
         </td>
       </tr>
@@ -74,6 +75,7 @@
     <?php endif; ?>
     </tbody>
   </table>
+  </div>
 
   <?php if ( $total_pages > 1 ) : ?>
     <div class="tablenav bottom">

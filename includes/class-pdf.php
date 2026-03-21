@@ -9,25 +9,23 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Si prefieres TCPDF, instálala en /includes/lib/tcpdf/ y
  * sustituye la llamada en generate_pdf().
  */
-class DP_Torneos_PDF {
+class WPER_PDF {
 
     public static function generate_pdf( $evento_id ) {
-        $evento = DP_Torneos_DB::get_evento( $evento_id );
+        $evento = WPER_DB::get_evento( $evento_id );
         if ( ! $evento ) {
-            wp_die( __( 'Evento no encontrado.', 'dp-torneos' ) );
+            wp_die( __( 'Evento no encontrado.', 'wp-events-registration' ) );
         }
 
-        $inscripciones = DP_Torneos_DB::get_inscripciones( $evento_id );
+        $inscripciones = WPER_DB::get_inscripciones( $evento_id );
 
         // Cabeceras HTTP para descarga
-        $filename = 'torneo_' . sanitize_title( $evento->nombre ) . '_inscritos.pdf';
+        $filename = 'evento_' . sanitize_title( $evento->nombre ) . '_inscritos.pdf';
         header( 'Content-Type: application/pdf' );
         header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
         header( 'Cache-Control: private, max-age=0, must-revalidate' );
 
         // ── Construcción manual del PDF (sin librerías) ──
-        // Para producción real, usa TCPDF o FPDF.
-        // Este generador produce un PDF válido y funcional.
         $pdf = self::build_pdf( $evento, $inscripciones );
         echo $pdf;
         exit;
@@ -36,7 +34,6 @@ class DP_Torneos_PDF {
     private static function build_pdf( $evento, $inscripciones ) {
         $lines = array();
 
-        // Usamos output buffering para construir contenido
         ob_start();
 
         $titulo   = wp_strip_all_tags( $evento->nombre );
@@ -53,14 +50,12 @@ class DP_Torneos_PDF {
         $total_ins = count( $inscripciones );
 
         // PDF raw content usando FPDF bundled
-        // Intentamos cargar FPDF si está disponible en el sistema
-        $fpdf_path = DP_TORNEOS_PLUGIN_DIR . 'includes/lib/fpdf/fpdf.php';
+        $fpdf_path = WPER_PLUGIN_DIR . 'includes/lib/fpdf/fpdf.php';
 
         if ( file_exists( $fpdf_path ) ) {
             return self::build_with_fpdf( $fpdf_path, $evento, $inscripciones );
         }
 
-        // Fallback: PDF mínimo construido manualmente (RFC 3200)
         return self::build_raw_pdf( $titulo, $modalidad, $estado, $lugar,
             $f_inicio, $f_fin, $fi_ins, $ff_ins, $rondas, $cuota, $bases,
             $inscripciones );
@@ -92,7 +87,7 @@ class DP_Torneos_PDF {
         $stream_parts[] = "BT";
         $stream_parts[] = "/F1 18 Tf";
         $stream_parts[] = "50 780 Td";
-        $stream_parts[] = "(" . $esc( mb_convert_encoding( 'TORNEO DE AJEDREZ', 'ISO-8859-1', 'UTF-8' ) ) . ") Tj";
+        $stream_parts[] = "(" . $esc( mb_convert_encoding( 'EVENTO DE AJEDREZ', 'ISO-8859-1', 'UTF-8' ) ) . ") Tj";
         $stream_parts[] = "/F1 14 Tf";
         $stream_parts[] = "0 -25 Td";
         $stream_parts[] = "(" . $esc( mb_convert_encoding( $titulo, 'ISO-8859-1', 'UTF-8' ) ) . ") Tj";
@@ -103,7 +98,7 @@ class DP_Torneos_PDF {
             'Modalidad: '   . $modalidad,
             'Estado: '      . $estado,
             'Lugar: '       . $lugar,
-            'Torneo: '      . $f_inicio . ' — ' . $f_fin,
+            'Evento: '      . $f_inicio . ' — ' . $f_fin,
             'Inscripcion: ' . $fi_ins   . ' — ' . $ff_ins,
             'Rondas: '      . $rondas,
             'Cuota: '       . $cuota,
