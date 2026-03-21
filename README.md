@@ -2,6 +2,10 @@
 
 Plugin de WordPress del Club de Ajedrez Coimbra de Jumilla para la gestión completa de torneos de ajedrez.
 
+## Demo en producción
+
+[ajedrezcoimbra.com/calendario-de-eventos/](https://ajedrezcoimbra.com/calendario-de-eventos/)
+
 ## Instalación
 
 1. Sube la carpeta `dp-torneos` a `/wp-content/plugins/`
