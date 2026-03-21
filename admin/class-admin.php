@@ -12,6 +12,7 @@ class WPER_Admin {
         add_action( 'admin_post_wper_export_pdf',        array( $this, 'handle_export_pdf' ) );
         add_action( 'admin_post_wper_export_csv',        array( $this, 'handle_export_csv' ) );
         add_action( 'admin_post_wper_save_ajustes',      array( $this, 'handle_save_ajustes' ) );
+        add_action( 'admin_post_wper_force_update_check',array( $this, 'handle_force_update_check' ) );
     }
 
     // ── Menús ────────────────────────────────────────────
@@ -94,6 +95,7 @@ class WPER_Admin {
 
     public function page_ajustes() {
         $saved = isset( $_GET['saved'] );
+        $checked = isset( $_GET['checked'] );
         include WPER_PLUGIN_DIR . 'admin/views/ajustes.php';
     }
 
@@ -216,6 +218,19 @@ class WPER_Admin {
         update_option( 'wper_moneda',          sanitize_text_field( $_POST['moneda'] ?? 'EUR' ) );
 
         wp_redirect( admin_url( 'admin.php?page=wper-ajustes&saved=1' ) );
+        exit;
+    }
+
+    public function handle_force_update_check() {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Sin permisos.' );
+        check_admin_referer( 'wper_force_update' );
+
+        // Eliminamos nuestro caché de GitHub
+        delete_transient( 'wper_github_release_cache' );
+        // Forzamos a WordPress a buscar actualizaciones de nuevo
+        delete_site_transient( 'update_plugins' );
+
+        wp_redirect( admin_url( 'admin.php?page=wper-ajustes&checked=1' ) );
         exit;
     }
 }
