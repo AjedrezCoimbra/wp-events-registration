@@ -1,6 +1,6 @@
 # WP Events Registration
 
-Plugin de gestión de eventos e inscripciones para sitios de WordPress, alineado con el Club de Ajedrez Coimbra de Jumilla.
+Plugin de gestión de eventos e inscripciones para sitios de WordPress, optimizado para el Club de Ajedrez Coimbra.
 
 ## Instalación
 
@@ -8,37 +8,39 @@ Plugin de gestión de eventos e inscripciones para sitios de WordPress, alineado
 2. Activa el plugin desde **Plugins → Plugins instalados**
 3. Las tablas se crean automáticamente al activar con el prefijo `{wp_prefix}wper_`
 
+## Novedades v1.2.6
+
+- **Refactorización completa**: Todos los componentes usan ahora el prefijo `wper_` (eliminada la compatibilidad con `dp_*`).
+- **Vista de Calendario Mejorada**:
+  - Modal moderno para ver observaciones enriquecidas.
+  - Botón de mapa profesional.
+  - Imagen de cartel por defecto (temática ajedrez) para eventos sin imagen.
+  - Formato de fechas amigable: "Del DD/MM/AAAA hasta DD/MM/AAAA".
+- **Gestión de Inscripciones**: Nuevo campo de observaciones en el formulario de inscripción.
+- **Auto-cierre inteligente**: Los eventos se cierran automáticamente cuando pasa la fecha límite de inscripción.
+
 ## Uso
 
 ### Panel de administración
 Ve a **♟ Eventos** en el menú lateral de WordPress.
 
 - **Dashboard** — Estadísticas generales e inscripciones recientes.
-- **Eventos** — Gestión completa de eventos (alta, edición, borrado, observaciones).
+- **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles).
 - **Inscripciones** — Listado de inscritos, exportar PDF y CSV.
-- **Ajustes** — Configuración de notificaciones y preferencias.
+- **Ajustes** — Configuración de email de notificaciones y moneda.
 
 ### Shortcodes
 
 | Shortcode | Descripción |
 |---|---|
-| `[wper_calendario]` | Calendario público de eventos filtrado por estado 'abierto' |
-| `[wper_calendario provincia="Murcia" limite="10"]` | Filtrado avanzado por provincia y límite de visualización |
-| `[wper_inscripcion id="X"]` | Formulario dinámico de inscripción para el evento con ID específico |
-| `[wper_ficha id="X"]` | Ficha pública completa del evento con mapa y detalles detallados |
-
-## Actualizaciones Automáticas
-
-Este plugin incluye un sistema de actualización nativo integrado con **GitHub Releases**. 
-
-Para lanzar una nueva actualización y que aparezca en el panel de WordPress de los sitios instalados:
-1. **Actualiza la versión** en el código local (encabezado de `wp-events-registration.php` y constante `WPER_VERSION`).
-2. **Crea un Release** en este repositorio de GitHub con el mismo número de versión (ej: `v1.1.1`).
-3. WordPress detectará automáticamente la nueva versión y permitirá actualizar con un solo clic.
+| `[wper_calendario]` | Calendario público de eventos con tarjetas visuales, búsqueda por provincia y modal de info. |
+| `[wper_calendario provincia="Murcia" limite="10"]` | Filtrado avanzado por provincia y límite de visualización. |
+| `[wper_inscripcion id="X"]` | Formulario dinámico de inscripción para el evento con ID específico. |
+| `[wper_ficha id="X"]` | Ficha pública completa del evento con mapa integrado y detalles. |
 
 ## Estructura de Datos (SQL)
 
-El plugin utiliza dos tablas personalizadas con integridad referencial.
+El plugin utiliza dos tablas con integridad referencial e índices para optimizar el rendimiento.
 
 ### 1. Tabla: `wper_eventos`
 Almacena la configuración y detalles de cada evento.
@@ -58,10 +60,13 @@ CREATE TABLE {prefix}wper_eventos (
     estado                    ENUM('borrador','abierto','cerrado') NOT NULL DEFAULT 'borrador',
     url_bases                 VARCHAR(500)     NULL,
     google_maps               VARCHAR(500)     NULL,
+    cartel_url                VARCHAR(500)     NULL,
     observaciones             TEXT             NULL,
     created_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    INDEX idx_estado (estado),
+    INDEX idx_fecha_inicio (fecha_inicio)
 ) ENGINE=InnoDB;
 ```
 
@@ -77,6 +82,7 @@ CREATE TABLE {prefix}wper_inscripciones (
     telefono    VARCHAR(30)   NULL,
     email       VARCHAR(255)  NULL,
     alojamiento TINYINT(1)    NOT NULL DEFAULT 0,
+    observaciones TEXT        NULL,
     created_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     CONSTRAINT fk_wper_inscripcion_evento
@@ -86,20 +92,13 @@ CREATE TABLE {prefix}wper_inscripciones (
 ) ENGINE=InnoDB;
 ```
 
-## Arquitectura del Plugin
+## Arquitectura
 
-El plugin sigue una estructura modular orientada a objetos (OOP) inspirada en el WordPress Plugin Boilerplate:
-
-- **`admin/`**: Contiene la lógica y vistas exclusivas del panel de control de WordPress.
-- **`public/`**: Gestiona la lógica de frontend, activos (CSS/JS) y renderizado de shortcodes.
-- **`includes/`**: Clases de utilidad centralizadas:
-    - `WPER_DB`: Capa de abstracción de base de datos (CRUD).
-    - `WPER_PDF`: Generación de listados de inscritos en PDF.
-    - `WPER_Shortcodes`: Definición y lógica de los shortcodes disponibles.
-    - `WPER_Activator`/`WPER_Deactivator`: Gestión del ciclo de vida del plugin.
-- **`wp-events-registration.php`**: Archivo núcleo que inicializa el plugin y carga sus componentes.
+- **`admin/`**: Lógica de gestión, exportación CSV/PDF y vistas de gestión.
+- **`public/`**: Frontend (CSS moderno, JS asíncrono para inscripciones).
+- **`includes/`**: Clases núcleo (DB, PDF, Shortcodes, Activación).
 
 ## Requisitos
 - WordPress 5.8+
-- PHP 7.4+
+- PHP 7.4+ (requiere `ext-json` y `ext-mbstring` para PDF)
 - MySQL 5.7+ / MariaDB 10.3+
