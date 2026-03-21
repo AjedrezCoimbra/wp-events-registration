@@ -35,7 +35,7 @@
         </div>
         <div class="dp-form-group">
           <label for="dp-telefono-<?php echo $evento->id; ?>"><?php _e('Teléfono de contacto', 'wp-events-registration'); ?></label>
-          <input type="tel" id="dp-telefono-<?php echo $evento->id; ?>" name="telefono" placeholder="+34 600 000 000">
+          <input type="tel" id="dp-telefono-<?php echo $evento->id; ?>" name="telefono" placeholder="600 000 000">
         </div>
       </div>
 
@@ -47,8 +47,15 @@
         <div class="dp-form-group dp-form-group-check">
           <label class="dp-check-label">
             <input type="checkbox" name="alojamiento" value="1" id="dp-aloj-<?php echo $evento->id; ?>">
-            <?php _e('¿Necesito alojamiento?', 'wp-events-registration'); ?>
+            <?php _e('¿Te alojarás?', 'wp-events-registration'); ?>
           </label>
+        </div>
+      </div>
+
+      <div class="dp-form-row">
+        <div class="dp-form-group">
+          <label for="dp-obs-<?php echo $evento->id; ?>"><?php _e('Observaciones', 'wp-events-registration'); ?></label>
+          <textarea id="dp-obs-<?php echo $evento->id; ?>" name="observaciones" rows="3" placeholder="<?php esc_attr_e('Indica aquí cualquier observación relevante...', 'wp-events-registration'); ?>" style="width:100%; border:1px solid #ddd; border-radius:4px; padding:8px;"></textarea>
         </div>
       </div>
 

@@ -50,12 +50,13 @@
       <th><?php _e('Teléfono', 'wp-events-registration'); ?></th>
       <th><?php _e('Email', 'wp-events-registration'); ?></th>
       <th><?php _e('Alojamiento', 'wp-events-registration'); ?></th>
+      <th><?php _e('Observaciones', 'wp-events-registration'); ?></th>
       <th><?php _e('Fecha', 'wp-events-registration'); ?></th>
       <th><?php _e('Acciones', 'wp-events-registration'); ?></th>
     </tr></thead>
     <tbody>
     <?php if ( empty( $inscripciones ) ) : ?>
-      <tr><td colspan="9" style="text-align:center;padding:2rem;"><?php _e('No hay inscripciones.', 'wp-events-registration'); ?></td></tr>
+      <tr><td colspan="10" style="text-align:center;padding:2rem;"><?php _e('No hay inscripciones.', 'wp-events-registration'); ?></td></tr>
     <?php else : ?>
       <?php foreach ( $inscripciones as $ins ) : ?>
         <tr>
@@ -72,6 +73,7 @@
           <td><?php echo esc_html($ins->telefono ?: '—'); ?></td>
           <td><?php echo esc_html($ins->email ?: '—'); ?></td>
           <td><?php echo $ins->alojamiento ? '✅ Sí' : '❌ No'; ?></td>
+          <td><small><?php echo esc_html($ins->observaciones ?: '—'); ?></small></td>
           <td><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($ins->created_at))); ?></td>
           <td>
             <a href="<?php echo wp_nonce_url(

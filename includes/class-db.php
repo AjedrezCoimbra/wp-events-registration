@@ -114,13 +114,25 @@ class WPER_DB {
         return $wpdb->delete( self::tabla_eventos(), array( 'id' => intval($id) ) );
     }
 
+    public static function auto_close_eventos() {
+        global $wpdb;
+        $t = self::tabla_eventos();
+        $hoy = current_time( 'Y-m-d' );
+        
+        // Cerramos eventos cuya fecha de fin de inscripción haya pasado
+        $wpdb->query( $wpdb->prepare(
+            "UPDATE {$t} SET estado = 'cerrado' WHERE estado = 'abierto' AND fecha_fin_inscripcion < %s",
+            $hoy
+        ) );
+    }
+
     private static function sanitize_evento( $data ) {
         $clean = array();
         $allowed = array(
             'nombre', 'modalidad', 'cuota_inscripcion', 'numero_rondas',
             'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin',
             'fecha_inicio_inscripcion', 'fecha_fin_inscripcion',
-            'estado', 'url_bases', 'google_maps', 'observaciones'
+            'estado', 'url_bases', 'google_maps', 'cartel_url', 'observaciones'
         );
         foreach ( $allowed as $field ) {
             if ( isset( $data[ $field ] ) ) {
@@ -141,6 +153,9 @@ class WPER_DB {
         }
         if ( isset( $data['google_maps'] ) ) {
             $clean['google_maps'] = esc_url_raw( $data['google_maps'] );
+        }
+        if ( isset( $data['cartel_url'] ) ) {
+            $clean['cartel_url'] = esc_url_raw( $data['cartel_url'] );
         }
         return $clean;
     }
@@ -192,6 +207,7 @@ class WPER_DB {
             'telefono'    => ! empty( $data['telefono'] )  ? sanitize_text_field( $data['telefono'] )  : null,
             'email'       => ! empty( $data['email'] )     ? sanitize_email( $data['email'] )          : null,
             'alojamiento' => ! empty( $data['alojamiento'] ) ? 1 : 0,
+            'observaciones' => ! empty( $data['observaciones'] ) ? sanitize_textarea_field( $data['observaciones'] ) : null,
         );
         $wpdb->insert( self::tabla_inscripciones(), $clean );
         return $wpdb->insert_id;

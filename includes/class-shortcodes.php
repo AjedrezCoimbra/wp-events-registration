@@ -141,6 +141,7 @@ class WPER_Shortcodes {
             'telefono'    => sanitize_text_field( $_POST['telefono']    ?? '' ),
             'email'       => $email,
             'alojamiento' => isset( $_POST['alojamiento'] ) ? 1 : 0,
+            'observaciones' => sanitize_textarea_field( $_POST['observaciones'] ?? '' ),
         ) );
 
         if ( ! $id ) {

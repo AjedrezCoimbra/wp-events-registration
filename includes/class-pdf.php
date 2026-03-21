@@ -119,7 +119,12 @@ class WPER_PDF {
                 mb_convert_encoding( $ins->nombre . ' ' . $ins->apellidos, 'ISO-8859-1', 'UTF-8' ) .
                 ' | FIDE: ' . ( $ins->fide_id ?: '—' ) .
                 ' | ' . ( $ins->email ?: '—' ) .
-                ' | Aloj: ' . ( $ins->alojamiento ? 'Si' : 'No' );
+                ' | Aloj: ' . ( $ins->alojamiento ? 'Si' : 'No' ) .
+                ( $ins->observaciones ? ' | Obs: ' . mb_convert_encoding( $ins->observaciones, 'ISO-8859-1', 'UTF-8' ) : '' );
+            
+            // Truncar si es muy larga para una sola línea PDF básica
+            if ( strlen( $line ) > 100 ) $line = substr( $line, 0, 97 ) . '...';
+            
             $stream_parts[] = "(" . $esc( $line ) . ") Tj";
             $stream_parts[] = "0 -13 Td";
             $i++;

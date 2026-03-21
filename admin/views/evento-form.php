@@ -125,10 +125,37 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
       </tr>
 
       <tr>
+        <th><label for="cartel_url"><?php _e('Imagen del cartel', 'wp-events-registration'); ?></label></th>
+        <td>
+          <div class="dp-media-upload">
+            <input type="hidden" id="cartel_url" name="cartel_url" value="<?php echo $editing ? esc_attr($evento->cartel_url) : ''; ?>">
+            <div id="cartel-preview" class="dp-media-preview" style="margin-bottom:10px;">
+              <?php if ( $editing && $evento->cartel_url ) : ?>
+                <img src="<?php echo esc_url($evento->cartel_url); ?>" style="max-width:200px; display:block; border:1px solid #ccc; padding:5px; border-radius:4px;">
+              <?php endif; ?>
+            </div>
+            <button type="button" class="button button-secondary dp-media-upload-btn" data-target="cartel_url" data-preview="cartel-preview"><?php _e('Seleccionar imagen', 'wp-events-registration'); ?></button>
+            <button type="button" class="button button-link dp-media-remove-btn <?php echo ($editing && $evento->cartel_url) ? '' : 'hidden'; ?>" data-target="cartel_url" data-preview="cartel-preview" style="color:#d63638; text-decoration:none; vertical-align:middle;"><?php _e('Eliminar', 'wp-events-registration'); ?></button>
+          </div>
+          <p class="description"><?php _e('Sube el cartel del torneo (JPG, PNG, SVG).', 'wp-events-registration'); ?></p>
+        </td>
+      </tr>
+
+      <tr>
         <th><label for="observaciones"><?php _e('Observaciones', 'wp-events-registration'); ?></label></th>
         <td>
-          <textarea id="observaciones" name="observaciones" rows="5" class="large-text"><?php echo $editing ? esc_textarea($evento->observaciones) : ''; ?></textarea>
-          <p class="description"><?php _e('Información adicional para mostrar en la ficha del evento.', 'wp-events-registration'); ?></p>
+          <?php 
+          $obs_content = $editing ? $evento->observaciones : '';
+          wp_editor( $obs_content, 'observaciones', array(
+            'textarea_name' => 'observaciones',
+            'media_buttons' => true,
+            'textarea_rows' => 8,
+            'teeny'         => false,
+            'quicktags'     => true,
+            'editor_class'  => 'large-text'
+          ) ); 
+          ?>
+          <p class="description"><?php _e('Información detallada para mostrar en la ficha del evento.', 'wp-events-registration'); ?></p>
         </td>
       </tr>
 
