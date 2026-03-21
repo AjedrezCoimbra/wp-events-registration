@@ -34,6 +34,7 @@ class WPER_Admin {
 
     public function enqueue_assets( $hook ) {
         if ( strpos( $hook, 'wper' ) === false ) return;
+        wp_enqueue_media();
         wp_enqueue_style(  'wper-admin', WPER_PLUGIN_URL . 'admin/assets/admin.css', array(), WPER_VERSION );
         wp_enqueue_script( 'wper-admin', WPER_PLUGIN_URL . 'admin/assets/admin.js',  array('jquery'), WPER_VERSION, true );
     }
@@ -127,7 +128,8 @@ class WPER_Admin {
             'estado'                   => in_array( $_POST['estado'], array('borrador','abierto','cerrado') ) ? $_POST['estado'] : 'borrador',
             'url_bases'                => esc_url_raw( $_POST['url_bases'] ?? '' ),
             'google_maps'              => esc_url_raw( $_POST['google_maps'] ?? '' ),
-            'observaciones'            => sanitize_textarea_field( $_POST['observaciones'] ?? '' ),
+            'cartel_url'               => esc_url_raw( $_POST['cartel_url'] ?? '' ),
+            'observaciones'            => wp_kses_post( $_POST['observaciones'] ?? '' ),
         );
 
         if ( $evento_id ) {
@@ -186,7 +188,7 @@ class WPER_Admin {
 
         $out = fopen( 'php://output', 'w' );
         fprintf( $out, chr(0xEF).chr(0xBB).chr(0xBF) ); // BOM UTF-8
-        fputcsv( $out, array( 'ID', 'Nombre', 'Apellidos', 'FIDE ID', 'Teléfono', 'Email', 'Alojamiento', 'Fecha inscripción' ), ';' );
+        fputcsv( $out, array( 'ID', 'Nombre', 'Apellidos', 'FIDE ID', 'Teléfono', 'Email', 'Alojamiento', 'Observaciones', 'Fecha inscripción' ), ';' );
 
         foreach ( $inscripciones as $ins ) {
             fputcsv( $out, array(
@@ -197,6 +199,7 @@ class WPER_Admin {
                 $ins->telefono ?: '',
                 $ins->email ?: '',
                 $ins->alojamiento ? 'Sí' : 'No',
+                $ins->observaciones ?: '',
                 date_i18n( 'd/m/Y H:i', strtotime( $ins->created_at ) ),
             ), ';' );
         }

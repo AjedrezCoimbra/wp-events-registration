@@ -4,7 +4,7 @@ jQuery(function ($) {
     $(document).on('click', '.dp-btn-primary[href^="#dp-form-"]', function (e) {
         e.preventDefault();
         var target = $(this).attr('href');
-        var $form  = $(target);
+        var $form = $(target);
         if ($form.length) {
             $form.slideToggle(200);
             $('html, body').animate({ scrollTop: $form.offset().top - 80 }, 300);
@@ -15,25 +15,25 @@ jQuery(function ($) {
     $(document).on('submit', '.dp-form-inscripcion', function (e) {
         e.preventDefault();
 
-        var $form     = $(this);
-        var eventoId  = $form.data('evento-id');
-        var $msg      = $('#dp-msg-' + eventoId);
-        var $btn      = $form.find('button[type="submit"]');
-        var btnText   = $btn.text();
+        var $form = $(this);
+        var eventoId = $form.data('evento-id');
+        var $msg = $('#dp-msg-' + eventoId);
+        var $btn = $form.find('button[type="submit"]');
+        var btnText = $btn.text();
 
         // Deshabilitar botón
         $btn.prop('disabled', true).text(wperData.i18n.enviando);
         $msg.hide().removeClass('dp-aviso-ok dp-aviso-error');
 
         var data = {
-            action:      'wper_inscribir',
-            nonce:       wperData.nonce,
-            evento_id:   eventoId,
-            nombre:      $form.find('[name="nombre"]').val(),
-            apellidos:   $form.find('[name="apellidos"]').val(),
-            fide_id:     $form.find('[name="fide_id"]').val(),
-            telefono:    $form.find('[name="telefono"]').val(),
-            email:       $form.find('[name="email"]').val(),
+            action: 'wper_inscribir',
+            nonce: wperData.nonce,
+            evento_id: eventoId,
+            nombre: $form.find('[name="nombre"]').val(),
+            apellidos: $form.find('[name="apellidos"]').val(),
+            fide_id: $form.find('[name="fide_id"]').val(),
+            telefono: $form.find('[name="telefono"]').val(),
+            email: $form.find('[name="email"]').val(),
             alojamiento: $form.find('[name="alojamiento"]').is(':checked') ? 1 : 0,
         };
 

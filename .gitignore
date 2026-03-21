@@ -1,6 +1,3 @@
-# WordPress Plugin Git Ignore
-# Generado por Antigravity
-
 # Logs y Archivos temporales
 *.log
 /tmp/
@@ -12,11 +9,6 @@ desktop.ini
 
 # IDEs
 .vscode/
-.idea/
-*.sublime-*
-
-# Notas personales (usuario)
-notas.txt
 
 # Otros
 node_modules/
