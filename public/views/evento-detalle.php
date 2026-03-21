@@ -1,0 +1,69 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit;
+$cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2).' €' : __('Gratuito','dp-torneos');
+?>
+<div class="dp-ficha">
+  <h2 class="dp-ficha-titulo"><?php echo esc_html($evento->nombre); ?></h2>
+
+  <div class="dp-ficha-badges">
+    <span class="dp-cal-estado dp-estado-<?php echo esc_attr($evento->estado); ?>">
+      <?php echo esc_html(ucfirst($evento->estado)); ?>
+    </span>
+    <span class="dp-cal-modalidad"><?php echo esc_html($evento->modalidad); ?></span>
+  </div>
+
+  <div class="dp-ficha-grid">
+    <div class="dp-ficha-item">
+      <span class="dp-ficha-label"><?php _e('Fecha del torneo', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-value">
+        <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_inicio)); ?>
+        <?php if ($evento->fecha_inicio !== $evento->fecha_fin): ?> → <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_fin)); ?><?php endif; ?>
+      </span>
+    </div>
+    <div class="dp-ficha-item">
+      <span class="dp-ficha-label"><?php _e('Lugar', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-value"><?php echo esc_html($evento->poblacion.', '.$evento->provincia); ?></span>
+    </div>
+    <?php if ($evento->numero_rondas): ?>
+    <div class="dp-ficha-item">
+      <span class="dp-ficha-label"><?php _e('Rondas', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-value"><?php echo esc_html($evento->numero_rondas); ?></span>
+    </div>
+    <?php endif; ?>
+    <div class="dp-ficha-item">
+      <span class="dp-ficha-label"><?php _e('Cuota', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-value"><?php echo esc_html($cuota); ?></span>
+    </div>
+    <div class="dp-ficha-item">
+      <span class="dp-ficha-label"><?php _e('Inscripción', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-value">
+        <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_inicio_inscripcion)); ?>
+        → <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_fin_inscripcion)); ?>
+      </span>
+    </div>
+    <?php if ($evento->url_bases): ?>
+    <div class="dp-ficha-item dp-ficha-item-full">
+      <span class="dp-ficha-label"><?php _e('Bases del torneo', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-value">
+        <a href="<?php echo esc_url($evento->url_bases); ?>" target="_blank" rel="noopener">
+          🔗 <?php echo esc_html($evento->url_bases); ?>
+        </a>
+      </span>
+    </div>
+    <?php endif; ?>
+  </div>
+
+  <?php if ($evento->google_maps): ?>
+    <div class="dp-ficha-map">
+      <iframe src="<?php echo esc_url($evento->google_maps); ?>"
+        width="100%" height="300" style="border:0;" allowfullscreen loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  <?php endif; ?>
+
+  <?php if ($evento->estado === 'abierto'): ?>
+    <div class="dp-ficha-inscripcion">
+      <h3><?php _e('Inscribirse al torneo', 'dp-torneos'); ?></h3>
+      <?php echo do_shortcode('[dp_torneo_inscripcion id="'.$evento->id.'"]'); ?>
+    </div>
+  <?php endif; ?>
+</div>
