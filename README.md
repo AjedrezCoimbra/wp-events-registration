@@ -1,4 +1,4 @@
-# DP Torneos de Ajedrez
+# Pluggin de Gestión de Torneos de Ajedrez
 
 Plugin de WordPress del Club de Ajedrez Coimbra de Jumilla para la gestión completa de torneos de ajedrez.
 
