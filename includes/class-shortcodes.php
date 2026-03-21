@@ -4,30 +4,33 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class WPER_Shortcodes {
 
     public function init() {
-        // Estándar
-        add_shortcode( 'wper_calendario',   array( $this, 'shortcode_calendario' ) );
-        add_shortcode( 'wper_inscripcion',  array( $this, 'shortcode_inscripcion' ) );
-        add_shortcode( 'wper_ficha',        array( $this, 'shortcode_ficha' ) );
-
-        // Compatibilidad
-        add_shortcode( 'dp_evento_calendario',   array( $this, 'shortcode_calendario' ) );
-        add_shortcode( 'dp_evento_inscripcion',  array( $this, 'shortcode_inscripcion' ) );
-        add_shortcode( 'dp_evento_ficha',        array( $this, 'shortcode_ficha' ) );
-
-        // AJAX handlers
+        // Registrar directamente para asegurar que están disponibles lo antes posible
+        $this->register_shortcodes();
+        
+        // También en el gancho init por si acaso el orden de carga de los plugins varía
+        add_action( 'init', array( $this, 'register_shortcodes' ) );
+        
         add_action( 'wp_ajax_wper_inscribir',        array( $this, 'ajax_inscribir' ) );
         add_action( 'wp_ajax_nopriv_wper_inscribir', array( $this, 'ajax_inscribir' ) );
     }
 
+    public function register_shortcodes() {
+        // Estándar
+        add_shortcode( 'wper_calendario',   array( $this, 'shortcode_calendario' ) );
+        add_shortcode( 'wper_inscripcion',  array( $this, 'shortcode_inscripcion' ) );
+        add_shortcode( 'wper_ficha',        array( $this, 'shortcode_ficha' ) );
+        add_shortcode( 'wper_test',         function() { return 'Plugin WP Events Registration: OK'; } );
+    }
+
     // ══════════════════════════════════════════════════════
-    //  [dp_torneo_calendario]
+    //  [wper_calendario]
     //  Atributos: provincia, limite
     // ══════════════════════════════════════════════════════
     public function shortcode_calendario( $atts ) {
         $atts = shortcode_atts( array(
             'provincia' => '',
             'limite'    => 20,
-        ), $atts, 'dp_torneo_calendario' );
+        ), $atts, 'wper_calendario' );
 
         $args = array(
             'limite'    => intval( $atts['limite'] ),
@@ -58,10 +61,10 @@ class WPER_Shortcodes {
     }
 
     // ══════════════════════════════════════════════════════
-    //  [dp_torneo_inscripcion id="X"]
+    //  [wper_inscripcion id="X"]
     // ══════════════════════════════════════════════════════
     public function shortcode_inscripcion( $atts ) {
-        $atts = shortcode_atts( array( 'id' => 0 ), $atts, 'dp_torneo_inscripcion' );
+        $atts = shortcode_atts( array( 'id' => 0 ), $atts, 'wper_inscripcion' );
         $evento_id = intval( $atts['id'] );
 
         if ( ! $evento_id ) {
@@ -82,10 +85,10 @@ class WPER_Shortcodes {
     }
 
     // ══════════════════════════════════════════════════════
-    //  [dp_torneo_ficha id="X"]
+    //  [wper_ficha id="X"]
     // ══════════════════════════════════════════════════════
     public function shortcode_ficha( $atts ) {
-        $atts = shortcode_atts( array( 'id' => 0 ), $atts, 'dp_torneo_ficha' );
+        $atts = shortcode_atts( array( 'id' => 0 ), $atts, 'wper_ficha' );
         $evento_id = intval( $atts['id'] );
 
         if ( ! $evento_id ) return '';

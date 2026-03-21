@@ -7,7 +7,7 @@
   <?php endif; ?>
 
   <!-- Filtro por evento -->
-  <div class="dp-filter-bar">
+  <div class="wper-filter-bar">
     <form method="get">
       <input type="hidden" name="page" value="wper-inscripciones">
       <select name="evento_id" onchange="this.form.submit()">
@@ -21,7 +21,7 @@
     </form>
 
     <?php if ( $evento_id && $evento ) : ?>
-      <div class="dp-export-btns">
+      <div class="wper-export-btns">
         <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=wper_export_pdf&evento_id='.$evento_id), 'wper_export_pdf_'.$evento_id); ?>"
            class="button" target="_blank">📄 <?php _e('Exportar PDF', 'wp-events-registration'); ?></a>
         <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=wper_export_csv&evento_id='.$evento_id), 'wper_export_csv_'.$evento_id); ?>"
@@ -31,7 +31,7 @@
   </div>
 
   <?php if ( $evento_id && $evento ) : ?>
-    <div class="dp-evento-info-bar">
+    <div class="wper-evento-info-bar">
       <strong><?php echo esc_html($evento->nombre); ?></strong>
       &nbsp;·&nbsp; <?php echo esc_html(ucfirst($evento->estado)); ?>
       &nbsp;·&nbsp; <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_inicio)); ?>
@@ -40,8 +40,8 @@
     </div>
   <?php endif; ?>
 
-  <div class="dp-table-wrap">
-  <table class="wp-list-table widefat fixed striped dp-table">
+  <div class="wper-table-wrap">
+  <table class="wp-list-table widefat fixed striped wper-table">
     <thead><tr>
       <?php if ( ! $evento_id ) : ?><th><?php _e('Evento', 'wp-events-registration'); ?></th><?php endif; ?>
       <th><?php _e('Nombre', 'wp-events-registration'); ?></th>

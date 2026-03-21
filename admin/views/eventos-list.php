@@ -21,8 +21,8 @@
     <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&estado=borrador'); ?>" <?php echo $estado_filtro==='borrador' ? 'class="current"' : ''; ?>><?php _e('Borradores', 'wp-events-registration'); ?></a></li>
   </ul>
 
-  <div class="dp-table-wrap">
-  <table class="wp-list-table widefat fixed striped dp-table">
+  <div class="wper-table-wrap">
+  <table class="wp-list-table widefat fixed striped wper-table">
     <thead><tr>
       <th style="width:25%"><?php _e('Nombre', 'wp-events-registration'); ?></th>
       <th><?php _e('Modalidad', 'wp-events-registration'); ?></th>
@@ -39,12 +39,12 @@
     <?php else : ?>
       <?php foreach ( $eventos as $ev ) :
         $n_inscritos = WPER_DB::count_inscripciones( $ev->id );
-        $estado_class = array('borrador'=>'dp-badge-borrador','abierto'=>'dp-badge-abierto','cerrado'=>'dp-badge-cerrado')[$ev->estado] ?? '';
+        $estado_class = array('borrador'=>'wper-badge-borrador','abierto'=>'wper-badge-abierto','cerrado'=>'wper-badge-cerrado')[$ev->estado] ?? '';
       ?>
       <tr>
         <td>
           <strong><?php echo esc_html($ev->nombre); ?></strong><br>
-          <small class="dp-shortcode-copy" title="<?php _e('Copiar shortcode','wp-events-registration'); ?>"
+          <small class="wper-shortcode-copy" title="<?php _e('Copiar shortcode','wp-events-registration'); ?>"
             data-shortcode="[wper_inscripcion id=&quot;<?php echo $ev->id; ?>&quot;]">
             📋 [wper_inscripcion id="<?php echo $ev->id; ?>"]
           </small>
@@ -53,13 +53,13 @@
         <td><?php echo esc_html($ev->poblacion.', '.$ev->provincia); ?></td>
         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_inicio))); ?></td>
         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_fin_inscripcion))); ?></td>
-        <td><span class="dp-badge <?php echo $estado_class; ?>"><?php echo esc_html(ucfirst($ev->estado)); ?></span></td>
+        <td><span class="wper-badge <?php echo $estado_class; ?>"><?php echo esc_html(ucfirst($ev->estado)); ?></span></td>
         <td>
           <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ev->id); ?>">
             <?php echo $n_inscritos; ?> <?php _e('inscritos', 'wp-events-registration'); ?>
           </a>
         </td>
-        <td class="dp-actions">
+        <td class="wper-actions">
           <a href="<?php echo admin_url('admin.php?page=wper-nuevo&id='.$ev->id); ?>" class="button button-small">✏️ <?php _e('Editar', 'wp-events-registration'); ?></a>
           <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ev->id); ?>" class="button button-small">👥 <?php _e('Inscritos', 'wp-events-registration'); ?></a>
           <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_export_pdf&evento_id='.$ev->id), 'wper_export_pdf_'.$ev->id ); ?>" class="button button-small" target="_blank">📄 PDF</a>

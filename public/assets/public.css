@@ -1,29 +1,29 @@
 /* Public CSS */
-.dp-calendario,
-.dp-inscripcion-wrap,
-.dp-ficha {
+.wper-calendario,
+.wper-inscripcion-wrap,
+.wper-ficha {
   font-family: inherit;
 }
 
-.dp-cal-title {
+.wper-cal-title {
   font-size: 1.6rem;
   margin-bottom: 1.2rem;
 }
 
-.dp-cal-empty {
+.wper-cal-empty {
   color: #888;
   font-style: italic;
 }
 
 /* Grid de cards */
-.dp-cal-grid {
+.wper-cal-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.2rem;
 }
 
 /* Card */
-.dp-cal-card {
+.wper-cal-card {
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
@@ -34,22 +34,22 @@
   flex-direction: column;
 }
 
-.dp-cal-card:hover {
+.wper-cal-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, .1);
 }
 
-.dp-cal-card.dp-cal-cerrado {
+.wper-cal-card.wper-cal-cerrado {
   background: #fafafa;
 }
 
-.dp-cal-card.dp-cal-cerrado .dp-cal-poster {
+.wper-cal-card.wper-cal-cerrado .wper-cal-poster {
   filter: grayscale(100%);
   opacity: .7;
 }
 
 /* Poster */
-.dp-cal-poster {
+.wper-cal-poster {
   position: relative;
   width: 100%;
   aspect-ratio: 16/9;
@@ -57,13 +57,13 @@
   overflow: hidden;
 }
 
-.dp-cal-poster-img {
+.wper-cal-poster-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.dp-cal-poster-zoom {
+.wper-cal-poster-zoom {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -81,11 +81,11 @@
   transition: opacity .2s;
 }
 
-.dp-cal-poster:hover .dp-cal-poster-zoom {
+.wper-cal-poster:hover .wper-cal-poster-zoom {
   opacity: 1;
 }
 
-.dp-cal-content {
+.wper-cal-content {
   padding: 1.25rem;
   flex-grow: 1;
   display: flex;
@@ -93,14 +93,14 @@
 }
 
 /* Card head */
-.dp-cal-card-head {
+.wper-cal-card-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: .75rem;
 }
 
-.dp-cal-estado {
+.wper-cal-estado {
   font-size: .65rem;
   font-weight: 700;
   letter-spacing: .8px;
@@ -109,24 +109,24 @@
   border-radius: 4px;
 }
 
-.dp-estado-abierto {
+.wper-estado-abierto {
   background: #e6f6ec;
   color: #0c6b37;
 }
 
-.dp-estado-cerrado {
+.wper-estado-cerrado {
   background: #fdf2f2;
   color: #9b1c1c;
 }
 
-.dp-cal-modalidad {
+.wper-cal-modalidad {
   font-size: .75rem;
   font-weight: 600;
   color: #6b7280;
 }
 
 /* Nombre */
-.dp-cal-nombre {
+.wper-cal-nombre {
   font-size: 1.25rem;
   line-height: 1.3;
   color: #111827;
@@ -135,14 +135,14 @@
 }
 
 /* Meta */
-.dp-cal-meta {
+.wper-cal-meta {
   display: flex;
   flex-direction: column;
   gap: .5rem;
   margin-bottom: 1.5rem;
 }
 
-.dp-cal-meta-item {
+.wper-cal-meta-item {
   display: flex;
   align-items: flex-start;
   gap: .6rem;
@@ -151,13 +151,13 @@
   line-height: 1.4;
 }
 
-.dp-meta-icon {
+.wper-meta-icon {
   flex-shrink: 0;
   width: 1.2rem;
   text-align: center;
 }
 
-.dp-btn-mini {
+.wper-btn-mini {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -171,32 +171,32 @@
   margin-left: 4px;
 }
 
-.dp-btn-mini:hover {
+.wper-btn-mini:hover {
   background: #e5e7eb;
 }
 
-.dp-cal-obs {
+.wper-cal-obs {
   margin-top: .5rem;
   padding-top: .75rem;
   border-top: 1px solid #f3f4f6;
 }
 
-.dp-obs-content {
+.wper-obs-content {
   font-size: .85rem;
   color: #6b7280;
 }
 
-.dp-obs-content p { margin: 0 0 0.5em 0; }
-.dp-obs-content p:last-child { margin-bottom: 0; }
+.wper-obs-content p { margin: 0 0 0.5em 0; }
+.wper-obs-content p:last-child { margin-bottom: 0; }
 
 /* Botones */
-.dp-cal-actions {
+.wper-cal-actions {
   display: flex;
   gap: .5rem;
   flex-wrap: wrap;
 }
 
-.dp-btn {
+.wper-btn {
   display: inline-block;
   padding: .5rem 1rem;
   border-radius: 6px;
@@ -208,45 +208,45 @@
   transition: all .15s;
 }
 
-.dp-btn-primary {
+.wper-btn-primary {
   background: #2271b1;
   color: #fff;
 }
 
-.dp-btn-primary:hover {
+.wper-btn-primary:hover {
   background: #135e96;
   color: #fff;
 }
 
-.dp-btn-outline {
+.wper-btn-outline {
   background: transparent;
   border: 1px solid #2271b1;
   color: #2271b1;
 }
 
-.dp-btn-outline:hover {
+.wper-btn-outline:hover {
   background: #f0f6ff;
 }
 
-.dp-btn-disabled {
+.wper-btn-disabled {
   background: #e0e0e0;
   color: #999;
   cursor: default;
 }
 
 /* Inline form toggle */
-.dp-cal-form-inline {
+.wper-cal-form-inline {
   margin-top: 1rem;
   border-top: 1px solid #eee;
   padding-top: 1rem;
 }
 
 /* ── Formulario de inscripción ── */
-.dp-inscripcion-wrap {
+.wper-inscripcion-wrap {
   max-width: 680px;
 }
 
-.dp-form-evento-info {
+.wper-form-evento-info {
   background: #f7f9fc;
   border-left: 3px solid #2271b1;
   padding: .6rem 1rem;
@@ -255,54 +255,54 @@
   font-size: .9rem;
 }
 
-.dp-aviso {
+.wper-aviso {
   padding: .8rem 1rem;
   border-radius: 6px;
   margin-bottom: 1rem;
   font-size: .9rem;
 }
 
-.dp-aviso-cerrado {
+.wper-aviso-cerrado {
   background: #fff3cd;
   border: 1px solid #ffc107;
   color: #856404;
 }
 
-.dp-aviso-ok {
+.wper-aviso-ok {
   background: #d4edda;
   border: 1px solid #c3e6cb;
   color: #155724;
 }
 
-.dp-aviso-error {
+.wper-aviso-error {
   background: #f8d7da;
   border: 1px solid #f5c6cb;
   color: #721c24;
 }
 
-.dp-form-row {
+.wper-form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
   margin-bottom: .8rem;
 }
 
-/* @media(max-width:560px){ .dp-form-row { grid-template-columns: 1fr; } } */
-.dp-form-group {
+/* @media(max-width:560px){ .wper-form-row { grid-template-columns: 1fr; } } */
+.wper-form-group {
   display: flex;
   flex-direction: column;
   gap: .3rem;
 }
 
-.dp-form-group label {
+.wper-form-group label {
   font-size: .85rem;
   font-weight: 600;
   color: #333;
 }
 
-.dp-form-group input[type="text"],
-.dp-form-group input[type="email"],
-.dp-form-group input[type="tel"] {
+.wper-form-group input[type="text"],
+.wper-form-group input[type="email"],
+.wper-form-group input[type="tel"] {
   padding: .5rem .75rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -310,17 +310,17 @@
   transition: border-color .15s;
 }
 
-.dp-form-group input:focus {
+.wper-form-group input:focus {
   border-color: #2271b1;
   outline: none;
   box-shadow: 0 0 0 2px rgba(34, 113, 177, .15);
 }
 
-.dp-form-group-check {
+.wper-form-group-check {
   justify-content: flex-end;
 }
 
-.dp-check-label {
+.wper-check-label {
   display: flex;
   align-items: center;
   gap: .5rem;
@@ -328,15 +328,15 @@
   cursor: pointer;
 }
 
-.dp-form-submit {
+.wper-form-submit {
   margin-top: .5rem;
 }
 
-.dp-required {
+.wper-required {
   color: #d63638;
 }
 
-.dp-form-msg {
+.wper-form-msg {
   padding: .75rem 1rem;
   border-radius: 6px;
   margin-bottom: .8rem;
@@ -344,22 +344,22 @@
 }
 
 /* ── Ficha ── */
-.dp-ficha {
+.wper-ficha {
   max-width: 720px;
 }
 
-.dp-ficha-titulo {
+.wper-ficha-titulo {
   font-size: 1.6rem;
   margin-bottom: .5rem;
 }
 
-.dp-ficha-badges {
+.wper-ficha-badges {
   display: flex;
   gap: .5rem;
   margin-bottom: 1rem;
 }
 
-.dp-ficha-grid {
+.wper-ficha-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: .8rem;
@@ -367,22 +367,22 @@
 }
 
 @media(max-width:480px) {
-  .dp-ficha-grid {
+  .wper-ficha-grid {
     grid-template-columns: 1fr;
   }
 }
 
-.dp-ficha-item {
+.wper-ficha-item {
   background: #f7f9fc;
   border-radius: 6px;
   padding: .6rem .9rem;
 }
 
-.dp-ficha-item-full {
+.wper-ficha-item-full {
   grid-column: 1 / -1;
 }
 
-.dp-ficha-label {
+.wper-ficha-label {
   display: block;
   font-size: .72rem;
   text-transform: uppercase;
@@ -391,21 +391,21 @@
   margin-bottom: .15rem;
 }
 
-.dp-ficha-value {
+.wper-ficha-value {
   font-size: .95rem;
   color: #222;
 }
 
-.dp-ficha-value a {
+.wper-ficha-value a {
   color: #2271b1;
 }
 
-.dp-ficha-map {
+.wper-ficha-map {
   margin: 1rem 0;
   border-radius: 8px;
   overflow: hidden;
 }
 
-.dp-ficha-inscripcion h3 {
+.wper-ficha-inscripcion h3 {
   margin-bottom: .8rem;
 }

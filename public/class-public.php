@@ -17,10 +17,7 @@ class WPER_Public {
             has_shortcode( $post->post_content, 'wper_calendario' ) ||
             has_shortcode( $post->post_content, 'wper_inscripcion' ) ||
             has_shortcode( $post->post_content, 'wper_ficha' ) ||
-            // Mantener compatibilidad con los que puse antes
-            has_shortcode( $post->post_content, 'dp_evento_calendario' ) ||
-            has_shortcode( $post->post_content, 'dp_evento_inscripcion' ) ||
-            has_shortcode( $post->post_content, 'dp_evento_ficha' );
+            has_shortcode( $post->post_content, 'wper_test' );
 
         if ( ! $has_shortcode ) return;
 

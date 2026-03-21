@@ -19,16 +19,16 @@ class WPER_Admin {
         add_menu_page(
             __( 'WP Events Registration', 'wp-events-registration' ),
             __( 'Eventos', 'wp-events-registration' ),
-            'edit_others_posts',
+            'edit_pages',
             'wper-plugin',
             array( $this, 'page_dashboard' ),
             'dashicons-awards',
             30
         );
-        add_submenu_page( 'wper-plugin', __( 'Dashboard', 'wp-events-registration' ),       __( 'Dashboard', 'wp-events-registration' ),       'edit_others_posts', 'wper-plugin',                array( $this, 'page_dashboard' ) );
-        add_submenu_page( 'wper-plugin', __( 'Todos los Eventos', 'wp-events-registration' ), __( 'Todos los Eventos', 'wp-events-registration' ), 'edit_others_posts', 'wper-eventos',        array( $this, 'page_eventos' ) );
-        add_submenu_page( 'wper-plugin', __( 'Nuevo Evento', 'wp-events-registration' ),    __( 'Nuevo Evento', 'wp-events-registration' ),    'edit_others_posts', 'wper-nuevo',          array( $this, 'page_evento_form' ) );
-        add_submenu_page( 'wper-plugin', __( 'Inscripciones', 'wp-events-registration' ),   __( 'Inscripciones', 'wp-events-registration' ),   'edit_others_posts', 'wper-inscripciones',  array( $this, 'page_inscripciones' ) );
+        add_submenu_page( 'wper-plugin', __( 'Dashboard', 'wp-events-registration' ),       __( 'Dashboard', 'wp-events-registration' ),       'edit_pages', 'wper-plugin',                array( $this, 'page_dashboard' ) );
+        add_submenu_page( 'wper-plugin', __( 'Todos los Eventos', 'wp-events-registration' ), __( 'Todos los Eventos', 'wp-events-registration' ), 'edit_pages', 'wper-eventos',        array( $this, 'page_eventos' ) );
+        add_submenu_page( 'wper-plugin', __( 'Nuevo Evento', 'wp-events-registration' ),    __( 'Nuevo Evento', 'wp-events-registration' ),    'edit_pages', 'wper-nuevo',          array( $this, 'page_evento_form' ) );
+        add_submenu_page( 'wper-plugin', __( 'Inscripciones', 'wp-events-registration' ),   __( 'Inscripciones', 'wp-events-registration' ),   'edit_pages', 'wper-inscripciones',  array( $this, 'page_inscripciones' ) );
         add_submenu_page( 'wper-plugin', __( 'Ajustes', 'wp-events-registration' ),         __( 'Ajustes', 'wp-events-registration' ),         'manage_options', 'wper-ajustes',        array( $this, 'page_ajustes' ) );
     }
 
@@ -100,7 +100,7 @@ class WPER_Admin {
     // ── Handlers POST ────────────────────────────────────
 
     public function handle_save_evento() {
-        if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
         check_admin_referer( 'wper_save_evento' );
 
         $evento_id = intval( $_POST['evento_id'] ?? 0 );
@@ -145,7 +145,7 @@ class WPER_Admin {
     }
 
     public function handle_delete_evento() {
-        if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
         $id = intval( $_GET['id'] ?? 0 );
         check_admin_referer( 'wper_delete_evento_' . $id );
         WPER_DB::delete_evento( $id );
@@ -154,7 +154,7 @@ class WPER_Admin {
     }
 
     public function handle_delete_inscripcion() {
-        if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
         $id        = intval( $_GET['id'] ?? 0 );
         $evento_id = intval( $_GET['evento_id'] ?? 0 );
         check_admin_referer( 'wper_delete_inscripcion_' . $id );
@@ -166,14 +166,14 @@ class WPER_Admin {
     }
 
     public function handle_export_pdf() {
-        if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
         $evento_id = intval( $_GET['evento_id'] ?? 0 );
         check_admin_referer( 'wper_export_pdf_' . $evento_id );
         WPER_PDF::generate_pdf( $evento_id );
     }
 
     public function handle_export_csv() {
-        if ( ! current_user_can( 'edit_others_posts' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
         $evento_id = intval( $_GET['evento_id'] ?? 0 );
         check_admin_referer( 'wper_export_csv_' . $evento_id );
 

@@ -10,7 +10,7 @@
     <input type="hidden" name="action" value="wper_save_ajustes">
     <?php wp_nonce_field('wper_save_ajustes'); ?>
 
-    <table class="form-table dp-form-table">
+    <table class="form-table wper-form-table">
       <tr>
         <th><label for="email_admin"><?php _e('Email de administración', 'wp-events-registration'); ?></label></th>
         <td>
@@ -48,7 +48,7 @@
 
   <hr>
   <h2><?php _e('Shortcodes disponibles', 'wp-events-registration'); ?></h2>
-  <table class="wp-list-table widefat dp-table">
+  <table class="wp-list-table widefat wper-table">
     <thead><tr><th><?php _e('Shortcode', 'wp-events-registration'); ?></th><th><?php _e('Descripción', 'wp-events-registration'); ?></th></tr></thead>
     <tbody>
       <tr><td><code>[wper_calendario]</code></td><td><?php _e('Muestra el calendario de eventos públicos. Parámetros: provincia="Murcia" limite="10"', 'wp-events-registration'); ?></td></tr>

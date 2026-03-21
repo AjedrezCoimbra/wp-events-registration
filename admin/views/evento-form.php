@@ -10,12 +10,12 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
   <?php endif; ?>
 
   <?php if ( $editing ) : ?>
-    <div class="dp-shortcode-box">
+    <div class="wper-shortcode-box">
       <strong><?php _e('Shortcode de inscripción:', 'wp-events-registration'); ?></strong>
-      <code class="dp-shortcode-copy" data-shortcode="[wper_inscripcion id=&quot;<?php echo $evento->id; ?>&quot;]">
+      <code class="wper-shortcode-copy" data-shortcode="[wper_inscripcion id=&quot;<?php echo $evento->id; ?>&quot;]">
         [wper_inscripcion id="<?php echo $evento->id; ?>"]
       </code>
-      <button type="button" class="button button-small dp-copy-btn" data-target=".dp-shortcode-copy">📋 <?php _e('Copiar', 'wp-events-registration'); ?></button>
+      <button type="button" class="button button-small wper-copy-btn" data-target=".wper-shortcode-copy">📋 <?php _e('Copiar', 'wp-events-registration'); ?></button>
       <br><small><?php _e('Pega este shortcode en cualquier página para mostrar el formulario de inscripción.', 'wp-events-registration'); ?></small>
     </div>
   <?php endif; ?>
@@ -25,7 +25,7 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
     <input type="hidden" name="evento_id" value="<?php echo $editing ? $evento->id : 0; ?>">
     <?php wp_nonce_field('wper_save_evento'); ?>
 
-    <table class="form-table dp-form-table">
+    <table class="form-table wper-form-table">
 
       <tr>
         <th><label for="nombre"><?php _e('Nombre del evento', 'wp-events-registration'); ?> <span class="required">*</span></label></th>
@@ -127,15 +127,15 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
       <tr>
         <th><label for="cartel_url"><?php _e('Imagen del cartel', 'wp-events-registration'); ?></label></th>
         <td>
-          <div class="dp-media-upload">
+          <div class="wper-media-upload">
             <input type="hidden" id="cartel_url" name="cartel_url" value="<?php echo $editing ? esc_attr($evento->cartel_url) : ''; ?>">
-            <div id="cartel-preview" class="dp-media-preview" style="margin-bottom:10px;">
+            <div id="cartel-preview" class="wper-media-preview" style="margin-bottom:10px;">
               <?php if ( $editing && $evento->cartel_url ) : ?>
                 <img src="<?php echo esc_url($evento->cartel_url); ?>" style="max-width:200px; display:block; border:1px solid #ccc; padding:5px; border-radius:4px;">
               <?php endif; ?>
             </div>
-            <button type="button" class="button button-secondary dp-media-upload-btn" data-target="cartel_url" data-preview="cartel-preview"><?php _e('Seleccionar imagen', 'wp-events-registration'); ?></button>
-            <button type="button" class="button button-link dp-media-remove-btn <?php echo ($editing && $evento->cartel_url) ? '' : 'hidden'; ?>" data-target="cartel_url" data-preview="cartel-preview" style="color:#d63638; text-decoration:none; vertical-align:middle;"><?php _e('Eliminar', 'wp-events-registration'); ?></button>
+            <button type="button" class="button button-secondary wper-media-upload-btn" data-target="cartel_url" data-preview="cartel-preview"><?php _e('Seleccionar imagen', 'wp-events-registration'); ?></button>
+            <button type="button" class="button button-link wper-media-remove-btn <?php echo ($editing && $evento->cartel_url) ? '' : 'hidden'; ?>" data-target="cartel_url" data-preview="cartel-preview" style="color:#d63638; text-decoration:none; vertical-align:middle;"><?php _e('Eliminar', 'wp-events-registration'); ?></button>
           </div>
           <p class="description"><?php _e('Sube el cartel del torneo (JPG, PNG, SVG).', 'wp-events-registration'); ?></p>
         </td>
