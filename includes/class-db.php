@@ -1,17 +1,17 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class DP_Torneos_DB {
+class WPER_DB {
 
     // ── Tabla names ────────────────────────────────────────
     public static function tabla_eventos() {
         global $wpdb;
-        return $wpdb->prefix . 'dp_eventos';
+        return $wpdb->prefix . 'wper_eventos';
     }
 
     public static function tabla_inscripciones() {
         global $wpdb;
-        return $wpdb->prefix . 'dp_eventos_inscripciones';
+        return $wpdb->prefix . 'wper_inscripciones';
     }
 
     // ══════════════════════════════════════════════════════
@@ -120,12 +120,15 @@ class DP_Torneos_DB {
             'nombre', 'modalidad', 'cuota_inscripcion', 'numero_rondas',
             'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin',
             'fecha_inicio_inscripcion', 'fecha_fin_inscripcion',
-            'estado', 'url_bases', 'google_maps'
+            'estado', 'url_bases', 'google_maps', 'observaciones'
         );
         foreach ( $allowed as $field ) {
             if ( isset( $data[ $field ] ) ) {
                 $clean[ $field ] = $data[ $field ] === '' ? null : sanitize_text_field( $data[ $field ] );
             }
+        }
+        if ( isset( $data['observaciones'] ) ) {
+            $clean['observaciones'] = sanitize_textarea_field( $data['observaciones'] );
         }
         if ( isset( $clean['cuota_inscripcion'] ) && $clean['cuota_inscripcion'] !== null ) {
             $clean['cuota_inscripcion'] = floatval( $clean['cuota_inscripcion'] );

@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class DP_Torneos_Public {
+class WPER_Public {
 
     public function init() {
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
@@ -13,33 +13,37 @@ class DP_Torneos_Public {
         if ( ! is_a( $post, 'WP_Post' ) ) return;
 
         $has_shortcode =
-            has_shortcode( $post->post_content, 'dp_torneo_calendario' ) ||
-            has_shortcode( $post->post_content, 'dp_torneo_inscripcion' ) ||
-            has_shortcode( $post->post_content, 'dp_torneo_ficha' );
+            has_shortcode( $post->post_content, 'wper_calendario' ) ||
+            has_shortcode( $post->post_content, 'wper_inscripcion' ) ||
+            has_shortcode( $post->post_content, 'wper_ficha' ) ||
+            // Mantener compatibilidad con los que puse antes
+            has_shortcode( $post->post_content, 'dp_evento_calendario' ) ||
+            has_shortcode( $post->post_content, 'dp_evento_inscripcion' ) ||
+            has_shortcode( $post->post_content, 'dp_evento_ficha' );
 
         if ( ! $has_shortcode ) return;
 
         wp_enqueue_style(
-            'dp-torneos-public',
-            DP_TORNEOS_PLUGIN_URL . 'public/assets/public.css',
+            'wper-public',
+            WPER_PLUGIN_URL . 'public/assets/public.css',
             array(),
-            DP_TORNEOS_VERSION
+            WPER_VERSION
         );
 
         wp_enqueue_script(
-            'dp-torneos-public',
-            DP_TORNEOS_PLUGIN_URL . 'public/assets/public.js',
+            'wper-public',
+            WPER_PLUGIN_URL . 'public/assets/public.js',
             array('jquery'),
-            DP_TORNEOS_VERSION,
+            WPER_VERSION,
             true
         );
 
-        wp_localize_script( 'dp-torneos-public', 'dpTorneos', array(
+        wp_localize_script( 'wper-public', 'wperData', array(
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'dp_inscribir_nonce' ),
+            'nonce'    => wp_create_nonce( 'wper_inscribir_nonce' ),
             'i18n'     => array(
-                'enviando'  => __( 'Enviando...', 'dp-torneos' ),
-                'error_gen' => __( 'Error al procesar la inscripción.', 'dp-torneos' ),
+                'enviando'  => __( 'Enviando...', 'wp-events-registration' ),
+                'error_gen' => __( 'Error al procesar la inscripción.', 'wp-events-registration' ),
             ),
         ) );
     }

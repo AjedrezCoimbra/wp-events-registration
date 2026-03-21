@@ -22,12 +22,12 @@ jQuery(function ($) {
         var btnText   = $btn.text();
 
         // Deshabilitar botón
-        $btn.prop('disabled', true).text(dpTorneos.i18n.enviando);
+        $btn.prop('disabled', true).text(wperData.i18n.enviando);
         $msg.hide().removeClass('dp-aviso-ok dp-aviso-error');
 
         var data = {
-            action:      'dp_inscribir',
-            nonce:       dpTorneos.nonce,
+            action:      'wper_inscribir',
+            nonce:       wperData.nonce,
             evento_id:   eventoId,
             nombre:      $form.find('[name="nombre"]').val(),
             apellidos:   $form.find('[name="apellidos"]').val(),
@@ -37,7 +37,7 @@ jQuery(function ($) {
             alojamiento: $form.find('[name="alojamiento"]').is(':checked') ? 1 : 0,
         };
 
-        $.post(dpTorneos.ajax_url, data)
+        $.post(wperData.ajax_url, data)
             .done(function (response) {
                 if (response.success) {
                     $msg.addClass('dp-aviso dp-aviso-ok')
@@ -50,13 +50,13 @@ jQuery(function ($) {
                     }, 3000);
                 } else {
                     $msg.addClass('dp-aviso dp-aviso-error')
-                        .text(response.data.message || dpTorneos.i18n.error_gen)
+                        .text(response.data.message || wperData.i18n.error_gen)
                         .show();
                 }
             })
             .fail(function () {
                 $msg.addClass('dp-aviso dp-aviso-error')
-                    .text(dpTorneos.i18n.error_gen)
+                    .text(wperData.i18n.error_gen)
                     .show();
             })
             .always(function () {

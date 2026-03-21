@@ -1,6 +1,6 @@
-/* DP Torneos — Admin CSS */
-.dp-torneos-wrap { max-width: 1200px; }
-.dp-torneos-wrap h1 { margin-bottom: 1.2rem; }
+/* WP Events Registration — Admin CSS */
+.wper-wrap { max-width: 1200px; }
+.wper-wrap h1 { margin-bottom: 1.2rem; }
 
 /* Stats grid */
 .dp-stats-grid {
@@ -34,7 +34,11 @@
 .dp-badge-borrador { background: #e2e3e5; color: #383d41; }
 
 /* Table */
-.dp-table { margin-top: .5rem; }
+.dp-table { margin-top: .5rem; width: 100%; table-layout: auto !important; }
+@media(max-width: 782px) {
+  .dp-dashboard-col { flex: 100%; min-width: 0; }
+  .dp-table-wrap { overflow-x: auto; width: 100%; }
+}
 .dp-actions { white-space: nowrap; }
 .dp-actions .button { margin-right: 3px; }
 

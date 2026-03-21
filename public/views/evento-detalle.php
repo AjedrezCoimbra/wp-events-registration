@@ -1,5 +1,5 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit;
-$cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2).' €' : __('Gratuito','dp-torneos');
+$cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2).' €' : __('Gratuito','wp-events-registration');
 ?>
 <div class="dp-ficha">
   <h2 class="dp-ficha-titulo"><?php echo esc_html($evento->nombre); ?></h2>
@@ -13,28 +13,28 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
 
   <div class="dp-ficha-grid">
     <div class="dp-ficha-item">
-      <span class="dp-ficha-label"><?php _e('Fecha del torneo', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-label"><?php _e('Fecha del evento', 'wp-events-registration'); ?></span>
       <span class="dp-ficha-value">
         <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_inicio)); ?>
         <?php if ($evento->fecha_inicio !== $evento->fecha_fin): ?> → <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_fin)); ?><?php endif; ?>
       </span>
     </div>
     <div class="dp-ficha-item">
-      <span class="dp-ficha-label"><?php _e('Lugar', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-label"><?php _e('Lugar', 'wp-events-registration'); ?></span>
       <span class="dp-ficha-value"><?php echo esc_html($evento->poblacion.', '.$evento->provincia); ?></span>
     </div>
     <?php if ($evento->numero_rondas): ?>
     <div class="dp-ficha-item">
-      <span class="dp-ficha-label"><?php _e('Rondas', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-label"><?php _e('Rondas', 'wp-events-registration'); ?></span>
       <span class="dp-ficha-value"><?php echo esc_html($evento->numero_rondas); ?></span>
     </div>
     <?php endif; ?>
     <div class="dp-ficha-item">
-      <span class="dp-ficha-label"><?php _e('Cuota', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-label"><?php _e('Cuota', 'wp-events-registration'); ?></span>
       <span class="dp-ficha-value"><?php echo esc_html($cuota); ?></span>
     </div>
     <div class="dp-ficha-item">
-      <span class="dp-ficha-label"><?php _e('Inscripción', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-label"><?php _e('Inscripción', 'wp-events-registration'); ?></span>
       <span class="dp-ficha-value">
         <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_inicio_inscripcion)); ?>
         → <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_fin_inscripcion)); ?>
@@ -42,7 +42,7 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
     </div>
     <?php if ($evento->url_bases): ?>
     <div class="dp-ficha-item dp-ficha-item-full">
-      <span class="dp-ficha-label"><?php _e('Bases del torneo', 'dp-torneos'); ?></span>
+      <span class="dp-ficha-label"><?php _e('Bases del evento', 'wp-events-registration'); ?></span>
       <span class="dp-ficha-value">
         <a href="<?php echo esc_url($evento->url_bases); ?>" target="_blank" rel="noopener">
           🔗 <?php echo esc_html($evento->url_bases); ?>
@@ -51,6 +51,13 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
     </div>
     <?php endif; ?>
   </div>
+
+  <?php if ( ! empty( $evento->observaciones ) ) : ?>
+    <div class="dp-ficha-observaciones">
+      <span class="dp-ficha-label"><?php _e('Más información', 'wp-events-registration'); ?></span>
+      <div class="dp-ficha-value"><?php echo wpautop( esc_html( $evento->observaciones ) ); ?></div>
+    </div>
+  <?php endif; ?>
 
   <?php if ($evento->google_maps): ?>
     <div class="dp-ficha-map">
@@ -62,8 +69,8 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
 
   <?php if ($evento->estado === 'abierto'): ?>
     <div class="dp-ficha-inscripcion">
-      <h3><?php _e('Inscribirse al torneo', 'dp-torneos'); ?></h3>
-      <?php echo do_shortcode('[dp_torneo_inscripcion id="'.$evento->id.'"]'); ?>
+      <h3><?php _e('Inscribirse al evento', 'wp-events-registration'); ?></h3>
+      <?php echo do_shortcode('[wper_inscripcion id="'.$evento->id.'"]'); ?>
     </div>
   <?php endif; ?>
 </div>

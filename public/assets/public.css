@@ -54,8 +54,8 @@
 .dp-aviso-ok      { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
 .dp-aviso-error   { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
 
-.dp-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: .8rem; }
-@media(max-width:560px){ .dp-form-row { grid-template-columns: 1fr; } }
+.dp-form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: .8rem; }
+/* @media(max-width:560px){ .dp-form-row { grid-template-columns: 1fr; } } */
 .dp-form-group { display: flex; flex-direction: column; gap: .3rem; }
 .dp-form-group label { font-size: .85rem; font-weight: 600; color: #333; }
 .dp-form-group input[type="text"],

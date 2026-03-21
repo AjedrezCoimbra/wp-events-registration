@@ -1,0 +1,25 @@
+# WordPress Plugin Git Ignore
+# Generado por Antigravity
+
+# Logs y Archivos temporales
+*.log
+/tmp/
+
+# Archivos de SO
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-*
+
+# Notas personales (usuario)
+notas.txt
+
+# Otros
+node_modules/
+vendor/
+composer.lock
+package-lock.json
