@@ -14,8 +14,4 @@ delete_option( 'wper_email_admin' );
 delete_option( 'wper_email_notificar' );
 delete_option( 'wper_moneda' );
 
-// Limpieza de opciones antiguas (opcional)
-delete_option( 'dp_torneos_version' );
-delete_option( 'dp_torneos_email_admin' );
-delete_option( 'dp_torneos_email_notificar' );
-delete_option( 'dp_torneos_moneda' );
+// No quedan opciones antiguas que limpiar

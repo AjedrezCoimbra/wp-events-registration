@@ -1,7 +1,7 @@
 jQuery(function ($) {
 
     // ── Toggle formulario inline desde el calendario ──────
-    $(document).on('click', '.dp-btn-primary[href^="#dp-form-"]', function (e) {
+    $(document).on('click', '.wper-btn-primary[href^="#wper-form-"]', function (e) {
         e.preventDefault();
         var target = $(this).attr('href');
         var $form = $(target);
@@ -12,18 +12,18 @@ jQuery(function ($) {
     });
 
     // ── Envío del formulario de inscripción vía AJAX ──────
-    $(document).on('submit', '.dp-form-inscripcion', function (e) {
+    $(document).on('submit', '.wper-form-inscripcion', function (e) {
         e.preventDefault();
 
         var $form = $(this);
         var eventoId = $form.data('evento-id');
-        var $msg = $('#dp-msg-' + eventoId);
+        var $msg = $('#wper-msg-' + eventoId);
         var $btn = $form.find('button[type="submit"]');
         var btnText = $btn.text();
 
         // Deshabilitar botón
         $btn.prop('disabled', true).text(wperData.i18n.enviando);
-        $msg.hide().removeClass('dp-aviso-ok dp-aviso-error');
+        $msg.hide().removeClass('wper-aviso-ok wper-aviso-error');
 
         var data = {
             action: 'wper_inscribir',
@@ -35,27 +35,28 @@ jQuery(function ($) {
             telefono: $form.find('[name="telefono"]').val(),
             email: $form.find('[name="email"]').val(),
             alojamiento: $form.find('[name="alojamiento"]').is(':checked') ? 1 : 0,
+            observaciones: $form.find('[name="observaciones"]').val(),
         };
 
         $.post(wperData.ajax_url, data)
             .done(function (response) {
                 if (response.success) {
-                    $msg.addClass('dp-aviso dp-aviso-ok')
+                    $msg.addClass('wper-aviso wper-aviso-ok')
                         .text(response.data.message)
                         .show();
                     $form[0].reset();
                     // Ocultar el formulario tras inscripción exitosa
                     setTimeout(function () {
-                        $form.closest('.dp-cal-form-inline').slideUp(300);
+                        $form.closest('.wper-cal-form-inline').slideUp(300);
                     }, 3000);
                 } else {
-                    $msg.addClass('dp-aviso dp-aviso-error')
+                    $msg.addClass('wper-aviso wper-aviso-error')
                         .text(response.data.message || wperData.i18n.error_gen)
                         .show();
                 }
             })
             .fail(function () {
-                $msg.addClass('dp-aviso dp-aviso-error')
+                $msg.addClass('wper-aviso wper-aviso-error')
                     .text(wperData.i18n.error_gen)
                     .show();
             })

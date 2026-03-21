@@ -2,50 +2,50 @@
 <div class="wrap wper-wrap">
   <h1>♟ <?php _e( 'Dirección Deportiva - WPER Dashboard', 'wp-events-registration' ); ?></h1>
 
-  <div class="dp-stats-grid">
-    <div class="dp-stat-card dp-stat-abierto">
-      <span class="dp-stat-num"><?php echo $stats['eventos_abiertos']; ?></span>
-      <span class="dp-stat-label"><?php _e( 'Eventos abiertos', 'wp-events-registration' ); ?></span>
+  <div class="wper-stats-grid">
+    <div class="wper-stat-card wper-stat-abierto">
+      <span class="wper-stat-num"><?php echo $stats['eventos_abiertos']; ?></span>
+      <span class="wper-stat-label"><?php _e( 'Eventos abiertos', 'wp-events-registration' ); ?></span>
     </div>
-    <div class="dp-stat-card dp-stat-cerrado">
-      <span class="dp-stat-num"><?php echo $stats['eventos_cerrados']; ?></span>
-      <span class="dp-stat-label"><?php _e( 'Eventos cerrados', 'wp-events-registration' ); ?></span>
+    <div class="wper-stat-card wper-stat-cerrado">
+      <span class="wper-stat-num"><?php echo $stats['eventos_cerrados']; ?></span>
+      <span class="wper-stat-label"><?php _e( 'Eventos cerrados', 'wp-events-registration' ); ?></span>
     </div>
-    <div class="dp-stat-card dp-stat-borrador">
-      <span class="dp-stat-num"><?php echo $stats['eventos_borrador']; ?></span>
-      <span class="dp-stat-label"><?php _e( 'Borradores', 'wp-events-registration' ); ?></span>
+    <div class="wper-stat-card wper-stat-borrador">
+      <span class="wper-stat-num"><?php echo $stats['eventos_borrador']; ?></span>
+      <span class="wper-stat-label"><?php _e( 'Borradores', 'wp-events-registration' ); ?></span>
     </div>
-    <div class="dp-stat-card dp-stat-inscripciones">
-      <span class="dp-stat-num"><?php echo $stats['total_inscripciones']; ?></span>
-      <span class="dp-stat-label"><?php _e( 'Total inscripciones', 'wp-events-registration' ); ?></span>
+    <div class="wper-stat-card wper-stat-inscripciones">
+      <span class="wper-stat-num"><?php echo $stats['total_inscripciones']; ?></span>
+      <span class="wper-stat-label"><?php _e( 'Total inscripciones', 'wp-events-registration' ); ?></span>
     </div>
-    <div class="dp-stat-card dp-stat-hoy">
-      <span class="dp-stat-num"><?php echo $stats['inscripciones_hoy']; ?></span>
-      <span class="dp-stat-label"><?php _e( 'Inscripciones hoy', 'wp-events-registration' ); ?></span>
+    <div class="wper-stat-card wper-stat-hoy">
+      <span class="wper-stat-num"><?php echo $stats['inscripciones_hoy']; ?></span>
+      <span class="wper-stat-label"><?php _e( 'Inscripciones hoy', 'wp-events-registration' ); ?></span>
     </div>
   </div>
 
-  <div class="dp-dashboard-cols">
+  <div class="wper-dashboard-cols">
 
-    <div class="dp-dashboard-col">
+    <div class="wper-dashboard-col">
       <h2><?php _e( 'Accesos rápidos', 'wp-events-registration' ); ?></h2>
-      <a href="<?php echo admin_url('admin.php?page=wper-nuevo'); ?>" class="button button-primary dp-btn-lg">
+      <a href="<?php echo admin_url('admin.php?page=wper-nuevo'); ?>" class="button button-primary wper-btn-lg">
         ➕ <?php _e( 'Crear nuevo evento', 'wp-events-registration' ); ?>
       </a>
-      <a href="<?php echo admin_url('admin.php?page=wper-eventos'); ?>" class="button dp-btn-lg">
+      <a href="<?php echo admin_url('admin.php?page=wper-eventos'); ?>" class="button wper-btn-lg">
         📋 <?php _e( 'Ver todos los eventos', 'wp-events-registration' ); ?>
       </a>
-      <a href="<?php echo admin_url('admin.php?page=wper-inscripciones'); ?>" class="button dp-btn-lg">
+      <a href="<?php echo admin_url('admin.php?page=wper-inscripciones'); ?>" class="button wper-btn-lg">
         👥 <?php _e( 'Ver inscripciones', 'wp-events-registration' ); ?>
       </a>
     </div>
 
-    <div class="dp-dashboard-col">
+    <div class="wper-dashboard-col">
       <h2><?php _e( 'Eventos con inscripción abierta', 'wp-events-registration' ); ?></h2>
       <?php if ( empty( $eventos_abiertos ) ) : ?>
-        <p class="dp-muted"><?php _e( 'No hay eventos abiertos ahora mismo.', 'wp-events-registration' ); ?></p>
+        <p class="wper-muted"><?php _e( 'No hay eventos abiertos ahora mismo.', 'wp-events-registration' ); ?></p>
       <?php else : ?>
-        <ul class="dp-list">
+        <ul class="wper-list">
           <?php foreach ( $eventos_abiertos as $ev ) : ?>
             <li>
               <strong><?php echo esc_html( $ev->nombre ); ?></strong><br>
@@ -57,13 +57,13 @@
       <?php endif; ?>
     </div>
 
-    <div class="dp-dashboard-col dp-dashboard-col-full">
+    <div class="wper-dashboard-col wper-dashboard-col-full">
       <h2><?php _e( 'Últimas inscripciones', 'wp-events-registration' ); ?></h2>
       <?php if ( empty( $ultimas_inscripciones ) ) : ?>
-        <p class="dp-muted"><?php _e( 'Aún no hay inscripciones.', 'wp-events-registration' ); ?></p>
+        <p class="wper-muted"><?php _e( 'Aún no hay inscripciones.', 'wp-events-registration' ); ?></p>
       <?php else : ?>
-        <div class="dp-table-wrap">
-          <table class="wp-list-table widefat fixed striped dp-table">
+        <div class="wper-table-wrap">
+          <table class="wp-list-table widefat fixed striped wper-table">
             <thead><tr>
               <th><?php _e('Nombre', 'wp-events-registration'); ?></th>
               <th><?php _e('Evento', 'wp-events-registration'); ?></th>
