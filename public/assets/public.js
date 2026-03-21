@@ -11,6 +11,24 @@ jQuery(function ($) {
         }
     });
 
+    // ── Modal de observaciones ──────
+    $(document).on('click', '.wper-btn-obs-more', function () {
+        var $modal = $('#wper-modal-obs');
+        var title = $(this).data('title');
+        var content = $(this).data('content');
+
+        $modal.find('.wper-modal-header h3').text(title);
+        $modal.find('.wper-modal-body').html(content);
+        $modal.css('display', 'flex');
+        $('body').css('overflow', 'hidden');
+    });
+
+    $(document).on('click', '.wper-modal-close, .wper-modal', function (e) {
+        if (e.target !== this && !$(e.target).hasClass('wper-modal-close')) return;
+        $('.wper-modal').hide();
+        $('body').css('overflow', 'auto');
+    });
+
     // ── Envío del formulario de inscripción vía AJAX ──────
     $(document).on('submit', '.wper-form-inscripcion', function (e) {
         e.preventDefault();
@@ -42,23 +60,23 @@ jQuery(function ($) {
             .done(function (response) {
                 if (response.success) {
                     $msg.addClass('wper-aviso wper-aviso-ok')
-                        .text(response.data.message)
-                        .show();
+                        .html('<strong>👍</strong> ' + response.data.message)
+                        .fadeIn();
                     $form[0].reset();
                     // Ocultar el formulario tras inscripción exitosa
                     setTimeout(function () {
                         $form.closest('.wper-cal-form-inline').slideUp(300);
-                    }, 3000);
+                    }, 4000);
                 } else {
                     $msg.addClass('wper-aviso wper-aviso-error')
-                        .text(response.data.message || wperData.i18n.error_gen)
-                        .show();
+                        .html('<strong>⚠️</strong> ' + (response.data.message || wperData.i18n.error_gen))
+                        .fadeIn();
                 }
             })
             .fail(function () {
                 $msg.addClass('wper-aviso wper-aviso-error')
                     .text(wperData.i18n.error_gen)
-                    .show();
+                    .fadeIn();
             })
             .always(function () {
                 $btn.prop('disabled', false).text(btnText);
@@ -66,3 +84,4 @@ jQuery(function ($) {
     });
 
 });
+

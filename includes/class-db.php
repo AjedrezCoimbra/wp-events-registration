@@ -119,9 +119,9 @@ class WPER_DB {
         $t = self::tabla_eventos();
         $hoy = current_time( 'Y-m-d' );
         
-        // Cerramos eventos cuya fecha de fin de inscripción haya pasado
+        // Cerramos eventos cuya fecha de fin de inscripción haya pasado (estrictamente menor que hoy)
         $wpdb->query( $wpdb->prepare(
-            "UPDATE {$t} SET estado = 'cerrado' WHERE estado = 'abierto' AND fecha_fin_inscripcion < %s",
+            "UPDATE {$t} SET estado = 'cerrado' WHERE estado = 'abierto' AND fecha_fin_inscripcion < %s AND fecha_fin_inscripcion != '0000-00-00'",
             $hoy
         ) );
     }
@@ -132,7 +132,7 @@ class WPER_DB {
             'nombre', 'modalidad', 'cuota_inscripcion', 'numero_rondas',
             'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin',
             'fecha_inicio_inscripcion', 'fecha_fin_inscripcion',
-            'estado', 'url_bases', 'google_maps', 'cartel_url', 'observaciones'
+            'estado', 'url_bases', 'google_maps', 'cartel_url'
         );
         foreach ( $allowed as $field ) {
             if ( isset( $data[ $field ] ) ) {
@@ -140,7 +140,8 @@ class WPER_DB {
             }
         }
         if ( isset( $data['observaciones'] ) ) {
-            $clean['observaciones'] = sanitize_textarea_field( $data['observaciones'] );
+            // Permitimos HTML seguro para el editor enriquecido
+            $clean['observaciones'] = wp_kses_post( $data['observaciones'] );
         }
         if ( isset( $clean['cuota_inscripcion'] ) && $clean['cuota_inscripcion'] !== null ) {
             $clean['cuota_inscripcion'] = floatval( $clean['cuota_inscripcion'] );

@@ -15,8 +15,11 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
     <div class="wper-ficha-item">
       <span class="wper-ficha-label"><?php _e('Fecha del evento', 'wp-events-registration'); ?></span>
       <span class="wper-ficha-value">
-        <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_inicio)); ?>
-        <?php if ($evento->fecha_inicio !== $evento->fecha_fin): ?> → <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_fin)); ?><?php endif; ?>
+        <?php if ($evento->fecha_inicio === $evento->fecha_fin): ?>
+          <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_inicio)); ?>
+        <?php else: ?>
+          <?php printf( __('Del %s hasta %s', 'wp-events-registration'), date_i18n('d/m/Y', strtotime($evento->fecha_inicio)), date_i18n('d/m/Y', strtotime($evento->fecha_fin)) ); ?>
+        <?php endif; ?>
       </span>
     </div>
     <div class="wper-ficha-item">
@@ -36,8 +39,7 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
     <div class="wper-ficha-item">
       <span class="wper-ficha-label"><?php _e('Inscripción', 'wp-events-registration'); ?></span>
       <span class="wper-ficha-value">
-        <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_inicio_inscripcion)); ?>
-        → <?php echo date_i18n('d/m/Y', strtotime($evento->fecha_fin_inscripcion)); ?>
+        <?php printf( __('Del %s hasta %s', 'wp-events-registration'), date_i18n('d/m/Y', strtotime($evento->fecha_inicio_inscripcion)), date_i18n('d/m/Y', strtotime($evento->fecha_fin_inscripcion)) ); ?>
       </span>
     </div>
     <?php if ($evento->url_bases): ?>
@@ -55,14 +57,14 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
   <?php if ( ! empty( $evento->observaciones ) ) : ?>
     <div class="wper-ficha-observaciones">
       <span class="wper-ficha-label"><?php _e('Más información', 'wp-events-registration'); ?></span>
-      <div class="wper-ficha-value"><?php echo wp_kses_post( $evento->observaciones ); ?></div>
+      <div class="wper-ficha-value wper-enriched-content"><?php echo wp_kses_post( $evento->observaciones ); ?></div>
     </div>
   <?php endif; ?>
 
   <?php if ($evento->google_maps): ?>
     <div class="wper-ficha-map">
       <iframe src="<?php echo esc_url($evento->google_maps); ?>"
-        width="100%" height="300" style="border:0;" allowfullscreen loading="lazy"
+        width="100%" height="350" style="border:0; border-radius:12px;" allowfullscreen loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   <?php endif; ?>

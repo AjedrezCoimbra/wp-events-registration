@@ -161,33 +161,125 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
-  border-radius: 4px;
-  width: 24px;
-  height: 24px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: #4f46e5;
+  border-radius: 6px;
+  padding: 4px 8px;
   text-decoration: none;
-  font-size: 12px;
-  transition: background .2s;
-  margin-left: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  transition: all .2s ease;
+  margin-left: 6px;
+  vertical-align: middle;
 }
 
 .wper-btn-mini:hover {
-  background: #e5e7eb;
+  background: #4f46e5;
+  color: #fff;
+  border-color: #4f46e5;
+  transform: translateY(-1px);
 }
 
 .wper-cal-obs {
   margin-top: .5rem;
   padding-top: .75rem;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px dotted #e5e7eb;
 }
 
-.wper-obs-content {
+.wper-obs-preview {
   font-size: .85rem;
   color: #6b7280;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
 }
 
-.wper-obs-content p { margin: 0 0 0.5em 0; }
-.wper-obs-content p:last-child { margin-bottom: 0; }
+.wper-btn-obs-more {
+  display: inline-block;
+  font-size: .75rem;
+  font-weight: 700;
+  color: #2271b1;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+/* Modal Simple */
+.wper-modal {
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.wper-modal-content {
+  background-color: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 650px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  position: relative;
+  animation: wperModalIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+@keyframes wperModalIn {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.wper-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wper-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #111827;
+}
+
+.wper-modal-close {
+  font-size: 28px;
+  font-weight: bold;
+  color: #9ca3af;
+  cursor: pointer;
+  line-height: 1;
+  transition: color .2s;
+}
+
+.wper-modal-close:hover {
+  color: #111827;
+}
+
+.wper-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex-grow: 1;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.wper-modal-body p { margin-bottom: 1.2rem; }
+.wper-modal-body p:last-child { margin-bottom: 0; }
 
 /* Botones */
 .wper-cal-actions {
@@ -195,6 +287,7 @@
   gap: .5rem;
   flex-wrap: wrap;
 }
+
 
 .wper-btn {
   display: inline-block;
