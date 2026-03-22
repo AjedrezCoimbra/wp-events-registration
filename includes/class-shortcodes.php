@@ -68,7 +68,7 @@ class WPER_Shortcodes {
         $evento_id = intval( $atts['id'] );
 
         if ( ! $evento_id ) {
-            return '<p class="dp-error">' . __( 'ID de evento no especificado.', 'wp-events-registration' ) . '</p>';
+            return '<p class="wper-aviso wper-aviso-error">' . __( 'ID de evento no especificado.', 'wp-events-registration' ) . '</p>';
         }
 
         $evento = WPER_DB::get_evento( $evento_id );

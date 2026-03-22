@@ -1,4 +1,4 @@
-# WP Chess Events Registration
+# WP Chess Events Registration (v1.3.0)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -9,24 +9,31 @@ Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
 2. Activa el plugin desde **Plugins → Plugins instalados**
 3. Las tablas se crean automáticamente al activar con el prefijo `{wp_prefix}wper_`
 
+## Actualizaciones automáticas
+
+El plugin soporta actualizaciones automáticas directamente desde GitHub:
+- Las nuevas versiones se publican como **GitHub Releases** y WordPress las detecta automáticamente cada 12 horas.
+- Puedes activar o desactivar las actualizaciones automáticas desde el enlace **"Activar las actualizaciones automáticas"** en el listado de plugins de WordPress.
+- Si hay una nueva versión disponible, aparecerá el aviso estándar de WordPress permitiendo actualizar con un solo clic.
+
 ## Uso
 
 ### Panel de administración
 Ve a **♟ Eventos** en el menú lateral de WordPress.
 
 - **Dashboard** — Estadísticas generales e inscripciones recientes.
-- **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles).
+- **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles). Incluye campos para **Ritmo de juego**, **Tiempo** y **ELO FIDE**.
 - **Inscripciones** — Listado de inscritos, exportar PDF y CSV.
-- **Ajustes** — Configuración de email de notificaciones y moneda.
+- **Ajustes** — Configuración de email de notificaciones, moneda y forzado de comprobación de actualizaciones.
 
 ### Shortcodes
 
 | Shortcode | Descripción |
 |---|---|
-| `[wper_calendario]` | Calendario público de eventos con tarjetas visuales, búsqueda por provincia y modal de info. |
+| `[wper_calendario]` | Calendario público con tarjetas visuales. Muestra ritmo, tiempo y sello ELO FIDE si están configurados. |
 | `[wper_calendario provincia="Murcia" limite="10"]` | Filtrado avanzado por provincia y límite de visualización. |
 | `[wper_inscripcion id="X"]` | Formulario dinámico de inscripción para el evento con ID específico. |
-| `[wper_ficha id="X"]` | Ficha pública completa del evento con mapa integrado y detalles. |
+| `[wper_ficha id="X"]` | Ficha pública completa con todos los detalles técnicos (rondas, ritmo, tiempo, ELO FIDE), mapa y formulario integrado. |
 
 ## Estructura de Datos (SQL)
 
@@ -41,6 +48,9 @@ CREATE TABLE {prefix}wper_eventos (
     modalidad                 ENUM('Individual','Por Equipos') NOT NULL,
     cuota_inscripcion         DECIMAL(8,2)     NULL,
     numero_rondas             TINYINT UNSIGNED NULL,
+    tiempo_juego              VARCHAR(30)      DEFAULT NULL, -- Tiempo libre, ej: 90'+30"
+    elo_fide                  TINYINT(1)       DEFAULT 0,    -- Valedero FIDE: 1=Sí, 0=No
+    ritmo_juego               VARCHAR(10)      DEFAULT NULL, -- Clásico, Rápido, Blitz
     poblacion                 VARCHAR(150)     NOT NULL,
     provincia                 VARCHAR(100)     NOT NULL,
     fecha_inicio              DATE             NOT NULL,
@@ -86,7 +96,7 @@ CREATE TABLE {prefix}wper_inscripciones (
 
 - **`admin/`**: Lógica de gestión, exportación CSV/PDF y vistas de gestión.
 - **`public/`**: Frontend (CSS moderno, JS asíncrono para inscripciones).
-- **`includes/`**: Clases núcleo (DB, PDF, Shortcodes, Activación).
+- **`includes/`**: Clases núcleo (DB, PDF, Shortcodes, Activación, Updater GitHub).
 
 ## Requisitos
 - WordPress 5.8+

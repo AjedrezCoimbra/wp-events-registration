@@ -29,13 +29,15 @@
       <th><?php _e('Lugar', 'wp-events-registration'); ?></th>
       <th><?php _e('Inicio evento', 'wp-events-registration'); ?></th>
       <th><?php _e('Fin inscripción', 'wp-events-registration'); ?></th>
+      <th><?php _e('Ritmo', 'wp-events-registration'); ?></th>
+      <th><?php _e('ELO FIDE', 'wp-events-registration'); ?></th>
       <th><?php _e('Estado', 'wp-events-registration'); ?></th>
       <th><?php _e('Inscritos', 'wp-events-registration'); ?></th>
       <th><?php _e('Acciones', 'wp-events-registration'); ?></th>
     </tr></thead>
     <tbody>
     <?php if ( empty( $eventos ) ) : ?>
-      <tr><td colspan="8" style="text-align:center;padding:2rem;"><?php _e('No hay eventos.', 'wp-events-registration'); ?></td></tr>
+      <tr><td colspan="10" style="text-align:center;padding:2rem;"><?php _e('No hay eventos.', 'wp-events-registration'); ?></td></tr>
     <?php else : ?>
       <?php foreach ( $eventos as $ev ) :
         $n_inscritos = WPER_DB::count_inscripciones( $ev->id );
@@ -53,6 +55,8 @@
         <td><?php echo esc_html($ev->poblacion.', '.$ev->provincia); ?></td>
         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_inicio))); ?></td>
         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_fin_inscripcion))); ?></td>
+        <td><?php echo esc_html($ev->ritmo_juego ?: ''); ?></td>
+        <td><?php echo $ev->elo_fide ? __('Sí', 'wp-events-registration') : ''; ?></td>
         <td><span class="wper-badge <?php echo $estado_class; ?>"><?php echo esc_html(ucfirst($ev->estado)); ?></span></td>
         <td>
           <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ev->id); ?>">

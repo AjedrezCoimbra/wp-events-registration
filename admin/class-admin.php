@@ -132,6 +132,9 @@ class WPER_Admin {
             'google_maps'              => esc_url_raw( $_POST['google_maps'] ?? '' ),
             'cartel_url'               => esc_url_raw( $_POST['cartel_url'] ?? '' ),
             'observaciones'            => wp_kses_post( $_POST['observaciones'] ?? '' ),
+            'tiempo_juego'             => sanitize_text_field( $_POST['tiempo_juego'] ?? '' ),
+            'elo_fide'                 => isset( $_POST['elo_fide'] ) ? 1 : 0,
+            'ritmo_juego'              => sanitize_text_field( $_POST['ritmo_juego'] ?? '' ),
         );
 
         if ( $evento_id ) {

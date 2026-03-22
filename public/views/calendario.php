@@ -30,6 +30,18 @@
 
             <div class="wper-cal-nombre"><?php echo esc_html($ev->nombre); ?></div>
 
+            <div class="wper-cal-extra-meta">
+              <?php if ( $ev->ritmo_juego ) : ?>
+                <span class="wper-ritmo-badge"><?php echo esc_html( $ev->ritmo_juego ); ?></span>
+              <?php endif; ?>
+              <?php if ( $ev->tiempo_juego ) : ?>
+                <span class="wper-tiempo-text"><?php echo esc_html( $ev->tiempo_juego ); ?></span>
+              <?php endif; ?>
+              <?php if ( $ev->elo_fide ) : ?>
+                <span class="wper-fide-badge"><?php _e( 'ELO FIDE', 'wp-events-registration' ); ?></span>
+              <?php endif; ?>
+            </div>
+
             <div class="wper-cal-meta">
               <div class="wper-cal-meta-item">
                 <span class="wper-meta-icon">📅</span>

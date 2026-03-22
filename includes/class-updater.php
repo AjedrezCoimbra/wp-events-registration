@@ -1,135 +1,203 @@
 <?php
+/**
+ * Clase para gestionar actualizaciones automáticas desde GitHub Releases.
+ */
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/**
- * Filtro hooks para actualización nativa desde GitHub.
- */
 class WPER_Updater {
 
+    private $plugin_file;
     private $plugin_slug;
     private $version;
-    private $github_url;
+    private $github_repo;
 
+    /**
+     * Constructor.
+     * 
+     * @param string $plugin_file Path al archivo principal del plugin.
+     * @param string $version     Versión actual instalada.
+     * @param string $github_url  URL completa del repositorio (ej: https://github.com/AjedrezCoimbra/wp-events-registration).
+     */
     public function __construct( $plugin_file, $version, $github_url ) {
+        $this->plugin_file = $plugin_file;
         $this->plugin_slug = plugin_basename( $plugin_file );
         $this->version     = $version;
-        $this->github_url  = $github_url;
-    }
-
-    public function init() {
-        add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_for_updates' ) );
-        add_filter( 'plugins_api', array( $this, 'get_plugin_info' ), 20, 3 );
-        add_action( 'upgrader_process_complete', array( $this, 'clear_transient' ), 10, 2 );
         
-        // Habilitar el soporte para actualizaciones automáticas (el toggle en la lista de plugins)
-        add_filter( 'auto_update_plugin', array( $this, 'maybe_auto_update' ), 10, 2 );
+        // Extraer "Propietario/Repo" de la URL
+        $path = parse_url( $github_url, PHP_URL_PATH );
+        $this->github_repo = trim( $path, '/' );
     }
 
     /**
-     * Compara versión instalada con la última versión en GitHub (Releases).
+     * Registra los hooks necesarios.
+     */
+    public function init() {
+        // Hooks para detección de actualizaciones
+        add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_for_updates' ) );
+        add_filter( 'plugins_api', array( $this, 'get_plugin_info' ), 20, 3 );
+        add_action( 'upgrader_process_complete', array( $this, 'clear_cache' ), 10, 2 );
+        
+        // Hooks para actualizaciones automáticas (toggle en la lista de plugins)
+        add_filter( 'plugin_auto_update_setting_html', array( $this, 'auto_update_setting_html' ), 10, 3 );
+        add_filter( 'auto_update_plugin', array( $this, 'maybe_auto_update' ), 10, 2 );
+        
+        // Acción para procesar el clic en el toggle
+        add_action( 'admin_post_wper_toggle_auto_update', array( $this, 'handle_toggle_auto_update' ) );
+    }
+
+    /**
+     * Inyecta información de actualización si hay una nueva versión disponible.
      */
     public function check_for_updates( $transient ) {
-        if ( empty( $transient->checked ) ) return $transient;
+        if ( empty( $transient->checked ) ) {
+            return $transient;
+        }
 
-        $response = $this->get_github_release();
-        if ( ! $response ) return $transient;
+        $release = $this->get_github_release();
+        if ( ! $release ) {
+            return $transient;
+        }
 
-        // Limpiamos la 'v' si el tag_name la incluye (e.g. v1.2.0)
-        $remote_version = ltrim( $response->tag_name, 'v' );
+        $remote_version = ltrim( $release->tag_name, 'v' );
 
         if ( version_compare( $this->version, $remote_version, '<' ) ) {
-            $obj = new stdClass();
-            $obj->slug        = 'wp-events-registration';
-            $obj->plugin      = $this->plugin_slug;
-            $obj->new_version = $remote_version;
-            $obj->url         = $this->github_url;
-            $obj->package     = $response->zipball_url;
+            $res = new stdClass();
+            $res->slug        = 'wp-events-registration';
+            $res->plugin      = $this->plugin_slug;
+            $res->new_version = $remote_version;
+            $res->url         = 'https://github.com/' . $this->github_repo;
+            $res->package     = $release->zipball_url;
 
-            $transient->response[ $this->plugin_slug ] = $obj;
+            $transient->response[ $this->plugin_slug ] = $res;
         }
 
         return $transient;
     }
 
     /**
-     * Muestra información detallada en el popup de "Ver detalles".
+     * Proporciona detalles del plugin para el popup de WordPress.
      */
     public function get_plugin_info( $result, $action, $args ) {
-        if ( $action !== 'plugin_information' ) return $result;
-        if ( isset($args->slug) && $args->slug !== 'wp-events-registration' ) return $result;
+        if ( $action !== 'plugin_information' ) {
+            return $result;
+        }
 
-        $response = $this->get_github_release();
-        if ( ! $response ) return $result;
+        if ( isset( $args->slug ) && $args->slug !== 'wp-events-registration' ) {
+            return $result;
+        }
+
+        $release = $this->get_github_release();
+        if ( ! $release ) {
+            return $result;
+        }
 
         $res = new stdClass();
         $res->name           = 'WP Events Registration';
         $res->slug           = 'wp-events-registration';
-        $res->version        = ltrim( $response->tag_name, 'v' );
+        $res->version        = ltrim( $release->tag_name, 'v' );
         $res->author         = 'José Joaquín Sánchez Fernández';
         $res->author_profile = 'https://ajedrezcoimbra.com';
-        $res->homepage       = $this->github_url;
-        $res->download_link  = $response->zipball_url;
+        $res->homepage       = 'https://github.com/' . $this->github_repo;
+        $res->download_link  = $release->zipball_url;
         $res->sections       = array(
             'description' => 'Plugin de gestión de eventos e inscripciones para sitios de WordPress.',
-            'changelog'   => isset($response->body) ? wp_kses_post($response->body) : '-'
+            'changelog'   => isset( $release->body ) ? wp_kses_post( $release->body ) : '-'
         );
 
         return $res;
     }
 
     /**
-     * Limpia la caché tras una actualización exitosa.
+     * Limpia la caché tras la actualización.
      */
-    public function clear_transient( $upgrader_object, $options ) {
-        if ( $options['action'] === 'update' && $options['type'] === 'plugin' && isset( $options['plugins'] ) ) {
-            foreach ( $options['plugins'] as $plugin ) {
-                if ( $plugin === $this->plugin_slug ) {
-                    delete_site_transient( 'update_plugins' );
-                }
-            }
+    public function clear_cache( $upgrader_object, $options ) {
+        if ( $options['action'] === 'update' && $options['type'] === 'plugin' ) {
+            delete_transient( 'wper_github_release_cache' );
+            delete_site_transient( 'update_plugins' );
         }
     }
 
     /**
-     * Decide si un plugin debe actualizarse automáticamente basándose en los ajustes de WordPress.
+     * Genera el HTML para el toggle de actualizaciones automáticas en /wp-admin/plugins.php.
+     */
+    public function auto_update_setting_html( $html, $plugin_file, $plugin_data ) {
+        if ( $plugin_file === $this->plugin_slug ) {
+            $enabled = (int) get_option( 'wper_auto_updates', 0 );
+            $text    = $enabled ? __( 'Desactivar las actualizaciones automáticas', 'wp-events-registration' ) : __( 'Activar las actualizaciones automáticas', 'wp-events-registration' );
+            
+            $url = wp_nonce_url( admin_url( 'admin-post.php?action=wper_toggle_auto_update' ), 'wper_toggle_auto_update' );
+            
+            // Usamos un estilo similar al nativo pero con nuestro propio enlace
+            $html = sprintf(
+                '<a href="%s" class="toggle-auto-update aria-button-if-js">%s</a>',
+                esc_url( $url ),
+                esc_html( $text )
+            );
+            
+            if ( $enabled ) {
+                $html .= '<div class="auto-update-time">' . __( 'Actualizaciones automáticas activadas', 'wp-events-registration' ) . '</div>';
+            }
+        }
+        return $html;
+    }
+
+    /**
+     * Handler para el toggle de actualizaciones automáticas.
+     */
+    public function handle_toggle_auto_update() {
+        if ( ! current_user_can( 'update_plugins' ) ) {
+            wp_die( __( 'Sin permisos suficientes.', 'wp-events-registration' ) );
+        }
+        
+        check_admin_referer( 'wper_toggle_auto_update' );
+        
+        $current = (int) get_option( 'wper_auto_updates', 0 );
+        update_option( 'wper_auto_updates', $current ? 0 : 1 );
+        
+        wp_redirect( admin_url( 'plugins.php' ) );
+        exit;
+    }
+
+    /**
+     * Hook para habilitar la actualización automática si está activa la opción.
      */
     public function maybe_auto_update( $update, $item ) {
-        // En $item->plugin viene el path del plugin principal
-        if ( isset( $item->plugin ) && $item->plugin === $this->plugin_slug ) {
-            $auto_updates = get_site_option( 'auto_update_plugins', array() );
-            if ( in_array( $this->plugin_slug, $auto_updates ) ) {
-                return true;
-            }
+        if ( isset( $item->slug ) && $item->slug === 'wp-events-registration' ) {
+            return (bool) get_option( 'wper_auto_updates', 0 );
         }
         return $update;
     }
 
     /**
-     * Obtiene el último release publicado en el repositorio GitHub.
+     * Consulta la API de GitHub para obtener la última release.
      */
     private function get_github_release() {
-        $api_url = 'https://api.github.com/repos/AjedrezCoimbra/wp-events-registration/releases/latest';
-        
-        // Es una buena práctica cachear la respuesta para no saturar la API en cada carga de página
         $cached = get_transient( 'wper_github_release_cache' );
-        if ( $cached !== false ) return $cached;
+        if ( false !== $cached ) {
+            return $cached;
+        }
 
+        $api_url  = 'https://api.github.com/repos/' . $this->github_repo . '/releases/latest';
         $response = wp_remote_get( $api_url, array(
             'timeout'    => 10,
             'user-agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' )
-        ));
+        ) );
 
-        if ( is_wp_error( $response ) ) return false;
+        if ( is_wp_error( $response ) ) {
+            return false;
+        }
 
         $body = wp_remote_retrieve_body( $response );
         $data = json_decode( $body );
 
-        if ( empty($data) || !isset($data->tag_name) ) return false;
+        if ( empty( $data ) || ! isset( $data->tag_name ) ) {
+            return false;
+        }
 
-        // Cacheamos por 12 horas
+        // Cachear por 12 horas
         set_transient( 'wper_github_release_cache', $data, 12 * HOUR_IN_SECONDS );
 
         return $data;
     }
-
 }

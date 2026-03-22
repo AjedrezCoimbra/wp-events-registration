@@ -130,6 +130,7 @@ class WPER_DB {
         $clean = array();
         $allowed = array(
             'nombre', 'modalidad', 'cuota_inscripcion', 'numero_rondas',
+            'tiempo_juego', 'elo_fide', 'ritmo_juego',
             'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin',
             'fecha_inicio_inscripcion', 'fecha_fin_inscripcion',
             'estado', 'url_bases', 'google_maps', 'cartel_url'
@@ -142,6 +143,9 @@ class WPER_DB {
         if ( isset( $data['observaciones'] ) ) {
             // Permitimos HTML seguro para el editor enriquecido
             $clean['observaciones'] = wp_kses_post( $data['observaciones'] );
+        }
+        if ( isset( $data['elo_fide'] ) ) {
+            $clean['elo_fide'] = $data['elo_fide'] ? 1 : 0;
         }
         if ( isset( $clean['cuota_inscripcion'] ) && $clean['cuota_inscripcion'] !== null ) {
             $clean['cuota_inscripcion'] = floatval( $clean['cuota_inscripcion'] );

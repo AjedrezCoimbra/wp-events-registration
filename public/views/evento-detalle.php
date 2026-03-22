@@ -32,6 +32,27 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
       <span class="wper-ficha-value"><?php echo esc_html($evento->numero_rondas); ?></span>
     </div>
     <?php endif; ?>
+
+    <?php if ($evento->tiempo_juego): ?>
+    <div class="wper-ficha-item">
+      <span class="wper-ficha-label"><?php _e('Tiempo de juego', 'wp-events-registration'); ?></span>
+      <span class="wper-ficha-value"><?php echo esc_html($evento->tiempo_juego); ?></span>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($evento->elo_fide): ?>
+    <div class="wper-ficha-item">
+      <span class="wper-ficha-label"><?php _e('ELO FIDE', 'wp-events-registration'); ?></span>
+      <span class="wper-ficha-value"><?php _e('Sí', 'wp-events-registration'); ?></span>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($evento->ritmo_juego): ?>
+    <div class="wper-ficha-item">
+      <span class="wper-ficha-label"><?php _e('Ritmo de juego', 'wp-events-registration'); ?></span>
+      <span class="wper-ficha-value"><?php echo esc_html($evento->ritmo_juego); ?></span>
+    </div>
+    <?php endif; ?>
     <div class="wper-ficha-item">
       <span class="wper-ficha-label"><?php _e('Cuota', 'wp-events-registration'); ?></span>
       <span class="wper-ficha-value"><?php echo esc_html($cuota); ?></span>
