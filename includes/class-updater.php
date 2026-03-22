@@ -160,7 +160,7 @@ class WPER_Updater {
             
             // Usamos un estilo similar al nativo pero con nuestro propio enlace
             $html = sprintf(
-                '<a href="%s" class="toggle-auto-update aria-button-if-js">%s</a>',
+                '<a href="%s">%s</a>',
                 esc_url( $url ),
                 esc_html( $text )
             );
