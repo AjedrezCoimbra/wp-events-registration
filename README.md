@@ -9,17 +9,6 @@ Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
 2. Activa el plugin desde **Plugins → Plugins instalados**
 3. Las tablas se crean automáticamente al activar con el prefijo `{wp_prefix}wper_`
 
-## Novedades v1.2.6
-
-- **Refactorización completa**: Todos los componentes usan ahora el prefijo `wper_` (eliminada la compatibilidad con `dp_*`).
-- **Vista de Calendario Mejorada**:
-  - Modal moderno para ver observaciones enriquecidas.
-  - Botón de mapa profesional.
-  - Imagen de cartel por defecto (temática ajedrez) para eventos sin imagen.
-  - Formato de fechas amigable: "Del DD/MM/AAAA hasta DD/MM/AAAA".
-- **Gestión de Inscripciones**: Nuevo campo de observaciones en el formulario de inscripción.
-- **Auto-cierre inteligente**: Los eventos se cierran automáticamente cuando pasa la fecha límite de inscripción.
-
 ## Uso
 
 ### Panel de administración
