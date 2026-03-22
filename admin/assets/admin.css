@@ -158,6 +158,29 @@
   table-layout: auto !important;
 }
 
+.wper-table .col-evento {
+  min-width: 220px;
+}
+
+.wper-table .col-fecha {
+  white-space: nowrap;
+}
+
+.wper-table td {
+  vertical-align: middle;
+}
+
+/* Adjust email and observations to allow for more room */
+.wper-table .col-email {
+  word-break: break-all;
+  max-width: 200px;
+}
+
+.wper-table td small {
+  display: block;
+  max-width: 250px;
+}
+
 @media(max-width: 782px) {
   .wper-dashboard-col {
     flex: 100%;
