@@ -49,6 +49,10 @@ class WPER_PDF {
         $bases    = $evento->url_bases ? $evento->url_bases : '—';
         $total_ins = count( $inscripciones );
 
+        $ritmo    = $evento->ritmo_juego ? wp_strip_all_tags( $evento->ritmo_juego ) : null;
+        $tiempo   = $evento->tiempo_juego ? wp_strip_all_tags( $evento->tiempo_juego ) : null;
+        $elo_fide = $evento->elo_fide ? __('Sí', 'wp-events-registration') : null;
+
         // PDF raw content usando FPDF bundled
         $fpdf_path = WPER_PLUGIN_DIR . 'includes/lib/fpdf/fpdf.php';
 
@@ -58,13 +62,14 @@ class WPER_PDF {
 
         return self::build_raw_pdf( $titulo, $modalidad, $estado, $lugar,
             $f_inicio, $f_fin, $fi_ins, $ff_ins, $rondas, $cuota, $bases,
+            $ritmo, $tiempo, $elo_fide,
             $inscripciones );
     }
 
     private static function build_raw_pdf(
         $titulo, $modalidad, $estado, $lugar,
         $f_inicio, $f_fin, $fi_ins, $ff_ins,
-        $rondas, $cuota, $bases, $inscripciones
+        $rondas, $cuota, $bases, $ritmo, $tiempo, $elo_fide, $inscripciones
     ) {
         // Contenido del PDF como texto enriquecido usando PDF stream básico
         $content  = "%PDF-1.4\n";
@@ -103,10 +108,16 @@ class WPER_PDF {
             'Rondas: '      . $rondas,
             'Cuota: '       . $cuota,
             'Bases: '       . ( strlen($bases) > 60 ? substr($bases,0,57).'...' : $bases ),
-            '',
-            'LISTADO DE INSCRITOS (' . count($inscripciones) . ')',
-            str_repeat('-', 60),
         );
+
+        if ( $ritmo )    $info_lines[] = 'Ritmo: '    . $ritmo;
+        if ( $tiempo )   $info_lines[] = 'Tiempo: '   . $tiempo;
+        if ( $elo_fide ) $info_lines[] = 'ELO FIDE: ' . $elo_fide;
+
+        $info_lines[] = '';
+        $info_lines[] = 'LISTADO DE INSCRITOS (' . count($inscripciones) . ')';
+        $info_lines[] = str_repeat('-', 60);
+        $info_lines[] = '';
 
         foreach ( $info_lines as $line ) {
             $stream_parts[] = "(" . $esc( mb_convert_encoding( $line, 'ISO-8859-1', 'UTF-8' ) ) . ") Tj";

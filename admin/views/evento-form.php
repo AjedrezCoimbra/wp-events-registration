@@ -74,6 +74,33 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
       </tr>
 
       <tr>
+        <th><label for="tiempo_juego"><?php _e('Tiempo de juego', 'wp-events-registration'); ?></label></th>
+        <td><input type="text" id="tiempo_juego" name="tiempo_juego" maxlength="30" class="regular-text"
+               value="<?php echo $editing ? esc_attr($evento->tiempo_juego) : ''; ?>"
+               placeholder="ej: 90' + 30''"></td>
+      </tr>
+
+      <tr>
+        <th><label for="elo_fide"><?php _e('Valedero para ELO FIDE', 'wp-events-registration'); ?></label></th>
+        <td>
+          <input type="checkbox" id="elo_fide" name="elo_fide" value="1" <?php checked($editing ? $evento->elo_fide : 0, 1); ?>>
+          <?php _e('Sí', 'wp-events-registration'); ?>
+        </td>
+      </tr>
+
+      <tr>
+        <th><label for="ritmo_juego"><?php _e('Ritmo de juego', 'wp-events-registration'); ?></label></th>
+        <td>
+          <select id="ritmo_juego" name="ritmo_juego">
+            <option value=""><?php _e('— Sin especificar —', 'wp-events-registration'); ?></option>
+            <option value="Clásico" <?php selected($editing ? $evento->ritmo_juego : '', 'Clásico'); ?>><?php _e('Clásico', 'wp-events-registration'); ?></option>
+            <option value="Rápido"  <?php selected($editing ? $evento->ritmo_juego : '', 'Rápido'); ?>><?php _e('Rápido', 'wp-events-registration'); ?></option>
+            <option value="Blitz"   <?php selected($editing ? $evento->ritmo_juego : '', 'Blitz'); ?>><?php _e('Blitz', 'wp-events-registration'); ?></option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
         <th><label for="cuota_inscripcion"><?php _e('Cuota de inscripción (€)', 'wp-events-registration'); ?></label></th>
         <td>
           <input type="number" id="cuota_inscripcion" name="cuota_inscripcion" min="0" step="0.01" class="small-text"
