@@ -3,7 +3,7 @@
  * Plugin Name:       WP Events Registration
  * Plugin URI:        https://github.com/AjedrezCoimbra/wp-events-registration
  * Description:       Gestión completa de eventos: inscripciones, calendario público y exportación PDF.
- * Version:           1.3.0
+ * Version:           1.3.1
  * Author:            José Joaquín Sánchez Fernández
  * Author URI:        https://ajedrezcoimbra.com
  * License:           GPL-2.0+
@@ -14,7 +14,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // ── Constantes ──────────────────────────────────────────────
-define( 'WPER_VERSION',    '1.3.0' );
+define( 'WPER_VERSION',    '1.3.1' );
 define( 'WPER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'WPER_PLUGIN_FILE', __FILE__ );
@@ -32,6 +32,9 @@ require_once WPER_PLUGIN_DIR . 'includes/class-updater.php';
 // ── Activación / Desactivación ───────────────────────────────
 register_activation_hook( __FILE__,   array( 'WPER_Activator',   'activate' ) );
 register_deactivation_hook( __FILE__, array( 'WPER_Deactivator', 'deactivate' ) );
+
+// ── Tareas programadas ─────────────────────────────────────────
+add_action( 'wper_daily_auto_close', array( 'WPER_DB', 'auto_close_eventos' ) );
 
 // ── Arrancar el plugin ───────────────────────────────────────
 function wper_run() {

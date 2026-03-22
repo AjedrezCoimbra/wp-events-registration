@@ -219,6 +219,7 @@ class WPER_Admin {
         update_option( 'wper_email_admin',    sanitize_email( $_POST['email_admin'] ?? '' ) );
         update_option( 'wper_email_notificar', isset( $_POST['email_notificar'] ) ? '1' : '0' );
         update_option( 'wper_moneda',          sanitize_text_field( $_POST['moneda'] ?? 'EUR' ) );
+        update_option( 'wper_github_token',    sanitize_text_field( $_POST['github_token'] ?? '' ) );
 
         wp_redirect( admin_url( 'admin.php?page=wper-ajustes&saved=1' ) );
         exit;

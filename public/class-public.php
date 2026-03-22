@@ -4,7 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class WPER_Public {
 
     public function init() {
-        WPER_DB::auto_close_eventos();
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
     }
 

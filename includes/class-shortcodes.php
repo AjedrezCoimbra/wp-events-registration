@@ -4,8 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class WPER_Shortcodes {
 
     public function init() {
-        // Registrar directamente para asegurar que están disponibles lo antes posible
-        $this->register_shortcodes();
+        // $this->register_shortcodes(); // Registro vía hook init, eliminado el doble registro
         
         // También en el gancho init por si acaso el orden de carga de los plugins varía
         add_action( 'init', array( $this, 'register_shortcodes' ) );
@@ -37,10 +36,8 @@ class WPER_Shortcodes {
             'orderby'   => 'fecha_inicio',
             'order'     => 'DESC',
         );
-        // Mostramos abiertos y cerrados (no borradores)
-        $eventos_abiertos  = WPER_DB::get_eventos( array_merge( $args, array( 'estado' => 'abierto' ) ) );
-        $eventos_cerrados  = WPER_DB::get_eventos( array_merge( $args, array( 'estado' => 'cerrado' ) ) );
-        $eventos = array_merge( $eventos_abiertos, $eventos_cerrados );
+        // Mostramos abiertos y cerrados (no borradores) en una sola consulta
+        $eventos = WPER_DB::get_eventos( array_merge( $args, array( 'estado' => array( 'abierto', 'cerrado' ) ) ) );
 
         // Filtrar por provincia si se indica
         if ( ! empty( $atts['provincia'] ) ) {
