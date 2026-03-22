@@ -1,7 +1,7 @@
 # WP Events Registration
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
-Creado, optimizado y diseñado por José Joaquín Sánchez Fernández para el Club de Ajedrez Coimbra.
+Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
 
 ## Instalación
 
