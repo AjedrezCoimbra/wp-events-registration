@@ -105,36 +105,38 @@ class WPER_Admin {
         if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
         check_admin_referer( 'wper_save_evento' );
 
-        $evento_id = intval( $_POST['evento_id'] ?? 0 );
+        $post = wp_unslash( $_POST );
+
+        $evento_id = intval( $post['evento_id'] ?? 0 );
 
         // Validación básica
         $required = array( 'nombre', 'modalidad', 'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin', 'fecha_inicio_inscripcion', 'fecha_fin_inscripcion' );
         foreach ( $required as $field ) {
-            if ( empty( $_POST[ $field ] ) ) {
+            if ( empty( $post[ $field ] ) ) {
                 $url = admin_url( 'admin.php?page=wper-nuevo' . ($evento_id ? '&id='.$evento_id : '') . '&error=campos_obligatorios' );
                 wp_redirect( $url ); exit;
             }
         }
 
         $data = array(
-            'nombre'                   => sanitize_text_field( $_POST['nombre'] ),
-            'modalidad'                => in_array( $_POST['modalidad'], array('Individual','Por Equipos') ) ? $_POST['modalidad'] : 'Individual',
-            'cuota_inscripcion'        => $_POST['cuota_inscripcion'] !== '' ? floatval( $_POST['cuota_inscripcion'] ) : null,
-            'numero_rondas'            => $_POST['numero_rondas'] !== '' ? intval( $_POST['numero_rondas'] ) : null,
-            'poblacion'                => sanitize_text_field( $_POST['poblacion'] ),
-            'provincia'                => sanitize_text_field( $_POST['provincia'] ),
-            'fecha_inicio'             => sanitize_text_field( $_POST['fecha_inicio'] ),
-            'fecha_fin'                => sanitize_text_field( $_POST['fecha_fin'] ),
-            'fecha_inicio_inscripcion' => sanitize_text_field( $_POST['fecha_inicio_inscripcion'] ),
-            'fecha_fin_inscripcion'    => sanitize_text_field( $_POST['fecha_fin_inscripcion'] ),
-            'estado'                   => in_array( $_POST['estado'], array('borrador','abierto','cerrado') ) ? $_POST['estado'] : 'borrador',
-            'url_bases'                => esc_url_raw( $_POST['url_bases'] ?? '' ),
-            'google_maps'              => esc_url_raw( $_POST['google_maps'] ?? '' ),
-            'cartel_url'               => esc_url_raw( $_POST['cartel_url'] ?? '' ),
-            'observaciones'            => wp_kses_post( $_POST['observaciones'] ?? '' ),
-            'tiempo_juego'             => sanitize_text_field( $_POST['tiempo_juego'] ?? '' ),
-            'elo_fide'                 => isset( $_POST['elo_fide'] ) ? 1 : 0,
-            'ritmo_juego'              => sanitize_text_field( $_POST['ritmo_juego'] ?? '' ),
+            'nombre'                   => sanitize_text_field( $post['nombre'] ),
+            'modalidad'                => in_array( $post['modalidad'], array('Individual','Por Equipos') ) ? $post['modalidad'] : 'Individual',
+            'cuota_inscripcion'        => $post['cuota_inscripcion'] !== '' ? floatval( $post['cuota_inscripcion'] ) : null,
+            'numero_rondas'            => $post['numero_rondas'] !== '' ? intval( $post['numero_rondas'] ) : null,
+            'poblacion'                => sanitize_text_field( $post['poblacion'] ),
+            'provincia'                => sanitize_text_field( $post['provincia'] ),
+            'fecha_inicio'             => sanitize_text_field( $post['fecha_inicio'] ),
+            'fecha_fin'                => sanitize_text_field( $post['fecha_fin'] ),
+            'fecha_inicio_inscripcion' => sanitize_text_field( $post['fecha_inicio_inscripcion'] ),
+            'fecha_fin_inscripcion'    => sanitize_text_field( $post['fecha_fin_inscripcion'] ),
+            'estado'                   => in_array( $post['estado'], array('borrador','abierto','cerrado') ) ? $post['estado'] : 'borrador',
+            'url_bases'                => esc_url_raw( $post['url_bases'] ?? '' ),
+            'google_maps'              => esc_url_raw( $post['google_maps'] ?? '' ),
+            'cartel_url'               => esc_url_raw( $post['cartel_url'] ?? '' ),
+            'observaciones'            => wp_kses_post( $post['observaciones'] ?? '' ),
+            'tiempo_juego'             => sanitize_text_field( $post['tiempo_juego'] ?? '' ),
+            'elo_fide'                 => isset( $post['elo_fide'] ) ? 1 : 0,
+            'ritmo_juego'              => sanitize_text_field( $post['ritmo_juego'] ?? '' ),
         );
 
         if ( $evento_id ) {
