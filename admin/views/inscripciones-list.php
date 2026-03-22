@@ -43,15 +43,15 @@
   <div class="wper-table-wrap">
   <table class="wp-list-table widefat fixed striped wper-table">
     <thead><tr>
-      <?php if ( ! $evento_id ) : ?><th><?php _e('Evento', 'wp-events-registration'); ?></th><?php endif; ?>
+      <?php if ( ! $evento_id ) : ?><th class="col-evento"><?php _e('Evento', 'wp-events-registration'); ?></th><?php endif; ?>
       <th><?php _e('Nombre', 'wp-events-registration'); ?></th>
       <th><?php _e('Apellidos', 'wp-events-registration'); ?></th>
       <th><?php _e('FIDE ID', 'wp-events-registration'); ?></th>
       <th><?php _e('Teléfono', 'wp-events-registration'); ?></th>
-      <th><?php _e('Email', 'wp-events-registration'); ?></th>
+      <th class="col-email"><?php _e('Email', 'wp-events-registration'); ?></th>
       <th><?php _e('Alojamiento', 'wp-events-registration'); ?></th>
       <th><?php _e('Observaciones', 'wp-events-registration'); ?></th>
-      <th><?php _e('Fecha', 'wp-events-registration'); ?></th>
+      <th class="col-fecha"><?php _e('Fecha', 'wp-events-registration'); ?></th>
       <th><?php _e('Acciones', 'wp-events-registration'); ?></th>
     </tr></thead>
     <tbody>
@@ -61,7 +61,7 @@
       <?php foreach ( $inscripciones as $ins ) : ?>
         <tr>
           <?php if ( ! $evento_id ) : ?>
-            <td>
+            <td class="col-evento">
               <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ins->evento_id); ?>">
                 <?php echo esc_html( $ins->evento_nombre ?? '—' ); ?>
               </a>
@@ -71,10 +71,10 @@
           <td><?php echo esc_html($ins->apellidos); ?></td>
           <td><?php echo esc_html($ins->fide_id ?: '—'); ?></td>
           <td><?php echo esc_html($ins->telefono ?: '—'); ?></td>
-          <td><?php echo esc_html($ins->email ?: '—'); ?></td>
+          <td class="col-email"><?php echo esc_html($ins->email ?: '—'); ?></td>
           <td><?php echo $ins->alojamiento ? '✅ Sí' : '❌ No'; ?></td>
           <td><small><?php echo esc_html($ins->observaciones ?: '—'); ?></small></td>
-          <td><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($ins->created_at))); ?></td>
+          <td class="col-fecha"><?php echo esc_html(date_i18n('d/m/Y H:i', strtotime($ins->created_at))); ?></td>
           <td>
             <a href="<?php echo wp_nonce_url(
                 admin_url('admin-post.php?action=wper_delete_inscripcion&id='.$ins->id.'&evento_id='.$ins->evento_id),
