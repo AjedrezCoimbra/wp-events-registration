@@ -46,6 +46,15 @@
               </select>
             </td>
           </tr>
+          <tr>
+            <th><label for="github_token">GitHub Token (opcional)</label></th>
+            <td>
+              <input type="password" name="github_token" id="github_token" 
+                     value="<?php echo esc_attr(get_option('wper_github_token','')); ?>" 
+                     class="regular-text">
+              <p class="description">Personal Access Token para evitar límites de la API de GitHub.</p>
+            </td>
+          </tr>
         </table>
 
         <p class="submit">

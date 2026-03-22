@@ -9,6 +9,11 @@ class WPER_Activator {
         add_option( 'wper_email_admin', get_option('admin_email') );
         add_option( 'wper_email_notificar', '1' );
         add_option( 'wper_moneda', 'EUR' );
+        
+        // Registrar tarea programada para cerrar eventos
+        if ( ! wp_next_scheduled( 'wper_daily_auto_close' ) ) {
+            wp_schedule_event( time(), 'daily', 'wper_daily_auto_close' );
+        }
     }
 
     private static function create_tables() {

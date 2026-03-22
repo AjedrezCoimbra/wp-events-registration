@@ -14,5 +14,6 @@ delete_option( 'wper_email_admin' );
 delete_option( 'wper_email_notificar' );
 delete_option( 'wper_moneda' );
 delete_option( 'wper_auto_updates' );
+delete_option( 'wper_github_token' );
 
 // No quedan opciones antiguas que limpiar

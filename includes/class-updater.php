@@ -37,6 +37,7 @@ class WPER_Updater {
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_for_updates' ) );
         add_filter( 'plugins_api', array( $this, 'get_plugin_info' ), 20, 3 );
         add_action( 'upgrader_process_complete', array( $this, 'clear_cache' ), 10, 2 );
+        add_filter( 'upgrader_source_selection', array( $this, 'fix_source_dir' ), 10, 4 );
         
         // Hooks para actualizaciones automáticas (toggle en la lista de plugins)
         add_filter( 'plugin_auto_update_setting_html', array( $this, 'auto_update_setting_html' ), 10, 3 );
@@ -83,7 +84,7 @@ class WPER_Updater {
             return $result;
         }
 
-        if ( isset( $args->slug ) && $args->slug !== 'wp-events-registration' ) {
+        if ( ! isset( $args->slug ) || $args->slug !== 'wp-events-registration' ) {
             return $result;
         }
 
@@ -99,7 +100,7 @@ class WPER_Updater {
         $res->author         = 'José Joaquín Sánchez Fernández';
         $res->author_profile = 'https://ajedrezcoimbra.com';
         $res->homepage       = 'https://github.com/' . $this->github_repo;
-        $res->download_link  = $release->zipball_url;
+        $res->download_link  = $release->zipball_url; // Cambio 1A: Mantener zipball_url
         $res->sections       = array(
             'description' => 'Plugin de gestión de eventos e inscripciones para sitios de WordPress.',
             'changelog'   => isset( $release->body ) ? wp_kses_post( $release->body ) : '-'
@@ -112,10 +113,39 @@ class WPER_Updater {
      * Limpia la caché tras la actualización.
      */
     public function clear_cache( $upgrader_object, $options ) {
-        if ( $options['action'] === 'update' && $options['type'] === 'plugin' ) {
+        if ( $options['action'] === 'update' && $options['type'] === 'plugin'
+             && isset( $options['plugins'] ) && in_array( $this->plugin_slug, (array) $options['plugins'], true ) ) {
             delete_transient( 'wper_github_release_cache' );
             delete_site_transient( 'update_plugins' );
         }
+    }
+
+    /**
+     * Corrige el nombre del directorio extraído desde GitHub.
+     */
+    public function fix_source_dir( $source, $remote_source, $upgrader, $hook_extra ) {
+        if ( ! isset( $hook_extra['plugin'] ) || $hook_extra['plugin'] !== $this->plugin_slug ) {
+            return $source;
+        }
+
+        $target_dir = WP_PLUGIN_DIR . '/wp-events-registration/';
+        $source_dir_name = basename( untrailingslashit( $source ) );
+
+        if ( $source_dir_name !== 'wp-events-registration' ) {
+            $new_source = trailingslashit( $remote_source ) . 'wp-events-registration/';
+            
+            global $wp_filesystem;
+            if ( empty( $wp_filesystem ) ) {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+                WP_Filesystem();
+            }
+
+            if ( $wp_filesystem->move( $source, $new_source ) ) {
+                return $new_source;
+            }
+        }
+
+        return $source;
     }
 
     /**
@@ -179,10 +209,20 @@ class WPER_Updater {
         }
 
         $api_url  = 'https://api.github.com/repos/' . $this->github_repo . '/releases/latest';
-        $response = wp_remote_get( $api_url, array(
+        
+        $token = get_option( 'wper_github_token', '' );
+        $args = array(
             'timeout'    => 10,
             'user-agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' )
-        ) );
+        );
+
+        if ( $token ) {
+            $args['headers'] = array(
+                'Authorization' => 'token ' . $token
+            );
+        }
+
+        $response = wp_remote_get( $api_url, $args );
 
         if ( is_wp_error( $response ) ) {
             return false;

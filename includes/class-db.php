@@ -36,8 +36,12 @@ class WPER_DB {
         $values = array();
 
         if ( ! empty( $args['estado'] ) ) {
-            $where[]  = 'estado = %s';
-            $values[] = $args['estado'];
+            $estados = (array) $args['estado'];
+            $placeholders = implode( ', ', array_fill( 0, count($estados), '%s' ) );
+            $where[]  = "estado IN ($placeholders)";
+            foreach ( $estados as $e ) {
+                $values[] = $e;
+            }
         }
         if ( ! empty( $args['provincia'] ) ) {
             $where[]  = 'provincia = %s';
@@ -72,8 +76,12 @@ class WPER_DB {
         $values = array();
 
         if ( ! empty( $args['estado'] ) ) {
-            $where[]  = 'estado = %s';
-            $values[] = $args['estado'];
+            $estados = (array) $args['estado'];
+            $placeholders = implode( ', ', array_fill( 0, count($estados), '%s' ) );
+            $where[]  = "estado IN ($placeholders)";
+            foreach ( $estados as $e ) {
+                $values[] = $e;
+            }
         }
         if ( ! empty( $args['provincia'] ) ) {
             $where[]  = 'provincia = %s';
