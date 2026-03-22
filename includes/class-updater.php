@@ -20,6 +20,9 @@ class WPER_Updater {
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_for_updates' ) );
         add_filter( 'plugins_api', array( $this, 'get_plugin_info' ), 20, 3 );
         add_action( 'upgrader_process_complete', array( $this, 'clear_transient' ), 10, 2 );
+        
+        // Habilitar el soporte para actualizaciones automáticas (el toggle en la lista de plugins)
+        add_filter( 'auto_update_plugin', array( $this, 'maybe_auto_update' ), 10, 2 );
     }
 
     /**
@@ -85,6 +88,20 @@ class WPER_Updater {
                 }
             }
         }
+    }
+
+    /**
+     * Decide si un plugin debe actualizarse automáticamente basándose en los ajustes de WordPress.
+     */
+    public function maybe_auto_update( $update, $item ) {
+        // En $item->plugin viene el path del plugin principal
+        if ( isset( $item->plugin ) && $item->plugin === $this->plugin_slug ) {
+            $auto_updates = get_site_option( 'auto_update_plugins', array() );
+            if ( in_array( $this->plugin_slug, $auto_updates ) ) {
+                return true;
+            }
+        }
+        return $update;
     }
 
     /**
