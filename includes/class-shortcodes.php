@@ -128,11 +128,6 @@ class WPER_Shortcodes {
 
         $email = sanitize_email( $_POST['email'] ?? '' );
 
-        // Verificar duplicado por email
-        if ( $email && WPER_DB::existe_inscripcion( $evento_id, $email ) ) {
-            wp_send_json_error( array( 'message' => __( 'Ya existe una inscripción con ese email para este evento.', 'wp-events-registration' ) ) );
-        }
-
         $inscripcion_data = array(
             'evento_id'   => $evento_id,
             'nombre'      => $nombre,

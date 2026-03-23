@@ -38,7 +38,7 @@ jQuery(function ($) {
 
         var $form = $(this);
         var eventoId = $form.data('evento-id');
-        var $msg = $('#wper-msg-' + eventoId);
+        var $msg = $form.find('.wper-form-msg');
         var $btn = $form.find('button[type="submit"]');
         var btnText = $btn.text();
 
