@@ -173,7 +173,8 @@
 /* Adjust email and observations to allow for more room */
 .wper-table .col-email {
   word-break: break-all;
-  max-width: 200px;
+  min-width: 150px;
+  max-width: 300px;
 }
 
 .wper-table td small {
@@ -215,9 +216,10 @@
   background: #f0f6ff;
   border: 1px solid #b9d3fb;
   border-radius: 4px;
-  padding: .8rem 1rem;
-  margin-bottom: 1.2rem;
-  font-size: .9rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: .95rem;
+  line-height: 2;
 }
 
 .wper-shortcode-copy {
