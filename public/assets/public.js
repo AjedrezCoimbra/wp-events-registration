@@ -66,7 +66,7 @@ jQuery(function ($) {
                         .html('<strong>👍</strong> ' + response.data.message)
                         .fadeIn();
                     $form[0].reset();
-                    // Ocultar tras inscripción exitosa
+                    // Ocultar tras inscripción exitosa tras un tiempo prudencial (6s)
                     setTimeout(function () {
                         var $modal = $form.closest('.wper-modal');
                         if($modal.length) {
@@ -74,7 +74,7 @@ jQuery(function ($) {
                         } else {
                              $form.closest('.wper-inscripcion-hidden-form').slideUp(300);
                         }
-                    }, 4000);
+                    }, 6000);
                 } else {
                     $msg.addClass('wper-aviso wper-aviso-error')
                         .html('<strong>⚠️</strong> ' + (response.data.message || wperData.i18n.error_gen))

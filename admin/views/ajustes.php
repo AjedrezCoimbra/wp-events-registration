@@ -127,7 +127,7 @@
       <h2><?php _e('Sistema de Actualización', 'wp-events-registration'); ?></h2>
       <p><?php _e('El plugin busca automáticamente nuevas versiones en GitHub cada 12 horas.', 'wp-events-registration'); ?></p>
       <p><strong><?php _e('Versión actual:', 'wp-events-registration'); ?></strong> <code>v<?php echo WPER_VERSION; ?></code></p>
-      <p><strong><?php _e('Compatibilidad WP:', 'wp-events-registration'); ?></strong> <code><?php _e('Hasta 6.4', 'wp-events-registration'); ?></code></p>
+      <p><strong><?php _e('Compatibilidad WP:', 'wp-events-registration'); ?></strong> <code><?php _e('Hasta 6.5', 'wp-events-registration'); ?></code></p>
       
       <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
         <input type="hidden" name="action" value="wper_force_update_check">

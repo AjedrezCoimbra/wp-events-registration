@@ -1,4 +1,4 @@
-# WP Chess Events Registration (v1.3.4)
+# WP Chess Events Registration (v1.3.5)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
