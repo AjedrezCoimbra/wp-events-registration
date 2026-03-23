@@ -133,7 +133,7 @@ class WPER_Shortcodes {
             wp_send_json_error( array( 'message' => __( 'Ya existe una inscripción con ese email para este evento.', 'wp-events-registration' ) ) );
         }
 
-        $id = WPER_DB::insert_inscripcion( array(
+        $inscripcion_data = array(
             'evento_id'   => $evento_id,
             'nombre'      => $nombre,
             'apellidos'   => $apellidos,
@@ -142,49 +142,84 @@ class WPER_Shortcodes {
             'email'       => $email,
             'alojamiento' => isset( $_POST['alojamiento'] ) ? 1 : 0,
             'observaciones' => sanitize_textarea_field( $_POST['observaciones'] ?? '' ),
-        ) );
+        );
+
+        $id = WPER_DB::insert_inscripcion($inscripcion_data);
 
         if ( ! $id ) {
             wp_send_json_error( array( 'message' => __( 'Error al guardar la inscripción.', 'wp-events-registration' ) ) );
         }
 
         // Enviar emails
-        $this->enviar_emails( $evento, $nombre, $apellidos, $email );
+        $this->enviar_emails( $evento, $inscripcion_data );
 
         wp_send_json_success( array(
             'message' => __( '¡Inscripción completada! Recibirás un email de confirmación.', 'wp-events-registration' ),
         ) );
     }
 
-    private function enviar_emails( $evento, $nombre, $apellidos, $email ) {
+    private function enviar_emails( $evento, $inscripcion_data ) {
         $notificar = get_option( 'wper_email_notificar', '1' );
-        $admin_email = get_option( 'wper_email_admin', get_option('admin_email') );
-        $nombre_evento = $evento->nombre;
-        $site_name   = get_bloginfo('name');
-        
-        $headers = array('Content-Type: text/plain; charset=UTF-8');
-        $headers[] = 'From: ' . $site_name . ' <' . $admin_email . '>';
+        $site_name = get_bloginfo('name');
+        $admin_email = get_option('wper_email_admin', get_option('admin_email'));
 
-        // Email al inscrito
-        if ( $email ) {
-            $asunto  = sprintf( __( 'Confirmación de inscripción: %s', 'wp-events-registration' ), $nombre_evento );
-            $cuerpo  = sprintf( __( "Hola %s %s,\n\nTu inscripción al evento \"%s\" ha sido registrada correctamente.\n\nFecha del evento: %s — %s\nLugar: %s, %s\n\nUn saludo.", 'wp-events-registration' ),
-                $nombre, $apellidos, $nombre_evento,
-                date_i18n( 'd/m/Y', strtotime( $evento->fecha_inicio ) ),
-                date_i18n( 'd/m/Y', strtotime( $evento->fecha_fin ) ),
-                $evento->poblacion, $evento->provincia
-            );
+        // Variables para el template
+        $vars = array(
+            'nombre'               => $inscripcion_data['nombre'],
+            'apellidos'            => $inscripcion_data['apellidos'],
+            'email'                => $inscripcion_data['email'],
+            'fide_id'              => $inscripcion_data['fide_id'] ?? '',
+            'telefono'             => $inscripcion_data['telefono'] ?? '',
+            'alojamiento'          => $inscripcion_data['alojamiento'] ? __('Sí','wp-events-registration') : __('No','wp-events-registration'),
+            'observaciones'        => $inscripcion_data['observaciones'] ?? '',
+            'evento_nombre'        => $evento->nombre,
+            'evento_fecha_inicio'  => date_i18n( 'd/m/Y', strtotime( $evento->fecha_inicio ) ),
+            'evento_fecha_fin'     => date_i18n( 'd/m/Y', strtotime( $evento->fecha_fin ) ),
+            'evento_poblacion'     => $evento->poblacion,
+            'evento_provincia'     => $evento->provincia,
+        );
+
+        // 1. Email al inscrito (Confirmación)
+        $email = $inscripcion_data['email'];
+        $enviar_user = (int) ($evento->enviar_confirmacion ?? 1);
+
+        if ( $email && $enviar_user ) {
+            $asunto  = $this->parse_template( get_option( 'wper_email_confirmacion_asunto' ), $vars );
+            $cuerpo  = $this->parse_template( get_option( 'wper_email_confirmacion_cuerpo' ), $vars );
+            
+            $headers = array('Content-Type: text/html; charset=UTF-8');
+            $headers[] = 'From: ' . $site_name . ' <' . $admin_email . '>';
+            
+            $cc  = get_option( 'wper_email_confirmacion_cc' );
+            $bcc = get_option( 'wper_email_confirmacion_bcc' );
+            if ( ! empty($cc) )  $headers[] = 'Cc: ' . $cc;
+            if ( ! empty($bcc) ) $headers[] = 'Bcc: ' . $bcc;
+
             wp_mail( $email, $asunto, $cuerpo, $headers );
         }
 
-        // Notificación al admin
+        // 2. Notificación al admin (Aviso)
         if ( $notificar ) {
-            $asunto_admin = sprintf( __( 'Nueva inscripción en %s', 'wp-events-registration' ), $nombre_evento );
-            $cuerpo_admin = sprintf( __( "Nueva inscripción recibida:\n\nEvento: %s\nNombre: %s %s\nEmail: %s\n\nAccede al panel para verla: %s", 'wp-events-registration' ),
-                $nombre_evento, $nombre, $apellidos, $email,
-                admin_url( 'admin.php?page=wper-inscripciones&evento_id=' . $evento->id )
-            );
-            wp_mail( $admin_email, $asunto_admin, $cuerpo_admin, $headers );
+            $para_admin   = get_option( 'wper_email_notificacion_para', $admin_email );
+            $asunto_admin = $this->parse_template( get_option( 'wper_email_notificacion_asunto' ), $vars );
+            $cuerpo_admin = $this->parse_template( get_option( 'wper_email_notificacion_cuerpo' ), $vars );
+
+            $headers_admin = array('Content-Type: text/html; charset=UTF-8');
+            $headers_admin[] = 'From: ' . $site_name . ' <' . $admin_email . '>';
+
+            $cc_admin  = get_option( 'wper_email_notificacion_cc' );
+            $bcc_admin = get_option( 'wper_email_notificacion_bcc' );
+            if ( ! empty($cc_admin) )  $headers_admin[] = 'Cc: ' . $cc_admin;
+            if ( ! empty($bcc_admin) ) $headers_admin[] = 'Bcc: ' . $bcc_admin;
+
+            wp_mail( $para_admin, $asunto_admin, $cuerpo_admin, $headers_admin );
         }
+    }
+
+    private function parse_template( $template, $vars ) {
+        foreach ( $vars as $key => $value ) {
+            $template = str_replace( '{{' . $key . '}}', $value, $template );
+        }
+        return $template;
     }
 }

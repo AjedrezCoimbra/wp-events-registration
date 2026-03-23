@@ -1,13 +1,16 @@
 jQuery(function ($) {
 
-    // ── Toggle formulario inline desde el calendario ──────
-    $(document).on('click', '.wper-btn-primary[href^="#wper-form-"]', function (e) {
+    // ── Abrir modal de inscripción desde el calendario ──────
+    $(document).on('click', '.wper-open-inscripcion-modal', function (e) {
         e.preventDefault();
-        var target = $(this).attr('href');
-        var $form = $(target);
-        if ($form.length) {
-            $form.slideToggle(200);
-            $('html, body').animate({ scrollTop: $form.offset().top - 80 }, 300);
+        var targetId = $(this).data('target');
+        var $hiddenForm = $(targetId);
+        var $modal = $('#wper-modal-inscripcion');
+
+        if ($hiddenForm.length) {
+            $modal.find('.wper-modal-body').html($hiddenForm.html());
+            $modal.css('display', 'flex').hide().fadeIn(200);
+            $('body').css('overflow', 'hidden');
         }
     });
 
@@ -63,9 +66,14 @@ jQuery(function ($) {
                         .html('<strong>👍</strong> ' + response.data.message)
                         .fadeIn();
                     $form[0].reset();
-                    // Ocultar el formulario tras inscripción exitosa
+                    // Ocultar tras inscripción exitosa
                     setTimeout(function () {
-                        $form.closest('.wper-cal-form-inline').slideUp(300);
+                        var $modal = $form.closest('.wper-modal');
+                        if($modal.length) {
+                             $modal.fadeOut(300, function(){ $('body').css('overflow', 'auto'); });
+                        } else {
+                             $form.closest('.wper-inscripcion-hidden-form').slideUp(300);
+                        }
                     }, 4000);
                 } else {
                     $msg.addClass('wper-aviso wper-aviso-error')

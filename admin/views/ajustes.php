@@ -57,8 +57,68 @@
           </tr>
         </table>
 
+        <hr>
+        <h2><?php _e('Plantillas de Correos', 'wp-events-registration'); ?></h2>
+        <p class="description"><?php _e('Configura el contenido de los correos automáticos. Estos son los campos que puedes usar en el Expression Language:', 'wp-events-registration'); ?></p>
+        <div style="background: #f0f0f1; padding: 10px; border-radius: 4px; border-left: 4px solid #0073aa; margin-bottom: 20px;">
+          <code>{{nombre}}</code>, <code>{{apellidos}}</code>, <code>{{email}}</code>, <code>{{fide_id}}</code>, <code>{{telefono}}</code>, <code>{{alojamiento}}</code>, <code>{{observaciones}}</code>,<br>
+          <code>{{evento_nombre}}</code>, <code>{{evento_fecha_inicio}}</code>, <code>{{evento_fecha_fin}}</code>, <code>{{evento_poblacion}}</code>, <code>{{evento_provincia}}</code>
+        </div>
+
+        <div class="wper-email-template-box" style="margin-bottom: 30px;">
+          <h3><?php _e('1. Confirmación de Inscripción (al Usuario)', 'wp-events-registration'); ?></h3>
+          <table class="form-table wper-form-table">
+            <tr>
+              <th><label><?php _e('Asunto', 'wp-events-registration'); ?></label></th>
+              <td><input type="text" name="email_confirmacion_asunto" class="large-text" value="<?php echo esc_attr(get_option('wper_email_confirmacion_asunto')); ?>"></td>
+            </tr>
+            <tr>
+              <th><label><?php _e('Cuerpo', 'wp-events-registration'); ?></label></th>
+              <td>
+                <?php wp_editor(get_option('wper_email_confirmacion_cuerpo'), 'email_confirmacion_cuerpo', array('textarea_name' => 'email_confirmacion_cuerpo', 'textarea_rows' => 10, 'media_buttons' => false)); ?>
+              </td>
+            </tr>
+            <tr>
+              <th><label><?php _e('CC (Copia)', 'wp-events-registration'); ?></label></th>
+              <td><input type="text" name="email_confirmacion_cc" class="regular-text" value="<?php echo esc_attr(get_option('wper_email_confirmacion_cc')); ?>" placeholder="ej: copia@mail.com"></td>
+            </tr>
+            <tr>
+              <th><label><?php _e('CCO (Copia oculta)', 'wp-events-registration'); ?></label></th>
+              <td><input type="text" name="email_confirmacion_bcc" class="regular-text" value="<?php echo esc_attr(get_option('wper_email_confirmacion_bcc')); ?>" placeholder="ej: cco@mail.com"></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="wper-email-template-box">
+          <h3><?php _e('2. Notificación de Nueva Inscripción (al Administrador)', 'wp-events-registration'); ?></h3>
+          <table class="form-table wper-form-table">
+            <tr>
+              <th><label><?php _e('Para', 'wp-events-registration'); ?></label></th>
+              <td><input type="email" name="email_notificacion_para" class="regular-text" value="<?php echo esc_attr(get_option('wper_email_notificacion_para', get_option('admin_email'))); ?>"></td>
+            </tr>
+            <tr>
+              <th><label><?php _e('Asunto', 'wp-events-registration'); ?></label></th>
+              <td><input type="text" name="email_notificacion_asunto" class="large-text" value="<?php echo esc_attr(get_option('wper_email_notificacion_asunto')); ?>"></td>
+            </tr>
+            <tr>
+              <th><label><?php _e('Cuerpo', 'wp-events-registration'); ?></label></th>
+              <td>
+                <?php wp_editor(get_option('wper_email_notificacion_cuerpo'), 'email_notificacion_cuerpo', array('textarea_name' => 'email_notificacion_cuerpo', 'textarea_rows' => 10, 'media_buttons' => false)); ?>
+              </td>
+            </tr>
+            <tr>
+              <th><label><?php _e('CC (Copia)', 'wp-events-registration'); ?></label></th>
+              <td><input type="text" name="email_notificacion_cc" class="regular-text" value="<?php echo esc_attr(get_option('wper_email_notificacion_cc')); ?>"></td>
+            </tr>
+            <tr>
+              <th><label><?php _e('CCO (Copia oculta)', 'wp-events-registration'); ?></label></th>
+              <td><input type="text" name="email_notificacion_bcc" class="regular-text" value="<?php echo esc_attr(get_option('wper_email_notificacion_bcc')); ?>"></td>
+            </tr>
+          </table>
+        </div>
+
         <p class="submit">
-          <button type="submit" class="button button-primary">💾 <?php _e('Guardar ajustes', 'wp-events-registration'); ?></button>
+          <button type="submit" class="button button-primary" style="padding: 10px 20px; height: auto;">💾 <?php _e('Guardar todos los ajustes', 'wp-events-registration'); ?></button>
         </p>
       </form>
     </div>
@@ -67,6 +127,7 @@
       <h2><?php _e('Sistema de Actualización', 'wp-events-registration'); ?></h2>
       <p><?php _e('El plugin busca automáticamente nuevas versiones en GitHub cada 12 horas.', 'wp-events-registration'); ?></p>
       <p><strong><?php _e('Versión actual:', 'wp-events-registration'); ?></strong> <code>v<?php echo WPER_VERSION; ?></code></p>
+      <p><strong><?php _e('Compatibilidad WP:', 'wp-events-registration'); ?></strong> <code><?php _e('Hasta 6.4', 'wp-events-registration'); ?></code></p>
       
       <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
         <input type="hidden" name="action" value="wper_force_update_check">

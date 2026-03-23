@@ -89,6 +89,14 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
       </tr>
 
       <tr>
+        <th><label for="enviar_confirmacion"><?php _e('Enviar correo de confirmación', 'wp-events-registration'); ?></label></th>
+        <td>
+          <input type="checkbox" id="enviar_confirmacion" name="enviar_confirmacion" value="1" <?php checked($editing ? $evento->enviar_confirmacion : 1, 1); ?>>
+          <?php _e('Sí, enviar email al completarse la inscripción', 'wp-events-registration'); ?>
+        </td>
+      </tr>
+
+      <tr>
         <th><label for="ritmo_juego"><?php _e('Ritmo de juego', 'wp-events-registration'); ?></label></th>
         <td>
           <select id="ritmo_juego" name="ritmo_juego">
