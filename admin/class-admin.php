@@ -137,6 +137,7 @@ class WPER_Admin {
             'tiempo_juego'             => sanitize_text_field( $post['tiempo_juego'] ?? '' ),
             'elo_fide'                 => isset( $post['elo_fide'] ) ? 1 : 0,
             'ritmo_juego'              => sanitize_text_field( $post['ritmo_juego'] ?? '' ),
+            'enviar_confirmacion'      => isset( $post['enviar_confirmacion'] ) ? 1 : 0,
         );
 
         if ( $evento_id ) {
@@ -222,6 +223,21 @@ class WPER_Admin {
         update_option( 'wper_email_notificar', isset( $_POST['email_notificar'] ) ? '1' : '0' );
         update_option( 'wper_moneda',          sanitize_text_field( $_POST['moneda'] ?? 'EUR' ) );
         update_option( 'wper_github_token',    sanitize_text_field( $_POST['github_token'] ?? '' ) );
+
+        // Plantillas de correos
+        if ( isset( $_POST['email_confirmacion_asunto'] ) ) {
+            update_option( 'wper_email_confirmacion_asunto', sanitize_text_field( $_POST['email_confirmacion_asunto'] ) );
+            update_option( 'wper_email_confirmacion_cuerpo', wp_kses_post( $_POST['email_confirmacion_cuerpo'] ) );
+            update_option( 'wper_email_confirmacion_cc',     sanitize_text_field( $_POST['email_confirmacion_cc'] ?? '' ) );
+            update_option( 'wper_email_confirmacion_bcc',    sanitize_text_field( $_POST['email_confirmacion_bcc'] ?? '' ) );
+        }
+        if ( isset( $_POST['email_notificacion_asunto'] ) ) {
+            update_option( 'wper_email_notificacion_para',   sanitize_text_field( $_POST['email_notificacion_para'] ?? '' ) );
+            update_option( 'wper_email_notificacion_asunto', sanitize_text_field( $_POST['email_notificacion_asunto'] ) );
+            update_option( 'wper_email_notificacion_cuerpo', wp_kses_post( $_POST['email_notificacion_cuerpo'] ) );
+            update_option( 'wper_email_notificacion_cc',     sanitize_text_field( $_POST['email_notificacion_cc'] ?? '' ) );
+            update_option( 'wper_email_notificacion_bcc',    sanitize_text_field( $_POST['email_notificacion_bcc'] ?? '' ) );
+        }
 
         wp_redirect( admin_url( 'admin.php?page=wper-ajustes&saved=1' ) );
         exit;

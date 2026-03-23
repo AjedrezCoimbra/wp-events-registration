@@ -1,4 +1,4 @@
-# WP Chess Events Registration (v1.3.3)
+# WP Chess Events Registration (v1.3.4)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -22,15 +22,15 @@ El plugin soporta actualizaciones automáticas directamente desde GitHub:
 Ve a **♟ Eventos** en el menú lateral de WordPress.
 
 - **Dashboard** — Estadísticas generales e inscripciones recientes.
-- **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles). Incluye campos para **Ritmo de juego**, **Tiempo** y **ELO FIDE**.
+- **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles). Permite elegir si se envía **email de confirmación** por cada evento. Incluye campos para **Ritmo de juego**, **Tiempo** y **ELO FIDE**.
 - **Inscripciones** — Listado de inscritos, exportar PDF y CSV.
-- **Ajustes** — Configuración de email de notificaciones, moneda y forzado de comprobación de actualizaciones.
+- **Ajustes** — Configuración de email de notificaciones, moneda, **plantillas enriquecidas de correo** (con Expression Language) y forzado de comprobación de actualizaciones.
 
 ### Shortcodes
 
 | Shortcode | Descripción |
 |---|---|
-| `[wper_calendario]` | Calendario público con tarjetas visuales. Muestra ritmo, tiempo y sello ELO FIDE si están configurados. |
+| `[wper_calendario]` | Calendario público con tarjetas visuales. Muestra ritmo, tiempo y sello ELO FIDE si están configurados. Abre el **formulario de inscripción en ventana modal** facilitando el flujo de usuario. |
 | `[wper_calendario provincia="Murcia" limite="10"]` | Filtrado avanzado por provincia y límite de visualización. |
 | `[wper_inscripcion id="X"]` | Formulario dinámico de inscripción para el evento con ID específico. |
 | `[wper_ficha id="X"]` | Ficha pública completa con todos los detalles técnicos (rondas, ritmo, tiempo, ELO FIDE), mapa y formulario integrado. |
@@ -62,6 +62,7 @@ CREATE TABLE {prefix}wper_eventos (
     google_maps               VARCHAR(500)     NULL,
     cartel_url                VARCHAR(500)     NULL,
     observaciones             TEXT             NULL,
+    enviar_confirmacion       TINYINT(1)       NOT NULL DEFAULT 1, -- 1=Sí, 0=No
     created_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),

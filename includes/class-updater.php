@@ -97,7 +97,7 @@ class WPER_Updater {
         $res->name           = 'WP Events Registration';
         $res->slug           = 'wp-events-registration';
         $res->version        = ltrim( $release->tag_name, 'v' );
-        $res->author         = 'José Joaquín Sánchez Fernández';
+        $res->author         = 'AjedrezCoimbra';
         $res->author_profile = 'https://ajedrezcoimbra.com';
         $res->homepage       = 'https://github.com/' . $this->github_repo;
         $res->download_link  = $release->zipball_url; // Cambio 1A: Mantener zipball_url

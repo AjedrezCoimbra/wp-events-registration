@@ -102,16 +102,17 @@
               <?php endif; ?>
 
               <?php if ($abierto): ?>
-                <a href="#wper-form-<?php echo $ev->id; ?>" class="wper-btn wper-btn-primary">
+                <button type="button" class="wper-btn wper-btn-primary wper-open-inscripcion-modal" 
+                        data-target="#wper-form-wrapper-<?php echo $ev->id; ?>">
                   ✅ <?php _e('Inscribirse', 'wp-events-registration'); ?>
-                </a>
+                </button>
               <?php else: ?>
                 <span class="wper-btn wper-btn-disabled"><?php _e('Inscripción cerrada', 'wp-events-registration'); ?></span>
               <?php endif; ?>
             </div>
 
             <?php if ($abierto): ?>
-              <div id="wper-form-<?php echo $ev->id; ?>" class="wper-cal-form-inline" style="display:none;">
+              <div id="wper-form-wrapper-<?php echo $ev->id; ?>" class="wper-inscripcion-hidden-form" style="display:none;">
                 <?php echo do_shortcode('[wper_inscripcion id="'.$ev->id.'"]'); ?>
               </div>
             <?php endif; ?>
@@ -128,6 +129,19 @@
           <span class="wper-modal-close">&times;</span>
         </div>
         <div class="wper-modal-body"></div>
+      </div>
+    </div>
+
+    <!-- Modal para Inscripción -->
+    <div id="wper-modal-inscripcion" class="wper-modal">
+      <div class="wper-modal-content">
+        <div class="wper-modal-header">
+          <h3 style="margin:0;"><?php _e('Formulario de Inscripción', 'wp-events-registration'); ?></h3>
+          <span class="wper-modal-close">&times;</span>
+        </div>
+        <div class="wper-modal-body">
+            <!-- El contenido se cargará dinámicamente -->
+        </div>
       </div>
     </div>
 

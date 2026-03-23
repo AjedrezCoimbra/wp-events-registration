@@ -9,6 +9,18 @@ class WPER_Activator {
         add_option( 'wper_email_admin', get_option('admin_email') );
         add_option( 'wper_email_notificar', '1' );
         add_option( 'wper_moneda', 'EUR' );
+
+        // Plantillas por defecto (HTML)
+        add_option( 'wper_email_confirmacion_asunto', 'Confirmación de inscripción: {{evento_nombre}}' );
+        add_option( 'wper_email_confirmacion_cuerpo', "<p>Hola {{nombre}} {{apellidos}},</p>\n<p>Tu inscripción al evento \"{{evento_nombre}}\" ha sido registrada correctamente.</p>\n<p>Fecha del evento: {{evento_fecha_inicio}} — {{evento_fecha_fin}}<br>\nLugar: {{evento_poblacion}}, {{evento_provincia}}</p>\n<p>Un saludo.</p>" );
+        add_option( 'wper_email_confirmacion_cc', '' );
+        add_option( 'wper_email_confirmacion_bcc', '' );
+
+        add_option( 'wper_email_notificacion_asunto', 'Nueva inscripción en {{evento_nombre}}' );
+        add_option( 'wper_email_notificacion_cuerpo', "<p>Nueva inscripción recibida:</p>\n<p>Evento: {{evento_nombre}}<br>\nNombre: {{nombre}} {{apellidos}}<br>\nEmail: {{email}}</p>\n<p>Accede al panel para verla.</p>" );
+        add_option( 'wper_email_notificacion_para', get_option('admin_email') );
+        add_option( 'wper_email_notificacion_cc', '' );
+        add_option( 'wper_email_notificacion_bcc', '' );
         
         // Registrar tarea programada para cerrar eventos
         if ( ! wp_next_scheduled( 'wper_daily_auto_close' ) ) {
@@ -40,6 +52,7 @@ class WPER_Activator {
             google_maps               VARCHAR(500)     NULL COMMENT 'URL de Google Maps',
             cartel_url                VARCHAR(500)     NULL COMMENT 'URL de la imagen del cartel',
             observaciones             TEXT             NULL,
+            enviar_confirmacion       TINYINT(1)       NOT NULL DEFAULT 1 COMMENT '1=Sí, 0=No',
             created_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
