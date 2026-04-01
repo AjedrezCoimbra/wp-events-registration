@@ -11,6 +11,8 @@ class WPER_Shortcodes {
         
         add_action( 'wp_ajax_wper_inscribir',        array( $this, 'ajax_inscribir' ) );
         add_action( 'wp_ajax_nopriv_wper_inscribir', array( $this, 'ajax_inscribir' ) );
+        add_action( 'wp_ajax_wper_get_inscritos',        array( $this, 'ajax_get_inscritos' ) );
+        add_action( 'wp_ajax_nopriv_wper_get_inscritos', array( $this, 'ajax_get_inscritos' ) );
     }
 
     public function register_shortcodes() {
@@ -47,9 +49,9 @@ class WPER_Shortcodes {
             });
         }
 
-        // Ordenar por fecha_inicio DESC
+        // Ordenar por fecha_inicio ASC (los más próximos primero)
         usort( $eventos, function($a, $b) {
-            return strtotime( $b->fecha_inicio ) - strtotime( $a->fecha_inicio );
+            return strtotime( $a->fecha_inicio ) - strtotime( $b->fecha_inicio );
         });
 
         ob_start();
@@ -209,6 +211,36 @@ class WPER_Shortcodes {
 
             wp_mail( $para_admin, $asunto_admin, $cuerpo_admin, $headers_admin );
         }
+    }
+
+    // ══════════════════════════════════════════════════════
+    //  AJAX: obtener listado de inscritos
+    // ══════════════════════════════════════════════════════
+    public function ajax_get_inscritos() {
+        $evento_id = intval( $_POST['evento_id'] ?? 0 );
+        if ( ! $evento_id ) {
+            wp_send_json_error( array( 'message' => __( 'ID de evento no válido.', 'wp-events-registration' ) ) );
+        }
+
+        $inscripciones = WPER_DB::get_inscripciones( $evento_id );
+        
+        if ( empty( $inscripciones ) ) {
+            wp_send_json_success( array( 'html' => '<p>' . __( 'No hay inscritos todavía.', 'wp-events-registration' ) . '</p>' ) );
+        }
+
+        $html = '<table class="wper-table-listado">';
+        $html .= '<thead><tr><th>' . __('Nombre','wp-events-registration') . '</th><th>' . __('Apellidos','wp-events-registration') . '</th><th>' . __('ID FIDE','wp-events-registration') . '</th></tr></thead>';
+        $html .= '<tbody>';
+        foreach ( $inscripciones as $i ) {
+            $html .= '<tr>';
+            $html .= '<td>' . esc_html( $i->nombre ) . '</td>';
+            $html .= '<td>' . esc_html( $i->apellidos ) . '</td>';
+            $html .= '<td>' . esc_html( $i->fide_id ?? '-' ) . '</td>';
+            $html .= '</tr>';
+        }
+        $html .= '</tbody></table>';
+
+        wp_send_json_success( array( 'html' => $html ) );
     }
 
     private function parse_template( $template, $vars ) {

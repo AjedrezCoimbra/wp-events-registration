@@ -41,6 +41,8 @@ class WPER_Public {
             'i18n'     => array(
                 'enviando'  => __( 'Enviando...', 'wp-events-registration' ),
                 'error_gen' => __( 'Error al procesar la inscripción.', 'wp-events-registration' ),
+                'inscritos_en' => __( 'Inscritos en', 'wp-events-registration' ),
+                'cargando'     => __( 'Cargando...', 'wp-events-registration' ),
             ),
         ) );
     }

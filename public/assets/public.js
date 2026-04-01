@@ -26,6 +26,29 @@ jQuery(function ($) {
         $('body').css('overflow', 'hidden');
     });
 
+    // ── Modal de inscritos ──────
+    $(document).on('click', '.wper-open-inscritos-modal', function () {
+        var $modal = $('#wper-modal-obs'); // Reutilizamos el modal de observaciones
+        var eventoId = $(this).data('evento-id');
+        var nombre   = $(this).data('evento-nombre');
+
+        $modal.find('.wper-modal-header h3').text(wperData.i18n.inscritos_en + ': ' + nombre);
+        $modal.find('.wper-modal-body').html('<p>' + wperData.i18n.cargando + '</p>');
+        $modal.css('display', 'flex');
+        $('body').css('overflow', 'hidden');
+
+        $.post(wperData.ajax_url, {
+            action: 'wper_get_inscritos',
+            evento_id: eventoId
+        }, function(response) {
+            if (response.success) {
+                $modal.find('.wper-modal-body').html(response.data.html);
+            } else {
+                $modal.find('.wper-modal-body').html('<p>' + (response.data.message || 'Error') + '</p>');
+            }
+        });
+    });
+
     $(document).on('click', '.wper-modal-close, .wper-modal', function (e) {
         if (e.target !== this && !$(e.target).hasClass('wper-modal-close')) return;
         $('.wper-modal').hide();
