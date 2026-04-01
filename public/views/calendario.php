@@ -155,5 +155,18 @@
       </div>
     </div>
 
+    <!-- Modal para Listado de Inscritos -->
+    <div id="wper-modal-listado" class="wper-modal">
+      <div class="wper-modal-content">
+        <div class="wper-modal-header">
+          <h3></h3>
+          <span class="wper-modal-close">&times;</span>
+        </div>
+        <div class="wper-modal-body">
+            <!-- El contenido se cargará dinámicamente -->
+        </div>
+      </div>
+    </div>
+
   <?php endif; ?>
 </div>
