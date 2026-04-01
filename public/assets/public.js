@@ -28,7 +28,7 @@ jQuery(function ($) {
 
     // ── Modal de inscritos ──────
     $(document).on('click', '.wper-open-inscritos-modal', function () {
-        var $modal = $('#wper-modal-obs'); // Reutilizamos el modal de observaciones
+        var $modal = $('#wper-modal-listado'); // Modal específico para listado
         var eventoId = $(this).data('evento-id');
         var nombre   = $(this).data('evento-nombre');
 
@@ -61,12 +61,18 @@ jQuery(function ($) {
 
         var $form = $(this);
         var eventoId = $form.data('evento-id');
-        var $msg = $form.find('.wper-form-msg');
         var $btn = $form.find('button[type="submit"]');
         var btnText = $btn.text();
 
         // Deshabilitar botón
         $btn.prop('disabled', true).text(wperData.i18n.enviando);
+        
+        // El mensaje está fuera del form pero dentro del contenedor
+        var $msg = $form.siblings('.wper-form-msg');
+        if (!$msg.length) {
+            $msg = $form.closest('.wper-inscripcion-wrap').find('.wper-form-msg');
+        }
+        
         $msg.hide().removeClass('wper-aviso-ok wper-aviso-error');
 
         var data = {
