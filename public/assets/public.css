@@ -364,6 +364,41 @@
   cursor: default;
 }
 
+.wper-btn-listado {
+  background: #6b7280;
+  color: #fff;
+}
+
+.wper-btn-listado:hover {
+  background: #4b5563;
+  color: #fff;
+}
+
+/* Tabla de listado */
+.wper-table-listado {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.wper-table-listado th,
+.wper-table-listado td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.wper-table-listado th {
+  background-color: #f9fafb;
+  font-weight: 700;
+  color: #374151;
+}
+
+.wper-table-listado tr:hover {
+  background-color: #f3f4f6;
+}
+
 /* Inline form toggle */
 .wper-cal-form-inline {
   margin-top: 1rem;

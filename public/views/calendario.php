@@ -106,8 +106,18 @@
                         data-target="#wper-form-wrapper-<?php echo $ev->id; ?>">
                   ✅ <?php _e('Inscribirse', 'wp-events-registration'); ?>
                 </button>
+                <button type="button" class="wper-btn wper-btn-listado wper-open-inscritos-modal" 
+                        data-evento-id="<?php echo $ev->id; ?>" 
+                        data-evento-nombre="<?php echo esc_attr($ev->nombre); ?>">
+                  👁️ <?php _e('Ver inscritos', 'wp-events-registration'); ?>
+                </button>
               <?php else: ?>
                 <span class="wper-btn wper-btn-disabled"><?php _e('Inscripción cerrada', 'wp-events-registration'); ?></span>
+                <button type="button" class="wper-btn wper-btn-listado wper-open-inscritos-modal" 
+                        data-evento-id="<?php echo $ev->id; ?>" 
+                        data-evento-nombre="<?php echo esc_attr($ev->nombre); ?>">
+                  👁️ <?php _e('Ver inscritos', 'wp-events-registration'); ?>
+                </button>
               <?php endif; ?>
             </div>
 
