@@ -110,7 +110,7 @@ class WPER_Admin {
         $evento_id = intval( $post['evento_id'] ?? 0 );
 
         // Validación básica
-        $required = array( 'nombre', 'modalidad', 'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin', 'fecha_inicio_inscripcion', 'fecha_fin_inscripcion' );
+        $required = array( 'nombre', 'modalidad', 'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin', 'fecha_fin_inscripcion' );
         foreach ( $required as $field ) {
             if ( empty( $post[ $field ] ) ) {
                 $url = admin_url( 'admin.php?page=wper-nuevo' . ($evento_id ? '&id='.$evento_id : '') . '&error=campos_obligatorios' );
@@ -127,7 +127,6 @@ class WPER_Admin {
             'provincia'                => sanitize_text_field( $post['provincia'] ),
             'fecha_inicio'             => sanitize_text_field( $post['fecha_inicio'] ),
             'fecha_fin'                => sanitize_text_field( $post['fecha_fin'] ),
-            'fecha_inicio_inscripcion' => sanitize_text_field( $post['fecha_inicio_inscripcion'] ),
             'fecha_fin_inscripcion'    => sanitize_text_field( $post['fecha_fin_inscripcion'] ),
             'estado'                   => in_array( $post['estado'], array('borrador','abierto','cerrado') ) ? $post['estado'] : 'borrador',
             'url_bases'                => esc_url_raw( $post['url_bases'] ?? '' ),
@@ -136,6 +135,7 @@ class WPER_Admin {
             'observaciones'            => wp_kses_post( $post['observaciones'] ?? '' ),
             'tiempo_juego'             => sanitize_text_field( $post['tiempo_juego'] ?? '' ),
             'elo_fide'                 => isset( $post['elo_fide'] ) ? 1 : 0,
+            'subvencionable'           => isset( $post['subvencionable'] ) ? 1 : 0,
             'ritmo_juego'              => sanitize_text_field( $post['ritmo_juego'] ?? '' ),
             'enviar_confirmacion'      => isset( $post['enviar_confirmacion'] ) ? 1 : 0,
         );

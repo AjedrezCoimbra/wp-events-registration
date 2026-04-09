@@ -120,5 +120,18 @@ jQuery(function ($) {
             });
     });
 
+    // ── Gestión de Tabs en Calendario ──────
+    $(document).on('click', '.wper-tab-btn', function() {
+        var tabId = $(this).data('tab');
+        
+        // Botones
+        $('.wper-tab-btn').removeClass('active');
+        $(this).addClass('active');
+        
+        // Contenido
+        $('.wper-tab-content').removeClass('active');
+        $('#tab-' + tabId).addClass('active');
+    });
+
 });
 

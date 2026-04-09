@@ -140,8 +140,8 @@ class WPER_DB {
             'nombre', 'modalidad', 'cuota_inscripcion', 'numero_rondas',
             'tiempo_juego', 'elo_fide', 'ritmo_juego',
             'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin',
-            'fecha_inicio_inscripcion', 'fecha_fin_inscripcion',
-            'estado', 'url_bases', 'google_maps', 'cartel_url', 'enviar_confirmacion'
+            'fecha_fin_inscripcion',
+            'estado', 'url_bases', 'google_maps', 'cartel_url', 'subvencionable', 'enviar_confirmacion'
         );
         foreach ( $allowed as $field ) {
             if ( isset( $data[ $field ] ) ) {
@@ -154,6 +154,9 @@ class WPER_DB {
         }
         if ( isset( $data['elo_fide'] ) ) {
             $clean['elo_fide'] = $data['elo_fide'] ? 1 : 0;
+        }
+        if ( isset( $data['subvencionable'] ) ) {
+            $clean['subvencionable'] = $data['subvencionable'] ? 1 : 0;
         }
         if ( isset( $data['enviar_confirmacion'] ) ) {
             $clean['enviar_confirmacion'] = $data['enviar_confirmacion'] ? 1 : 0;
