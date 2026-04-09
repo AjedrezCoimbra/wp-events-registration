@@ -52,6 +52,7 @@ class WPER_Activator {
             google_maps               VARCHAR(500)     NULL COMMENT 'URL de Google Maps',
             cartel_url                VARCHAR(500)     NULL COMMENT 'URL de la imagen del cartel',
             observaciones             TEXT             NULL,
+            subvencionable            TINYINT(1)       NOT NULL DEFAULT 0 COMMENT '1=Sí, 0=No',
             enviar_confirmacion       TINYINT(1)       NOT NULL DEFAULT 1 COMMENT '1=Sí, 0=No',
             created_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

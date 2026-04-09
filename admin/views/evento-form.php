@@ -89,6 +89,14 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
       </tr>
 
       <tr>
+        <th><label for="subvencionable"><?php _e('Subvencionable', 'wp-events-registration'); ?></label></th>
+        <td>
+          <input type="checkbox" id="subvencionable" name="subvencionable" value="1" <?php checked($editing ? $evento->subvencionable : 0, 1); ?>>
+          <?php _e('Sí, este evento es subvencionable', 'wp-events-registration'); ?>
+        </td>
+      </tr>
+
+      <tr>
         <th><label for="enviar_confirmacion"><?php _e('Enviar correo de confirmación', 'wp-events-registration'); ?></label></th>
         <td>
           <input type="checkbox" id="enviar_confirmacion" name="enviar_confirmacion" value="1" <?php checked($editing ? $evento->enviar_confirmacion : 1, 1); ?>>
@@ -129,12 +137,6 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
         <th><label for="fecha_fin"><?php _e('Fin del evento', 'wp-events-registration'); ?> <span class="required">*</span></label></th>
         <td><input type="date" id="fecha_fin" name="fecha_fin" required
               value="<?php echo $editing ? esc_attr($evento->fecha_fin) : ''; ?>"></td>
-      </tr>
-
-      <tr>
-        <th><label for="fecha_inicio_inscripcion"><?php _e('Inicio inscripción', 'wp-events-registration'); ?> <span class="required">*</span></label></th>
-        <td><input type="date" id="fecha_inicio_inscripcion" name="fecha_inicio_inscripcion" required
-              value="<?php echo $editing ? esc_attr($evento->fecha_inicio_inscripcion) : ''; ?>"></td>
       </tr>
 
       <tr>
