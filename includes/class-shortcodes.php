@@ -41,18 +41,26 @@ class WPER_Shortcodes {
         // Mostramos abiertos y cerrados (no borradores) en una sola consulta
         $eventos = WPER_DB::get_eventos( array_merge( $args, array( 'estado' => array( 'abierto', 'cerrado' ) ) ) );
 
+        if ( ! is_array( $eventos ) ) {
+            $eventos = array();
+        }
+
         // Filtrar por provincia si se indica
-        if ( ! empty( $atts['provincia'] ) ) {
+        if ( ! empty( $atts['provincia'] ) && ! empty( $eventos ) ) {
             $prov = sanitize_text_field( $atts['provincia'] );
             $eventos = array_filter( $eventos, function($e) use ($prov) {
-                return strtolower( $e->provincia ) === strtolower( $prov );
+                return isset($e->provincia) && strtolower( $e->provincia ) === strtolower( $prov );
             });
         }
 
         // Ordenar por fecha_inicio ASC (los más próximos primero)
-        usort( $eventos, function($a, $b) {
-            return strtotime( $a->fecha_inicio ) - strtotime( $b->fecha_inicio );
-        });
+        if ( ! empty( $eventos ) ) {
+            usort( $eventos, function($a, $b) {
+                $f1 = isset($a->fecha_inicio) ? strtotime( $a->fecha_inicio ) : 0;
+                $f2 = isset($b->fecha_inicio) ? strtotime( $b->fecha_inicio ) : 0;
+                return $f1 - $f2;
+            });
+        }
 
         ob_start();
         include WPER_PLUGIN_DIR . 'public/views/calendario.php';
