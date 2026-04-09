@@ -1,4 +1,4 @@
-# WP Events Registration (v1.3.9)
+# WP Events Registration (v1.4.0)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -22,7 +22,7 @@ El plugin soporta actualizaciones automáticas directamente desde GitHub:
 Ve a **Eventos** en el menú lateral de WordPress.
 
 - **Dashboard** — Estadísticas generales e inscripciones recientes.
-- **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles). Permite elegir si se envía **email de confirmación** por cada evento. Incluye campos para **Ritmo de juego**, **Tiempo** y **ELO FIDE**.
+- **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles). Permite elegir si se envía **email de confirmación** por cada evento. Incluye campos para **Ritmo de juego**, **Tiempo**, **ELO FIDE** y marca de **Subvencionable**.
 - **Inscripciones** — Listado de inscritos, exportar PDF y CSV.
 - **Ajustes** — Configuración de email de notificaciones, moneda, **plantillas enriquecidas de correo** (con Expression Language) y forzado de comprobación de actualizaciones.
 
@@ -30,7 +30,7 @@ Ve a **Eventos** en el menú lateral de WordPress.
 
 | Shortcode | Descripción |
 |---|---|
-| `[wper_calendario]` | Calendario público con tarjetas visuales. Muestra ritmo, tiempo y sello ELO FIDE si están configurados. Abre el **formulario de inscripción en ventana modal** facilitando el flujo de usuario. |
+| `[wper_calendario]` | Calendario público con tarjetas visuales organizadas por **Tabs (Abiertos y Cerrados)**. Muestra ritmo, tiempo, sello ELO FIDE y marca de **Subvencionable** si están configurados. Abre el **formulario de inscripción en ventana modal** facilitando el flujo de usuario. |
 | `[wper_calendario provincia="Murcia" limite="10"]` | Filtrado avanzado por provincia y límite de visualización. |
 | `[wper_inscripcion id="X"]` | Formulario dinámico de inscripción para el evento con ID específico. |
 | `[wper_ficha id="X"]` | Ficha pública completa con todos los detalles técnicos (rondas, ritmo, tiempo, ELO FIDE), mapa y formulario integrado. |
@@ -48,21 +48,21 @@ CREATE TABLE {prefix}wper_eventos (
     modalidad                 ENUM('Individual','Por Equipos') NOT NULL,
     cuota_inscripcion         DECIMAL(8,2)     NULL,
     numero_rondas             TINYINT UNSIGNED NULL,
-    tiempo_juego              VARCHAR(30)      DEFAULT NULL, -- Tiempo libre, ej: 90'+30"
-    elo_fide                  TINYINT(1)       DEFAULT 0,    -- Valedero FIDE: 1=Sí, 0=No
-    ritmo_juego               VARCHAR(10)      DEFAULT NULL, -- Clásico, Rápido, Blitz
+    tiempo_juego              VARCHAR(30)      DEFAULT NULL,
+    elo_fide                  TINYINT(1)       DEFAULT 0,
+    ritmo_juego               VARCHAR(10)      DEFAULT NULL,
     poblacion                 VARCHAR(150)     NOT NULL,
     provincia                 VARCHAR(100)     NOT NULL,
     fecha_inicio              DATE             NOT NULL,
     fecha_fin                 DATE             NOT NULL,
-    fecha_inicio_inscripcion  DATE             NOT NULL,
     fecha_fin_inscripcion     DATE             NOT NULL,
     estado                    ENUM('borrador','abierto','cerrado') NOT NULL DEFAULT 'borrador',
     url_bases                 VARCHAR(500)     NULL,
     google_maps               VARCHAR(500)     NULL,
     cartel_url                VARCHAR(500)     NULL,
     observaciones             TEXT             NULL,
-    enviar_confirmacion       TINYINT(1)       NOT NULL DEFAULT 1, -- 1=Sí, 0=No
+    subvencionable            TINYINT(1)       NOT NULL DEFAULT 0,
+    enviar_confirmacion       TINYINT(1)       NOT NULL DEFAULT 1,
     created_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
