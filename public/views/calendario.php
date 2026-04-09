@@ -37,7 +37,8 @@
   </div>
 
   <?php
-  function wper_render_event_card($ev) {
+  if ( ! function_exists( 'wper_render_event_card' ) ) {
+    function wper_render_event_card($ev) {
     $abierto = $ev->estado === 'abierto';
     $cuota   = $ev->cuota_inscripcion ? number_format($ev->cuota_inscripcion,2).' €' : __('Gratuito','wp-events-registration');
     $rondas  = $ev->numero_rondas ? $ev->numero_rondas . ' ' . __('rondas','wp-events-registration') : null;
@@ -163,6 +164,7 @@
       </div>
     </div>
     <?php
+    }
   }
   ?>
 
