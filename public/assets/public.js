@@ -75,6 +75,15 @@ jQuery(function ($) {
         
         $msg.hide().removeClass('wper-aviso-ok wper-aviso-error');
 
+        var emailVal = $form.find('[name="email"]').val().trim();
+        if ( ! emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal) ) {
+            $msg.addClass('wper-aviso wper-aviso-error')
+                .html('<strong>⚠️</strong> ' + wperData.i18n.email_obligatorio)
+                .show();
+            $btn.prop('disabled', false).text(btnText);
+            return;
+        }
+
         var data = {
             action: 'wper_inscribir',
             nonce: wperData.nonce,

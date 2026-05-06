@@ -13,6 +13,8 @@ class WPER_Admin {
         add_action( 'admin_post_wper_export_csv',        array( $this, 'handle_export_csv' ) );
         add_action( 'admin_post_wper_save_ajustes',      array( $this, 'handle_save_ajustes' ) );
         add_action( 'admin_post_wper_force_update_check',array( $this, 'handle_force_update_check' ) );
+        add_action( 'admin_post_wper_duplicate_evento',  array( $this, 'handle_duplicate_evento' ) );
+        add_action( 'admin_post_wper_toggle_estado',     array( $this, 'handle_toggle_estado_evento' ) );
     }
 
     // ── Menús ────────────────────────────────────────────
@@ -130,6 +132,7 @@ class WPER_Admin {
             'fecha_fin_inscripcion'    => sanitize_text_field( $post['fecha_fin_inscripcion'] ),
             'estado'                   => in_array( $post['estado'], array('borrador','abierto','cerrado') ) ? $post['estado'] : 'borrador',
             'url_bases'                => esc_url_raw( $post['url_bases'] ?? '' ),
+            'url_inscripciones'        => esc_url_raw( $post['url_inscripciones'] ?? '' ),
             'google_maps'              => esc_url_raw( $post['google_maps'] ?? '' ),
             'cartel_url'               => esc_url_raw( $post['cartel_url'] ?? '' ),
             'observaciones'            => wp_kses_post( $post['observaciones'] ?? '' ),
@@ -253,6 +256,42 @@ class WPER_Admin {
         delete_site_transient( 'update_plugins' );
 
         wp_redirect( admin_url( 'admin.php?page=wper-ajustes&checked=1' ) );
+        exit;
+    }
+
+    public function handle_duplicate_evento() {
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
+        $id = intval( $_GET['id'] ?? 0 );
+        check_admin_referer( 'wper_duplicate_evento_' . $id );
+
+        $original = WPER_DB::get_evento( $id );
+        if ( ! $original ) wp_die( 'Evento no encontrado.' );
+
+        $data = (array) $original;
+        unset( $data['id'], $data['created_at'], $data['updated_at'] );
+        $data['nombre'] = __( 'Copia de', 'wp-events-registration' ) . ' ' . $data['nombre'];
+        $data['estado'] = 'borrador';
+
+        $nuevo_id = WPER_DB::insert_evento( $data );
+
+        wp_redirect( admin_url( 'admin.php?page=wper-nuevo&id=' . $nuevo_id . '&msg=duplicado' ) );
+        exit;
+    }
+
+    public function handle_toggle_estado_evento() {
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
+        $id     = intval( $_GET['id'] ?? 0 );
+        $estado = sanitize_text_field( $_GET['estado'] ?? '' );
+        check_admin_referer( 'wper_toggle_estado_' . $id );
+
+        if ( ! in_array( $estado, array( 'abierto', 'cerrado', 'borrador' ), true ) ) {
+            wp_die( 'Estado no válido.' );
+        }
+
+        WPER_DB::update_evento( $id, array( 'estado' => $estado ) );
+
+        $redirect = remove_query_arg( array( 'msg' ), wp_get_referer() );
+        wp_redirect( $redirect ? $redirect . '&msg=estado_cambiado' : admin_url( 'admin.php?page=wper-eventos&msg=estado_cambiado' ) );
         exit;
     }
 }
