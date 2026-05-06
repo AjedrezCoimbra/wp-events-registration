@@ -1,4 +1,4 @@
-# WP Events Registration (v1.5.1)
+# WP Events Registration (v1.5.2)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -44,7 +44,6 @@ Cada tarjeta del calendario puede mostrar hasta cuatro botones de acción según
 |---|---|
 | **Ver bases** | Si el campo *URL de las bases* está relleno |
 | **Inscribirse** | Si el evento está abierto (abre modal con formulario interno) |
-| **Inscribirse** *(externo)* | Si el campo *URL de inscripciones (externa)* está relleno; sustituye al modal |
 | **Ver inscritos** | Siempre en eventos abiertos/cerrados (muestra la lista interna de la BD) |
 | **Ver inscritos (ext.)** | Si el campo *URL lista de inscritos (externa)* está relleno (Chess-Results, Info64...) |
 
@@ -65,7 +64,6 @@ Cada tarjeta del calendario puede mostrar hasta cuatro botones de acción según
 | Fecha inicio / fin | Duración del evento |
 | Fin de inscripción | Cierre automático por WP-Cron al llegar esta fecha |
 | URL de las bases | Enlace al reglamento / bases |
-| **URL de inscripciones (externa)** | Plataforma externa para inscribirse (FEDA, Chess-Results…) |
 | **URL lista de inscritos (externa)** | Enlace externo con la lista de participantes (Chess-Results, Info64…) |
 | Google Maps | URL del mapa del lugar |
 | Imagen del cartel | Sube desde la biblioteca de medios |
@@ -96,7 +94,6 @@ CREATE TABLE {prefix}wper_eventos (
     fecha_fin_inscripcion     DATE             NOT NULL,
     estado                    ENUM('borrador','abierto','cerrado') NOT NULL DEFAULT 'borrador',
     url_bases                 VARCHAR(500)     NULL,
-    url_inscripciones         VARCHAR(500)     NULL,
     url_inscritos             VARCHAR(500)     NULL,
     google_maps               VARCHAR(500)     NULL,
     cartel_url                VARCHAR(500)     NULL,
@@ -150,7 +147,8 @@ CREATE TABLE {prefix}wper_inscripciones (
 
 | Versión | Cambios |
 |---|---|
+| **1.5.2** | Eliminado campo *URL inscripciones externa*; se mantiene solo *URL lista de inscritos* |
 | **1.5.1** | Nuevo campo *URL lista de inscritos (externa)* para Chess-Results, Info64, etc. |
-| **1.5.0** | Fix bug alojamiento · Email obligatorio en inscripción · Campo *URL inscripciones externa* · Duplicar evento · Toggle estado rápido · Secciones en formulario admin |
+| **1.5.0** | Fix bug alojamiento · Email obligatorio en inscripción · Duplicar evento · Toggle estado rápido · Secciones en formulario admin |
 | **1.4.2** | Mejoras menores |
 | **1.4.0** | Tabs abiertos/cerrados en calendario · Modal de inscripción |

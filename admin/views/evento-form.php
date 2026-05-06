@@ -157,16 +157,6 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
       </tr>
 
       <tr>
-        <th><label for="url_inscripciones"><?php _e('URL de inscripciones (externa)', 'wp-events-registration'); ?></label></th>
-        <td>
-          <input type="url" id="url_inscripciones" name="url_inscripciones" class="large-text"
-                value="<?php echo $editing ? esc_attr($evento->url_inscripciones ?? '') : ''; ?>"
-                placeholder="https://...">
-          <p class="description"><?php _e('Enlace externo para inscribirse (FEDA, Chess-Results, etc.). Si se rellena, aparecerá como botón en la tarjeta pública.', 'wp-events-registration'); ?></p>
-        </td>
-      </tr>
-
-      <tr>
         <th><label for="url_inscritos"><?php _e('URL lista de inscritos (externa)', 'wp-events-registration'); ?></label></th>
         <td>
           <input type="url" id="url_inscritos" name="url_inscritos" class="large-text"
