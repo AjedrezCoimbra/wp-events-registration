@@ -167,6 +167,16 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
       </tr>
 
       <tr>
+        <th><label for="url_inscritos"><?php _e('URL lista de inscritos (externa)', 'wp-events-registration'); ?></label></th>
+        <td>
+          <input type="url" id="url_inscritos" name="url_inscritos" class="large-text"
+                value="<?php echo $editing ? esc_attr($evento->url_inscritos ?? '') : ''; ?>"
+                placeholder="https://chess-results.com/...">
+          <p class="description"><?php _e('Enlace externo donde ver la lista de participantes (Chess-Results, Info64, etc.). Aparecerá como segundo botón "Ver inscritos" en la tarjeta pública.', 'wp-events-registration'); ?></p>
+        </td>
+      </tr>
+
+      <tr>
         <th><label for="google_maps"><?php _e('Google Maps (URL)', 'wp-events-registration'); ?></label></th>
         <td><input type="url" id="google_maps" name="google_maps" class="large-text"
               value="<?php echo $editing ? esc_attr($evento->google_maps) : ''; ?>"

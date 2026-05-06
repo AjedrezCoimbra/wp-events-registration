@@ -133,6 +133,7 @@ class WPER_Admin {
             'estado'                   => in_array( $post['estado'], array('borrador','abierto','cerrado') ) ? $post['estado'] : 'borrador',
             'url_bases'                => esc_url_raw( $post['url_bases'] ?? '' ),
             'url_inscripciones'        => esc_url_raw( $post['url_inscripciones'] ?? '' ),
+            'url_inscritos'            => esc_url_raw( $post['url_inscritos'] ?? '' ),
             'google_maps'              => esc_url_raw( $post['google_maps'] ?? '' ),
             'cartel_url'               => esc_url_raw( $post['cartel_url'] ?? '' ),
             'observaciones'            => wp_kses_post( $post['observaciones'] ?? '' ),
