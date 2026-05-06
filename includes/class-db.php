@@ -250,11 +250,13 @@ class WPER_DB {
         global $wpdb;
         $te = self::tabla_eventos();
         $ti = self::tabla_inscripciones();
+        $hoy = current_time( 'Y-m-d' );
 
         return array(
             'total_eventos'        => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$te}" ),
-            'eventos_abiertos'     => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$te} WHERE estado = 'abierto'" ),
-            'eventos_cerrados'     => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$te} WHERE estado = 'cerrado'" ),
+            'eventos_abiertos'     => (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$te} WHERE estado = 'abierto' AND fecha_fin_inscripcion >= %s", $hoy ) ),
+            'eventos_cerrados'     => (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$te} WHERE (estado = 'cerrado' OR (estado = 'abierto' AND fecha_fin_inscripcion < %s)) AND fecha_fin >= %s", $hoy, $hoy ) ),
+            'eventos_finalizados'  => (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$te} WHERE fecha_fin < %s AND estado != 'borrador'", $hoy ) ),
             'eventos_borrador'     => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$te} WHERE estado = 'borrador'" ),
             'total_inscripciones'  => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$ti}" ),
             'inscripciones_hoy'    => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$ti} WHERE DATE(created_at) = CURDATE()" ),

@@ -44,25 +44,46 @@ class WPER_Admin {
 
     // ── Páginas ──────────────────────────────────────────
     public function page_dashboard() {
+        global $wpdb;
+        $te = WPER_DB::tabla_eventos();
+        $hoy = current_time('Y-m-d');
+
         $stats = WPER_DB::get_stats();
         $ultimas_inscripciones = WPER_DB::get_todas_inscripciones( 10, 0 );
-        $eventos_abiertos = WPER_DB::get_eventos( array( 'estado' => 'abierto', 'limite' => 5 ) );
+        
+        $eventos_abiertos = $wpdb->get_results( $wpdb->prepare(
+            "SELECT * FROM {$te} WHERE estado = 'abierto' AND fecha_fin_inscripcion >= %s ORDER BY fecha_inicio ASC LIMIT 5",
+            $hoy
+        ));
+
         include WPER_PLUGIN_DIR . 'admin/views/dashboard.php';
     }
 
     public function page_eventos() {
-        $estado_filtro = sanitize_text_field( $_GET['estado'] ?? '' );
-        $paged  = max( 1, intval( $_GET['paged'] ?? 1 ) );
+        $vista = sanitize_text_field( $_GET['vista'] ?? '' );
+        $paged = max( 1, intval( $_GET['paged'] ?? 1 ) );
         $limite = 20;
         $offset = ( $paged - 1 ) * $limite;
-
-        $args = array( 'limite' => $limite, 'offset' => $offset, 'orderby' => 'fecha_inicio', 'order' => 'DESC' );
-        if ( $estado_filtro ) $args['estado'] = $estado_filtro;
-
-        $eventos = WPER_DB::get_eventos( $args );
-        $total   = WPER_DB::count_eventos( $estado_filtro ? array('estado' => $estado_filtro) : array() );
+        
+        global $wpdb;
+        $t   = WPER_DB::tabla_eventos();
+        $hoy = current_time( 'Y-m-d' );
+        
+        $where = "1=1";
+        if ( $vista === 'borrador' ) {
+            $where = "estado = 'borrador'";
+        } elseif ( $vista === 'abierto' ) {
+            $where = "estado = 'abierto' AND fecha_fin_inscripcion >= '$hoy'";
+        } elseif ( $vista === 'cerrado' ) {
+            $where = "(estado = 'cerrado' OR (estado = 'abierto' AND fecha_fin_inscripcion < '$hoy')) AND fecha_fin >= '$hoy'";
+        } elseif ( $vista === 'finalizado' ) {
+            $where = "fecha_fin < '$hoy' AND estado != 'borrador'";
+        }
+        
+        $eventos = $wpdb->get_results( "SELECT * FROM {$t} WHERE {$where} ORDER BY fecha_inicio DESC LIMIT {$limite} OFFSET {$offset}" );
+        $total   = $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE {$where}" );
         $total_pages = ceil( $total / $limite );
-
+        
         $mensaje = sanitize_text_field( $_GET['msg'] ?? '' );
         include WPER_PLUGIN_DIR . 'admin/views/eventos-list.php';
     }

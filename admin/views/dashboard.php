@@ -11,6 +11,10 @@
       <span class="wper-stat-num"><?php echo $stats['eventos_cerrados']; ?></span>
       <span class="wper-stat-label"><?php _e( 'Eventos cerrados', 'wp-events-registration' ); ?></span>
     </div>
+    <div class="wper-stat-card wper-stat-finalizado">
+      <span class="wper-stat-num"><?php echo $stats['eventos_finalizados']; ?></span>
+      <span class="wper-stat-label"><?php _e( 'Eventos finalizados', 'wp-events-registration' ); ?></span>
+    </div>
     <div class="wper-stat-card wper-stat-borrador">
       <span class="wper-stat-num"><?php echo $stats['eventos_borrador']; ?></span>
       <span class="wper-stat-label"><?php _e( 'Borradores', 'wp-events-registration' ); ?></span>

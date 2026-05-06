@@ -17,10 +17,11 @@
 
   <!-- Filtros -->
   <ul class="subsubsub">
-    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos'); ?>" <?php echo !$estado_filtro ? 'class="current"' : ''; ?>><?php _e('Todos', 'wp-events-registration'); ?></a> |</li>
-    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&estado=abierto'); ?>" <?php echo $estado_filtro==='abierto' ? 'class="current"' : ''; ?>><?php _e('Abiertos', 'wp-events-registration'); ?></a> |</li>
-    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&estado=cerrado'); ?>" <?php echo $estado_filtro==='cerrado' ? 'class="current"' : ''; ?>><?php _e('Cerrados', 'wp-events-registration'); ?></a> |</li>
-    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&estado=borrador'); ?>" <?php echo $estado_filtro==='borrador' ? 'class="current"' : ''; ?>><?php _e('Borradores', 'wp-events-registration'); ?></a></li>
+    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos'); ?>" <?php echo !$vista ? 'class="current"' : ''; ?>><?php _e('Todos', 'wp-events-registration'); ?></a> |</li>
+    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&vista=borrador'); ?>" <?php echo $vista==='borrador' ? 'class="current"' : ''; ?>><?php _e('Borradores', 'wp-events-registration'); ?></a> |</li>
+    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&vista=abierto'); ?>" <?php echo $vista==='abierto' ? 'class="current"' : ''; ?>><?php _e('Abiertos', 'wp-events-registration'); ?></a> |</li>
+    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&vista=cerrado'); ?>" <?php echo $vista==='cerrado' ? 'class="current"' : ''; ?>><?php _e('Cerrados (En curso)', 'wp-events-registration'); ?></a> |</li>
+    <li><a href="<?php echo admin_url('admin.php?page=wper-eventos&vista=finalizado'); ?>" <?php echo $vista==='finalizado' ? 'class="current"' : ''; ?>><?php _e('Finalizados', 'wp-events-registration'); ?></a></li>
   </ul>
 
   <div class="wper-table-wrap">
@@ -43,7 +44,22 @@
     <?php else : ?>
       <?php foreach ( $eventos as $ev ) :
         $n_inscritos = WPER_DB::count_inscripciones( $ev->id );
-        $estado_class = array('borrador'=>'wper-badge-borrador','abierto'=>'wper-badge-abierto','cerrado'=>'wper-badge-cerrado')[$ev->estado] ?? '';
+        
+        // Lógica de clasificación igual que el frontend
+        $hoy = current_time( 'Y-m-d' );
+        if ( $ev->estado === 'borrador' ) {
+            $estado_label = __('Borrador', 'wp-events-registration');
+            $estado_class = 'wper-badge-borrador';
+        } elseif ( $ev->fecha_fin < $hoy ) {
+            $estado_label = __('Finalizado', 'wp-events-registration');
+            $estado_class = 'wper-badge-finalizado';
+        } elseif ( $ev->estado === 'cerrado' || $ev->fecha_fin_inscripcion < $hoy ) {
+            $estado_label = __('Cerrado', 'wp-events-registration');
+            $estado_class = 'wper-badge-cerrado';
+        } else {
+            $estado_label = __('Abierto', 'wp-events-registration');
+            $estado_class = 'wper-badge-abierto';
+        }
       ?>
       <tr>
         <td>
@@ -59,7 +75,7 @@
         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_fin_inscripcion))); ?></td>
         <td><?php echo esc_html($ev->ritmo_juego ?: ''); ?></td>
         <td><?php echo $ev->elo_fide ? __('Sí', 'wp-events-registration') : ''; ?></td>
-        <td><span class="wper-badge <?php echo $estado_class; ?>"><?php echo esc_html(ucfirst($ev->estado)); ?></span></td>
+        <td><span class="wper-badge <?php echo $estado_class; ?>"><?php echo esc_html($estado_label); ?></span></td>
         <td>
           <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ev->id); ?>">
             <?php echo $n_inscritos; ?> <?php _e('inscritos', 'wp-events-registration'); ?>

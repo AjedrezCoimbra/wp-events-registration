@@ -1,4 +1,4 @@
-# WP Events Registration (v1.6.0)
+# WP Events Registration (v1.6.5)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -22,8 +22,8 @@ El plugin soporta actualizaciones automáticas directamente desde GitHub:
 ### Panel de administración
 Ve a **Eventos** en el menú lateral de WordPress.
 
-- **Dashboard** — Estadísticas generales e inscripciones recientes.
-- **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles). El formulario está organizado en secciones: *Datos generales*, *Fechas*, *Enlaces y multimedia* y *Observaciones*. Desde la lista se puede **abrir/cerrar** un evento con un clic y **duplicar** un evento como borrador.
+- **Dashboard** — Estadísticas generales e inscripciones recientes. Clasificación unificada de eventos en **Abiertos, Cerrados y Finalizados**.
+- **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles). El formulario está organizado en secciones: *Datos generales*, *Fechas*, *Enlaces y multimedia* y *Observaciones*. Desde la lista se puede filtrar por el estado real del evento basado en fechas.
 - **Inscripciones** — Listado de inscritos, exportar PDF y CSV.
 - **Ajustes** — Configuración de email de notificaciones, moneda, **plantillas enriquecidas de correo** (con variables `{{nombre}}`, `{{evento_nombre}}`, etc.) y forzado de comprobación de actualizaciones.
 
@@ -35,9 +35,9 @@ Ve a **Eventos** en el menú lateral de WordPress.
 | `[wper_inscripcion id="X"]` | Formulario dinámico de inscripción para el evento con ID específico. El email es obligatorio. |
 | `[wper_ficha id="X"]` | Ficha pública completa con todos los detalles técnicos (rondas, ritmo, tiempo, ELO FIDE), mapa y formulario integrado. |
 
-### Clasificación de Eventos (Calendario)
+### Clasificación de Eventos (Calendario y Admin)
 
-El calendario organiza los eventos automáticamente según sus fechas y estado:
+El plugin organiza los eventos automáticamente según sus fechas y estado en todas las vistas:
 - **Inscripción Abierta**: Eventos marcados como "Abiertos" donde la fecha actual es anterior o igual a la *Fecha fin de inscripción*.
 - **Inscripción Cerrada**: Eventos que ya no permiten inscribirse pero que **aún no han terminado** (la fecha actual es posterior al cierre de inscripción pero anterior o igual a la *Fecha fin del evento*).
 - **Eventos Finalizados**: Eventos cuya fecha de finalización ya ha pasado.
@@ -53,6 +53,7 @@ Cada tarjeta del calendario puede mostrar hasta cuatro botones de acción según
 | **Ver inscritos** | Siempre en eventos abiertos/cerrados (muestra la lista interna de la BD) |
 | **Ver inscritos (ext.)** | Si el campo *URL lista de inscritos (externa)* está relleno (Chess-Results, Info64...) |
 
+## Campos de un evento
 
 | Campo | Descripción |
 |---|---|
@@ -152,6 +153,7 @@ CREATE TABLE {prefix}wper_inscripciones (
 
 | Versión | Cambios |
 |---|---|
+| **1.6.5** | Unificación de clasificación en el Panel Admin (Dashboard y Listado) · Nuevos filtros por estado real · Contador de finalizados · Estilos corregidos en el admin |
 | **1.6.0** | Nueva clasificación de 3 pestañas (Abiertos, Cerrados, Finalizados) basada en fechas · Paginación independiente para cerrados/finalizados · Eliminado filtro de provincia · Mejoras visuales en el calendario |
 | **1.5.2** | Eliminado campo *URL inscripciones externa*; se mantiene solo *URL lista de inscritos* |
 | **1.5.1** | Nuevo campo *URL lista de inscritos (externa)* para Chess-Results, Info64, etc. |
