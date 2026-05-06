@@ -65,8 +65,21 @@ class WPER_Public {
 
           <div class="wper-cal-content">
             <div class="wper-cal-card-head">
-              <span class="wper-cal-estado wper-estado-<?php echo esc_attr($ev->estado); ?>">
-                <?php echo $abierto ? __('Inscripción abierta','wp-events-registration') : __('Cerrado','wp-events-registration'); ?>
+              <?php 
+                $estado_slug  = $ev->estado;
+                if ($ev->fecha_fin < $hoy) {
+                    $estado_label = __('Finalizado', 'wp-events-registration');
+                    $estado_slug  = 'finalizado';
+                } elseif ($abierto) {
+                    $estado_label = __('Inscripción abierta', 'wp-events-registration');
+                    $estado_slug  = 'abierto';
+                } else {
+                    $estado_label = __('Cerrado', 'wp-events-registration');
+                    $estado_slug  = 'cerrado';
+                }
+              ?>
+              <span class="wper-cal-estado wper-estado-<?php echo esc_attr($estado_slug); ?>">
+                <?php echo esc_html($estado_label); ?>
               </span>
               <span class="wper-cal-modalidad"><?php echo esc_html($ev->modalidad); ?></span>
             </div>
@@ -171,7 +184,7 @@ class WPER_Public {
               <?php endif; ?>
               <?php if ( ! empty($ev->url_inscritos) ): ?>
                 <a href="<?php echo esc_url($ev->url_inscritos); ?>" target="_blank" rel="noopener noreferrer" class="wper-btn wper-btn-listado">
-                  🌐 <?php _e('Ver inscritos (ext.)', 'wp-events-registration'); ?>
+                  🌐 <?php _e('Ver todos los inscritos Info64/ChessResults', 'wp-events-registration'); ?>
                 </a>
               <?php endif; ?>
             </div>

@@ -119,6 +119,11 @@
   color: #9b1c1c;
 }
 
+.wper-estado-finalizado {
+  background: #e1f5fe;
+  color: #01579b;
+}
+
 .wper-cal-modalidad {
   font-size: .75rem;
   font-weight: 600;
