@@ -1,4 +1,4 @@
-# WP Events Registration (v1.6.5)
+# WP Events Registration (v1.6.6)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -51,7 +51,7 @@ Cada tarjeta del calendario puede mostrar hasta cuatro botones de acción según
 | **Ver bases** | Si el campo *URL de las bases* está relleno |
 | **Inscribirse** | Si el evento permite inscripciones (Tab de Abiertos) |
 | **Ver inscritos** | Siempre en eventos abiertos/cerrados (muestra la lista interna de la BD) |
-| **Ver inscritos (ext.)** | Si el campo *URL lista de inscritos (externa)* está relleno (Chess-Results, Info64...) |
+| **Ver todos los inscritos Info64/ChessResults** | Si el campo *URL lista de inscritos (externa)* está relleno |
 
 ## Campos de un evento
 
@@ -153,6 +153,7 @@ CREATE TABLE {prefix}wper_inscripciones (
 
 | Versión | Cambios |
 |---|---|
+| **1.6.6** | Mejora visual en Calendario: Etiqueta FINALIZADO por fechas · Renombrado botón de listado externo a 'Ver todos los inscritos Info64/ChessResults' |
 | **1.6.5** | Unificación de clasificación en el Panel Admin (Dashboard y Listado) · Nuevos filtros por estado real · Contador de finalizados · Estilos corregidos en el admin |
 | **1.6.0** | Nueva clasificación de 3 pestañas (Abiertos, Cerrados, Finalizados) basada en fechas · Paginación independiente para cerrados/finalizados · Eliminado filtro de provincia · Mejoras visuales en el calendario |
 | **1.5.2** | Eliminado campo *URL inscripciones externa*; se mantiene solo *URL lista de inscritos* |
