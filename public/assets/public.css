@@ -222,9 +222,35 @@
   animation: fadeIn 0.4s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Paginación */
+.wper-pagination {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.wper-pagination .page-numbers {
+  display: inline-block;
+  padding: 8px 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.wper-pagination .page-numbers:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.wper-pagination .page-numbers.current {
+  background: #2271b1;
+  color: #fff;
+  border-color: #2271b1;
 }
 
 /* Meta */

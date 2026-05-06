@@ -1,4 +1,4 @@
-# WP Events Registration (v1.5.2)
+# WP Events Registration (v1.6.0)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -31,10 +31,16 @@ Ve a **Eventos** en el menú lateral de WordPress.
 
 | Shortcode | Descripción |
 |---|---|
-| `[wper_calendario]` | Calendario público con tarjetas visuales organizadas por **Tabs (Abiertos y Cerrados)**. Muestra ritmo, tiempo, sello ELO FIDE y marca de **Subvencionable** si están configurados. Abre el **formulario de inscripción en ventana modal** facilitando el flujo de usuario. |
-| `[wper_calendario provincia="Murcia" limite="10"]` | Filtrado avanzado por provincia y límite de visualización. |
+| `[wper_calendario]` | Calendario público con tarjetas visuales organizadas por **3 Tabs (Abiertos, Cerrados y Finalizados)**. La clasificación es automática por fechas. Muestra ritmo, tiempo, sello ELO FIDE y marca de **Subvencionable**. Abre el **formulario de inscripción en ventana modal**. |
 | `[wper_inscripcion id="X"]` | Formulario dinámico de inscripción para el evento con ID específico. El email es obligatorio. |
 | `[wper_ficha id="X"]` | Ficha pública completa con todos los detalles técnicos (rondas, ritmo, tiempo, ELO FIDE), mapa y formulario integrado. |
+
+### Clasificación de Eventos (Calendario)
+
+El calendario organiza los eventos automáticamente según sus fechas y estado:
+- **Inscripción Abierta**: Eventos marcados como "Abiertos" donde la fecha actual es anterior o igual a la *Fecha fin de inscripción*.
+- **Inscripción Cerrada**: Eventos que ya no permiten inscribirse pero que **aún no han terminado** (la fecha actual es posterior al cierre de inscripción pero anterior o igual a la *Fecha fin del evento*).
+- **Eventos Finalizados**: Eventos cuya fecha de finalización ya ha pasado.
 
 ### Botones en la tarjeta pública
 
@@ -43,11 +49,10 @@ Cada tarjeta del calendario puede mostrar hasta cuatro botones de acción según
 | Botón | Cuándo aparece |
 |---|---|
 | **Ver bases** | Si el campo *URL de las bases* está relleno |
-| **Inscribirse** | Si el evento está abierto (abre modal con formulario interno) |
+| **Inscribirse** | Si el evento permite inscripciones (Tab de Abiertos) |
 | **Ver inscritos** | Siempre en eventos abiertos/cerrados (muestra la lista interna de la BD) |
 | **Ver inscritos (ext.)** | Si el campo *URL lista de inscritos (externa)* está relleno (Chess-Results, Info64...) |
 
-## Campos de un evento
 
 | Campo | Descripción |
 |---|---|
@@ -147,6 +152,7 @@ CREATE TABLE {prefix}wper_inscripciones (
 
 | Versión | Cambios |
 |---|---|
+| **1.6.0** | Nueva clasificación de 3 pestañas (Abiertos, Cerrados, Finalizados) basada en fechas · Paginación independiente para cerrados/finalizados · Eliminado filtro de provincia · Mejoras visuales en el calendario |
 | **1.5.2** | Eliminado campo *URL inscripciones externa*; se mantiene solo *URL lista de inscritos* |
 | **1.5.1** | Nuevo campo *URL lista de inscritos (externa)* para Chess-Results, Info64, etc. |
 | **1.5.0** | Fix bug alojamiento · Email obligatorio en inscripción · Duplicar evento · Toggle estado rápido · Secciones en formulario admin |

@@ -49,7 +49,8 @@ class WPER_Public {
     }
 
     public static function render_event_card($ev) {
-        $abierto = $ev->estado === 'abierto';
+        $hoy     = current_time( 'Y-m-d' );
+        $abierto = ( $ev->estado === 'abierto' && $ev->fecha_fin_inscripcion >= $hoy );
         $cuota   = $ev->cuota_inscripcion ? number_format($ev->cuota_inscripcion,2).' €' : __('Gratuito','wp-events-registration');
         $rondas  = $ev->numero_rondas ? $ev->numero_rondas . ' ' . __('rondas','wp-events-registration') : null;
         $poster  = $ev->cartel_url ?: WPER_PLUGIN_URL . 'public/assets/images/default-poster.png';
@@ -157,7 +158,11 @@ class WPER_Public {
                   👁️ <?php _e('Ver inscritos', 'wp-events-registration'); ?>
                 </button>
               <?php else: ?>
-                <span class="wper-btn wper-btn-disabled"><?php _e('Inscripción cerrada', 'wp-events-registration'); ?></span>
+                <?php if ($ev->fecha_fin < $hoy): ?>
+                    <span class="wper-btn wper-btn-disabled"><?php _e('Torneo finalizado', 'wp-events-registration'); ?></span>
+                <?php else: ?>
+                    <span class="wper-btn wper-btn-disabled"><?php _e('Inscripción cerrada', 'wp-events-registration'); ?></span>
+                <?php endif; ?>
                 <button type="button" class="wper-btn wper-btn-listado wper-open-inscritos-modal"
                         data-evento-id="<?php echo $ev->id; ?>"
                         data-evento-nombre="<?php echo esc_attr($ev->nombre); ?>">

@@ -24,7 +24,6 @@ class WPER_DB {
 
         $defaults = array(
             'estado'    => '',
-            'provincia' => '',
             'limite'    => 100,
             'offset'    => 0,
             'orderby'   => 'fecha_inicio',
@@ -42,10 +41,6 @@ class WPER_DB {
             foreach ( $estados as $e ) {
                 $values[] = $e;
             }
-        }
-        if ( ! empty( $args['provincia'] ) ) {
-            $where[]  = 'provincia = %s';
-            $values[] = $args['provincia'];
         }
 
         $allowed_order  = array( 'ASC', 'DESC' );
@@ -82,10 +77,6 @@ class WPER_DB {
             foreach ( $estados as $e ) {
                 $values[] = $e;
             }
-        }
-        if ( ! empty( $args['provincia'] ) ) {
-            $where[]  = 'provincia = %s';
-            $values[] = $args['provincia'];
         }
 
         $where_sql = implode( ' AND ', $where );

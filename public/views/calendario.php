@@ -8,19 +8,29 @@ $eventos = is_array($eventos) ? $eventos : array();
 <div class="wper-calendario">
   <h2 class="wper-cal-title"><?php _e('Calendario de Eventos', 'wp-events-registration'); ?></h2>
 
-  <div class="wper-cal-tabs">
-    <button class="wper-tab-btn active" data-tab="open"><?php _e('Eventos Abiertos', 'wp-events-registration'); ?></button>
-    <button class="wper-tab-btn" data-tab="closed"><?php _e('Eventos Cerrados', 'wp-events-registration'); ?></button>
-  </div>
-
   <?php
-  $eventos_abiertos = array_filter( $eventos, function($e) { return isset($e->estado) && $e->estado === 'abierto'; });
-  $eventos_cerrados = array_filter( $eventos, function($e) { return isset($e->estado) && $e->estado === 'cerrado'; });
+  // Determinar pestaña activa si hay paginación
+  $tab_active = 'open';
+  if ( isset($_GET['wper_paged_c']) ) $tab_active = 'closed';
+  if ( isset($_GET['wper_paged_f']) ) $tab_active = 'finished';
   ?>
 
-  <div id="tab-open" class="wper-tab-content active">
+  <div class="wper-cal-tabs">
+    <button class="wper-tab-btn <?php echo $tab_active === 'open' ? 'active' : ''; ?>" data-tab="open">
+        🟢 <?php _e('Inscripción Abierta', 'wp-events-registration'); ?>
+    </button>
+    <button class="wper-tab-btn <?php echo $tab_active === 'closed' ? 'active' : ''; ?>" data-tab="closed">
+        🔒 <?php _e('Inscripción Cerrada', 'wp-events-registration'); ?>
+    </button>
+    <button class="wper-tab-btn <?php echo $tab_active === 'finished' ? 'active' : ''; ?>" data-tab="finished">
+        🏁 <?php _e('Eventos Finalizados', 'wp-events-registration'); ?>
+    </button>
+  </div>
+
+  <!-- 1. ABIERTOS -->
+  <div id="tab-open" class="wper-tab-content <?php echo $tab_active === 'open' ? 'active' : ''; ?>">
     <?php if ( empty( $eventos_abiertos ) ) : ?>
-      <p class="wper-cal-empty"><?php _e('No hay eventos abiertos en este momento.', 'wp-events-registration'); ?></p>
+      <p class="wper-cal-empty"><?php _e('No hay eventos con inscripción abierta.', 'wp-events-registration'); ?></p>
     <?php else : ?>
       <div class="wper-cal-grid">
         <?php foreach ( $eventos_abiertos as $ev ) : 
@@ -30,15 +40,57 @@ $eventos = is_array($eventos) ? $eventos : array();
     <?php endif; ?>
   </div>
 
-  <div id="tab-closed" class="wper-tab-content">
+  <!-- 2. CERRADOS (En curso / Próximos) -->
+  <div id="tab-closed" class="wper-tab-content <?php echo $tab_active === 'closed' ? 'active' : ''; ?>">
     <?php if ( empty( $eventos_cerrados ) ) : ?>
-      <p class="wper-cal-empty"><?php _e('No hay eventos cerrados.', 'wp-events-registration'); ?></p>
+      <p class="wper-cal-empty"><?php _e('No hay eventos en esta categoría.', 'wp-events-registration'); ?></p>
     <?php else : ?>
       <div class="wper-cal-grid">
         <?php foreach ( $eventos_cerrados as $ev ) : 
           WPER_Public::render_event_card($ev);
         endforeach; ?>
       </div>
+      <?php if ( $total_pages_cerrados > 1 ) : ?>
+        <div class="wper-pagination">
+          <?php
+          echo paginate_links( array(
+              'base'      => add_query_arg( 'wper_paged_c', '%#%' ),
+              'format'    => '',
+              'current'   => $paged_cerrados,
+              'total'     => $total_pages_cerrados,
+              'prev_text' => '&laquo; ' . __('Anterior', 'wp-events-registration'),
+              'next_text' => __('Siguiente', 'wp-events-registration') . ' &raquo;',
+          ) );
+          ?>
+        </div>
+      <?php endif; ?>
+    <?php endif; ?>
+  </div>
+
+  <!-- 3. FINALIZADOS -->
+  <div id="tab-finished" class="wper-tab-content <?php echo $tab_active === 'finished' ? 'active' : ''; ?>">
+    <?php if ( empty( $eventos_finalizados ) ) : ?>
+      <p class="wper-cal-empty"><?php _e('No hay eventos finalizados registrados.', 'wp-events-registration'); ?></p>
+    <?php else : ?>
+      <div class="wper-cal-grid">
+        <?php foreach ( $eventos_finalizados as $ev ) : 
+          WPER_Public::render_event_card($ev);
+        endforeach; ?>
+      </div>
+      <?php if ( $total_pages_finalizados > 1 ) : ?>
+        <div class="wper-pagination">
+          <?php
+          echo paginate_links( array(
+              'base'      => add_query_arg( 'wper_paged_f', '%#%' ),
+              'format'    => '',
+              'current'   => $paged_finalizados,
+              'total'     => $total_pages_finalizados,
+              'prev_text' => '&laquo; ' . __('Anterior', 'wp-events-registration'),
+              'next_text' => __('Siguiente', 'wp-events-registration') . ' &raquo;',
+          ) );
+          ?>
+        </div>
+      <?php endif; ?>
     <?php endif; ?>
   </div>
 

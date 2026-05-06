@@ -28,39 +28,56 @@ class WPER_Shortcodes {
     //  Atributos: provincia, limite
     // ══════════════════════════════════════════════════════
     public function shortcode_calendario( $atts ) {
-        $atts = shortcode_atts( array(
-            'provincia' => '',
-            'limite'    => 20,
-        ), $atts, 'wper_calendario' );
+        $atts = shortcode_atts( array(), $atts, 'wper_calendario' );
+        
+        global $wpdb;
+        $t = WPER_DB::tabla_eventos();
+        $hoy = current_time( 'Y-m-d' );
 
-        $args = array(
-            'limite'    => intval( $atts['limite'] ),
-            'orderby'   => 'fecha_inicio',
-            'order'     => 'DESC',
-        );
-        // Mostramos abiertos y cerrados (no borradores) en una sola consulta
-        $eventos = WPER_DB::get_eventos( array_merge( $args, array( 'estado' => array( 'abierto', 'cerrado' ) ) ) );
+        // 1. EVENTOS ABIERTOS (Inscripción abierta)
+        // estado = 'abierto' AND hoy <= fecha_fin_inscripcion
+        $eventos_abiertos = $wpdb->get_results( $wpdb->prepare(
+            "SELECT * FROM {$t} WHERE estado = 'abierto' AND fecha_fin_inscripcion >= %s ORDER BY fecha_inicio ASC",
+            $hoy
+        ) );
 
-        if ( ! is_array( $eventos ) ) {
-            $eventos = array();
-        }
+        // Paginación para las otras pestañas
+        $paged_cerrados    = max( 1, intval( $_GET['wper_paged_c'] ?? 1 ) );
+        $paged_finalizados = max( 1, intval( $_GET['wper_paged_f'] ?? 1 ) );
+        $limite = 12;
 
-        // Filtrar por provincia si se indica
-        if ( ! empty( $atts['provincia'] ) && ! empty( $eventos ) ) {
-            $prov = sanitize_text_field( $atts['provincia'] );
-            $eventos = array_filter( $eventos, function($e) use ($prov) {
-                return isset($e->provincia) && strtolower( $e->provincia ) === strtolower( $prov );
-            });
-        }
+        // 2. EVENTOS CERRADOS (Inscripción cerrada pero torneo NO finalizado)
+        // (estado = 'cerrado' OR (estado = 'abierto' AND hoy > fecha_fin_inscripcion)) AND hoy <= fecha_fin
+        $offset_c = ( $paged_cerrados - 1 ) * $limite;
+        $eventos_cerrados = $wpdb->get_results( $wpdb->prepare(
+            "SELECT * FROM {$t} 
+             WHERE (estado = 'cerrado' OR (estado = 'abierto' AND fecha_fin_inscripcion < %s)) 
+             AND fecha_fin >= %s 
+             ORDER BY fecha_inicio ASC 
+             LIMIT %d OFFSET %d",
+            $hoy, $hoy, $limite, $offset_c
+        ) );
+        $total_cerrados = $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$t} WHERE (estado = 'cerrado' OR (estado = 'abierto' AND fecha_fin_inscripcion < %s)) AND fecha_fin >= %s",
+            $hoy, $hoy
+        ) );
+        $total_pages_cerrados = ceil( $total_cerrados / $limite );
 
-        // Ordenar por fecha_inicio ASC (los más próximos primero)
-        if ( ! empty( $eventos ) ) {
-            usort( $eventos, function($a, $b) {
-                $f1 = isset($a->fecha_inicio) ? strtotime( $a->fecha_inicio ) : 0;
-                $f2 = isset($b->fecha_inicio) ? strtotime( $b->fecha_inicio ) : 0;
-                return $f1 - $f2;
-            });
-        }
+        // 3. EVENTOS FINALIZADOS (Torneo terminado)
+        // hoy > fecha_fin AND estado != 'borrador'
+        $offset_f = ( $paged_finalizados - 1 ) * $limite;
+        $eventos_finalizados = $wpdb->get_results( $wpdb->prepare(
+            "SELECT * FROM {$t} 
+             WHERE fecha_fin < %s AND estado != 'borrador' 
+             ORDER BY fecha_fin DESC 
+             LIMIT %d OFFSET %d",
+            $hoy, $limite, $offset_f
+        ) );
+        $total_finalizados = $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$t} WHERE fecha_fin < %s AND estado != 'borrador'",
+            $hoy
+        ) );
+        $total_pages_finalizados = ceil( $total_finalizados / $limite );
 
         ob_start();
         include WPER_PLUGIN_DIR . 'public/views/calendario.php';
