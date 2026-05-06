@@ -141,7 +141,7 @@ class WPER_DB {
             'tiempo_juego', 'elo_fide', 'ritmo_juego',
             'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin',
             'fecha_fin_inscripcion',
-            'estado', 'url_bases', 'url_inscripciones', 'url_inscritos', 'google_maps', 'cartel_url', 'subvencionable', 'enviar_confirmacion'
+            'estado', 'url_bases', 'url_inscritos', 'google_maps', 'cartel_url', 'subvencionable', 'enviar_confirmacion'
         );
         foreach ( $allowed as $field ) {
             if ( isset( $data[ $field ] ) ) {
@@ -169,9 +169,6 @@ class WPER_DB {
         }
         if ( isset( $data['url_bases'] ) ) {
             $clean['url_bases'] = esc_url_raw( $data['url_bases'] );
-        }
-        if ( isset( $data['url_inscripciones'] ) ) {
-            $clean['url_inscripciones'] = esc_url_raw( $data['url_inscripciones'] );
         }
         if ( isset( $data['url_inscritos'] ) ) {
             $clean['url_inscritos'] = esc_url_raw( $data['url_inscritos'] );

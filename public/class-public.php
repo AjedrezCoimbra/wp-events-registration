@@ -146,16 +146,7 @@ class WPER_Public {
                 </a>
               <?php endif; ?>
 
-              <?php if ( ! empty($ev->url_inscripciones) ): ?>
-                <a href="<?php echo esc_url($ev->url_inscripciones); ?>" target="_blank" rel="noopener noreferrer" class="wper-btn wper-btn-primary">
-                  ✅ <?php _e('Inscribirse', 'wp-events-registration'); ?>
-                </a>
-                <button type="button" class="wper-btn wper-btn-listado wper-open-inscritos-modal"
-                        data-evento-id="<?php echo $ev->id; ?>"
-                        data-evento-nombre="<?php echo esc_attr($ev->nombre); ?>">
-                  👁️ <?php _e('Ver inscritos', 'wp-events-registration'); ?>
-                </button>
-              <?php elseif ($abierto): ?>
+              <?php if ($abierto): ?>
                 <button type="button" class="wper-btn wper-btn-primary wper-open-inscripcion-modal"
                         data-target="#wper-form-wrapper-<?php echo $ev->id; ?>">
                   ✅ <?php _e('Inscribirse', 'wp-events-registration'); ?>

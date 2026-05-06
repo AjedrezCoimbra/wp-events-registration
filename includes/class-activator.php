@@ -49,7 +49,6 @@ class WPER_Activator {
             fecha_fin_inscripcion     DATE             NOT NULL COMMENT 'Cierre de inscripciones',
             estado                    ENUM('borrador','abierto','cerrado') NOT NULL DEFAULT 'borrador',
             url_bases                 VARCHAR(500)     NULL,
-            url_inscripciones         VARCHAR(500)     NULL COMMENT 'Enlace externo de inscripción (FEDA, Chess-Results, etc.)',
             url_inscritos             VARCHAR(500)     NULL COMMENT 'Enlace externo con la lista de inscritos (Chess-Results, Info64, etc.)',
             google_maps               VARCHAR(500)     NULL COMMENT 'URL de Google Maps',
             cartel_url                VARCHAR(500)     NULL COMMENT 'URL de la imagen del cartel',
