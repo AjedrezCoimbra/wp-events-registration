@@ -73,6 +73,16 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
       </span>
     </div>
     <?php endif; ?>
+    <?php if ( ! empty($evento->url_inscripciones) ): ?>
+    <div class="wper-ficha-item wper-ficha-item-full">
+      <span class="wper-ficha-label"><?php _e('Inscripciones', 'wp-events-registration'); ?></span>
+      <span class="wper-ficha-value">
+        <a href="<?php echo esc_url($evento->url_inscripciones); ?>" target="_blank" rel="noopener noreferrer" class="wper-btn wper-btn-primary" style="display:inline-flex;margin-top:4px;">
+          ✅ <?php _e('Inscribirse (plataforma externa)', 'wp-events-registration'); ?>
+        </a>
+      </span>
+    </div>
+    <?php endif; ?>
   </div>
 
   <?php if ( ! empty( $evento->observaciones ) ) : ?>

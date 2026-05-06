@@ -1,4 +1,17 @@
 /* WP Events Registration — Admin CSS */
+
+/* Títulos de sección en formulario de evento */
+.wper-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1d2327;
+  border-bottom: 2px solid #2271b1;
+  padding-bottom: 6px;
+  margin: 1.4rem 0 0.2rem;
+}
+.wper-form-table tr:first-child .wper-section-title {
+  margin-top: 0;
+}
 .wper-wrap {
   max-width: 1200px;
 }

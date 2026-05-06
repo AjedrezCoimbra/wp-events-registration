@@ -11,6 +11,8 @@
     <div class="notice notice-success is-dismissible"><p><?php _e('✅ Evento actualizado correctamente.', 'wp-events-registration'); ?></p></div>
   <?php elseif ( $mensaje === 'eliminado' ) : ?>
     <div class="notice notice-success is-dismissible"><p><?php _e('🗑️ Evento eliminado.', 'wp-events-registration'); ?></p></div>
+  <?php elseif ( $mensaje === 'estado_cambiado' ) : ?>
+    <div class="notice notice-success is-dismissible"><p><?php _e('✅ Estado del evento actualizado.', 'wp-events-registration'); ?></p></div>
   <?php endif; ?>
 
   <!-- Filtros -->
@@ -66,6 +68,15 @@
         <td class="wper-actions">
           <a href="<?php echo admin_url('admin.php?page=wper-nuevo&id='.$ev->id); ?>" class="button button-small">✏️ <?php _e('Editar', 'wp-events-registration'); ?></a>
           <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ev->id); ?>" class="button button-small">👥 <?php _e('Inscritos', 'wp-events-registration'); ?></a>
+          <?php if ( $ev->estado === 'abierto' ) : ?>
+            <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_toggle_estado&id='.$ev->id.'&estado=cerrado'), 'wper_toggle_estado_'.$ev->id ); ?>"
+               class="button button-small" title="<?php _e('Cerrar inscripciones', 'wp-events-registration'); ?>">🔒 <?php _e('Cerrar', 'wp-events-registration'); ?></a>
+          <?php elseif ( $ev->estado === 'cerrado' || $ev->estado === 'borrador' ) : ?>
+            <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_toggle_estado&id='.$ev->id.'&estado=abierto'), 'wper_toggle_estado_'.$ev->id ); ?>"
+               class="button button-small" title="<?php _e('Abrir inscripciones', 'wp-events-registration'); ?>">🟢 <?php _e('Abrir', 'wp-events-registration'); ?></a>
+          <?php endif; ?>
+          <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_duplicate_evento&id='.$ev->id), 'wper_duplicate_evento_'.$ev->id ); ?>"
+             class="button button-small" title="<?php _e('Duplicar como borrador', 'wp-events-registration'); ?>">📋 <?php _e('Duplicar', 'wp-events-registration'); ?></a>
           <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_export_pdf&evento_id='.$ev->id), 'wper_export_pdf_'.$ev->id ); ?>" class="button button-small" target="_blank">📄 PDF</a>
           <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_export_csv&evento_id='.$ev->id), 'wper_export_csv_'.$ev->id ); ?>" class="button button-small">📊 CSV</a>
           <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_delete_evento&id='.$ev->id), 'wper_delete_evento_'.$ev->id ); ?>"

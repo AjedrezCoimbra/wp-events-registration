@@ -27,6 +27,8 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
 
     <table class="form-table wper-form-table">
 
+      <tr><th colspan="2"><h2 class="wper-section-title">📋 <?php _e('Datos generales', 'wp-events-registration'); ?></h2></th></tr>
+
       <tr>
         <th><label for="nombre"><?php _e('Nombre del evento', 'wp-events-registration'); ?> <span class="required">*</span></label></th>
         <td><input type="text" id="nombre" name="nombre" class="regular-text" required
@@ -125,7 +127,7 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
         </td>
       </tr>
 
-      <tr><td colspan="2"><hr></td></tr>
+      <tr><th colspan="2"><h2 class="wper-section-title">📅 <?php _e('Fechas', 'wp-events-registration'); ?></h2></th></tr>
 
       <tr>
         <th><label for="fecha_inicio"><?php _e('Inicio del evento', 'wp-events-registration'); ?> <span class="required">*</span></label></th>
@@ -145,13 +147,23 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
               value="<?php echo $editing ? esc_attr($evento->fecha_fin_inscripcion) : ''; ?>"></td>
       </tr>
 
-      <tr><td colspan="2"><hr></td></tr>
+      <tr><th colspan="2"><h2 class="wper-section-title">🔗 <?php _e('Enlaces y multimedia', 'wp-events-registration'); ?></h2></th></tr>
 
       <tr>
         <th><label for="url_bases"><?php _e('URL de las bases', 'wp-events-registration'); ?></label></th>
         <td><input type="url" id="url_bases" name="url_bases" class="large-text"
               value="<?php echo $editing ? esc_attr($evento->url_bases) : ''; ?>"
               placeholder="https://..."></td>
+      </tr>
+
+      <tr>
+        <th><label for="url_inscripciones"><?php _e('URL de inscripciones (externa)', 'wp-events-registration'); ?></label></th>
+        <td>
+          <input type="url" id="url_inscripciones" name="url_inscripciones" class="large-text"
+                value="<?php echo $editing ? esc_attr($evento->url_inscripciones ?? '') : ''; ?>"
+                placeholder="https://...">
+          <p class="description"><?php _e('Enlace externo para inscribirse (FEDA, Chess-Results, etc.). Si se rellena, aparecerá como botón en la tarjeta pública.', 'wp-events-registration'); ?></p>
+        </td>
       </tr>
 
       <tr>
@@ -178,8 +190,10 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
         </td>
       </tr>
 
+      <tr><th colspan="2"><h2 class="wper-section-title">📝 <?php _e('Observaciones', 'wp-events-registration'); ?></h2></th></tr>
+
       <tr>
-        <th><label for="observaciones"><?php _e('Observaciones', 'wp-events-registration'); ?></label></th>
+        <th><label for="observaciones"><?php _e('Contenido / descripción', 'wp-events-registration'); ?></label></th>
         <td>
           <?php 
           $obs_content = $editing ? $evento->observaciones : '';

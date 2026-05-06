@@ -138,6 +138,10 @@ class WPER_Shortcodes {
 
         $email = sanitize_email( $_POST['email'] ?? '' );
 
+        if ( empty( $email ) || ! is_email( $email ) ) {
+            wp_send_json_error( array( 'message' => __( 'El email es obligatorio y debe ser válido.', 'wp-events-registration' ) ) );
+        }
+
         $inscripcion_data = array(
             'evento_id'   => $evento_id,
             'nombre'      => $nombre,
@@ -145,7 +149,7 @@ class WPER_Shortcodes {
             'fide_id'     => sanitize_text_field( $_POST['fide_id']     ?? '' ),
             'telefono'    => sanitize_text_field( $_POST['telefono']    ?? '' ),
             'email'       => $email,
-            'alojamiento' => isset( $_POST['alojamiento'] ) ? 1 : 0,
+            'alojamiento' => ! empty( $_POST['alojamiento'] ) ? 1 : 0,
             'observaciones' => sanitize_textarea_field( $_POST['observaciones'] ?? '' ),
         );
 

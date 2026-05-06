@@ -41,8 +41,9 @@ class WPER_Public {
             'i18n'     => array(
                 'enviando'  => __( 'Enviando...', 'wp-events-registration' ),
                 'error_gen' => __( 'Error al procesar la inscripción.', 'wp-events-registration' ),
-                'inscritos_en' => __( 'Inscritos en', 'wp-events-registration' ),
-                'cargando'     => __( 'Cargando...', 'wp-events-registration' ),
+                'inscritos_en'      => __( 'Inscritos en', 'wp-events-registration' ),
+                'cargando'          => __( 'Cargando...', 'wp-events-registration' ),
+                'email_obligatorio' => __( 'El email es obligatorio y debe ser válido.', 'wp-events-registration' ),
             ),
         ) );
     }
@@ -145,8 +146,17 @@ class WPER_Public {
                 </a>
               <?php endif; ?>
 
-              <?php if ($abierto): ?>
-                <button type="button" class="wper-btn wper-btn-primary wper-open-inscripcion-modal" 
+              <?php if ( ! empty($ev->url_inscripciones) ): ?>
+                <a href="<?php echo esc_url($ev->url_inscripciones); ?>" target="_blank" rel="noopener noreferrer" class="wper-btn wper-btn-primary">
+                  ✅ <?php _e('Inscribirse', 'wp-events-registration'); ?>
+                </a>
+                <button type="button" class="wper-btn wper-btn-listado wper-open-inscritos-modal"
+                        data-evento-id="<?php echo $ev->id; ?>"
+                        data-evento-nombre="<?php echo esc_attr($ev->nombre); ?>">
+                  👁️ <?php _e('Ver inscritos', 'wp-events-registration'); ?>
+                </button>
+              <?php elseif ($abierto): ?>
+                <button type="button" class="wper-btn wper-btn-primary wper-open-inscripcion-modal"
                         data-target="#wper-form-wrapper-<?php echo $ev->id; ?>">
                   ✅ <?php _e('Inscribirse', 'wp-events-registration'); ?>
                 </button>

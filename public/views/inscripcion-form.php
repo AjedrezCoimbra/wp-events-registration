@@ -41,8 +41,8 @@
 
       <div class="wper-form-row">
         <div class="wper-form-group">
-          <label for="wper-email-<?php echo $evento->id; ?>"><?php _e('Email', 'wp-events-registration'); ?></label>
-          <input type="email" id="wper-email-<?php echo $evento->id; ?>" name="email" placeholder="tu@email.com">
+          <label for="wper-email-<?php echo $evento->id; ?>"><?php _e('Email', 'wp-events-registration'); ?> <span class="wper-required">*</span></label>
+          <input type="email" id="wper-email-<?php echo $evento->id; ?>" name="email" required placeholder="tu@email.com">
         </div>
         <div class="wper-form-group wper-form-group-check">
           <label class="wper-check-label">
