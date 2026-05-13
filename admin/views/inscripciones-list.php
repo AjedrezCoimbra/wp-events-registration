@@ -91,4 +91,29 @@
     </tbody>
   </table>
   </div>
+
+  <?php if ( $total_pages > 1 ) : ?>
+    <div class="wper-pagination">
+      <?php
+      echo paginate_links( array(
+          'base'      => add_query_arg( 'paged', '%#%' ),
+          'format'    => '',
+          'current'   => $paged,
+          'total'     => $total_pages,
+          'prev_text' => '&laquo; ' . __('Anterior', 'wp-events-registration'),
+          'next_text' => __('Siguiente', 'wp-events-registration') . ' &raquo;',
+          'type'      => 'plain',
+      ) );
+      ?>
+    </div>
+    <div class="wper-pagination-info">
+      <?php printf( 
+        __('Mostrando %d - %d de %d inscripciones.', 'wp-events-registration'), 
+        $offset + 1, 
+        min( $offset + $limite, $total ), 
+        $total 
+      ); ?>
+    </div>
+  <?php endif; ?>
+
 </div>

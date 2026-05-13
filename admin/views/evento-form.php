@@ -7,6 +7,10 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
 
   <?php if ( $error === 'campos_obligatorios' ) : ?>
     <div class="notice notice-error"><p><?php _e('⚠️ Por favor, rellena todos los campos obligatorios.', 'wp-events-registration'); ?></p></div>
+  <?php elseif ( $error === 'fecha_invalida' ) : ?>
+    <div class="notice notice-error"><p><?php _e('⚠️ La fecha de fin no puede ser anterior a la fecha de inicio.', 'wp-events-registration'); ?></p></div>
+  <?php elseif ( $error === 'fecha_inscripcion_invalida' ) : ?>
+    <div class="notice notice-error"><p><?php _e('⚠️ La fecha de fin de inscripción no puede ser posterior a la fecha de fin del evento.', 'wp-events-registration'); ?></p></div>
   <?php endif; ?>
 
   <?php if ( $editing ) : ?>

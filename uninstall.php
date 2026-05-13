@@ -4,16 +4,36 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) exit;
 
 global $wpdb;
 
-// Eliminar tablas
+// 1. Eliminar tablas
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wper_inscripciones" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wper_eventos" );
 
-// Eliminar opciones nuevas
-delete_option( 'wper_version' );
-delete_option( 'wper_email_admin' );
-delete_option( 'wper_email_notificar' );
-delete_option( 'wper_moneda' );
-delete_option( 'wper_auto_updates' );
-delete_option( 'wper_github_token' );
+// 2. Eliminar todas las opciones (incluyendo plantillas de email)
+$options = array(
+    'wper_version',
+    'wper_email_admin',
+    'wper_email_notificar',
+    'wper_moneda',
+    'wper_auto_updates',
+    'wper_github_token',
+    'wper_email_confirmacion_asunto',
+    'wper_email_confirmacion_cuerpo',
+    'wper_email_confirmacion_cc',
+    'wper_email_confirmacion_bcc',
+    'wper_email_notificacion_para',
+    'wper_email_notificacion_asunto',
+    'wper_email_notificacion_cuerpo',
+    'wper_email_notificacion_cc',
+    'wper_email_notificacion_bcc'
+);
 
-// No quedan opciones antiguas que limpiar
+foreach ( $options as $opt ) {
+    delete_option( $opt );
+}
+
+// 3. Limpiar transientes
+delete_site_transient( 'update_plugins' );
+delete_transient( 'wper_github_release_cache' );
+
+// 4. Cancelar tarea programada
+wp_clear_scheduled_hook( 'wper_daily_auto_close' );

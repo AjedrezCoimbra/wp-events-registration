@@ -59,6 +59,7 @@ class WPER_Activator {
             PRIMARY KEY (id),
             INDEX idx_estado             (estado),
             INDEX idx_fecha_inicio       (fecha_inicio),
+            INDEX idx_fecha_fin          (fecha_fin),
             INDEX idx_fecha_fin_insc     (fecha_fin_inscripcion),
             INDEX idx_provincia          (provincia)
         ) ENGINE=InnoDB $charset COMMENT='Eventos y registros';";

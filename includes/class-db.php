@@ -48,19 +48,45 @@ class WPER_DB {
         $orderby = in_array( $args['orderby'], $allowed_fields ) ? $args['orderby'] : 'fecha_inicio';
         $order   = in_array( strtoupper($args['order']), $allowed_order ) ? strtoupper($args['order']) : 'ASC';
 
-        $where_sql = implode( ' AND ', $where );
-        $limit_sql = $wpdb->prepare( 'LIMIT %d OFFSET %d', intval($args['limite']), intval($args['offset']) );
+        $ti = self::tabla_inscripciones();
+        $select = "*, (SELECT COUNT(*) FROM {$ti} WHERE evento_id = {$t}.id) as n_inscritos";
 
-        if ( ! empty( $values ) ) {
-            $sql = $wpdb->prepare(
-                "SELECT * FROM {$t} WHERE {$where_sql} ORDER BY {$orderby} {$order} {$limit_sql}",
-                $values
-            );
-        } else {
-            $sql = "SELECT * FROM {$t} WHERE {$where_sql} ORDER BY {$orderby} {$order} {$limit_sql}";
-        }
+        $where_sql = implode( ' AND ', $where );
+        $sql = "SELECT {$select} FROM {$t} WHERE {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
+        
+        $params = array_merge( $values, array( intval($args['limite']), intval($args['offset']) ) );
+        $sql = $wpdb->prepare( $sql, $params );
 
         return $wpdb->get_results( $sql );
+    }
+
+    public static function get_evento_status_info( $evento ) {
+        $hoy = current_time( 'Y-m-d' );
+        if ( $evento->estado === 'borrador' ) {
+            return array(
+                'label' => __('Borrador', 'wp-events-registration'),
+                'class' => 'wper-badge-borrador',
+                'slug'  => 'borrador'
+            );
+        } elseif ( $evento->fecha_fin < $hoy ) {
+            return array(
+                'label' => __('Finalizado', 'wp-events-registration'),
+                'class' => 'wper-badge-finalizado',
+                'slug'  => 'finalizado'
+            );
+        } elseif ( $evento->estado === 'cerrado' || $evento->fecha_fin_inscripcion < $hoy ) {
+            return array(
+                'label' => __('Cerrado', 'wp-events-registration'),
+                'class' => 'wper-badge-cerrado',
+                'slug'  => 'cerrado'
+            );
+        } else {
+            return array(
+                'label' => __('Abierto', 'wp-events-registration'),
+                'class' => 'wper-badge-abierto',
+                'slug'  => 'abierto'
+            );
+        }
     }
 
     public static function count_eventos( $args = array() ) {
@@ -177,12 +203,14 @@ class WPER_DB {
     //  INSCRIPCIONES
     // ══════════════════════════════════════════════════════
 
-    public static function get_inscripciones( $evento_id ) {
+    public static function get_inscripciones( $evento_id, $limite = null, $offset = 0 ) {
         global $wpdb;
         $t = self::tabla_inscripciones();
-        return $wpdb->get_results(
-            $wpdb->prepare( "SELECT * FROM {$t} WHERE evento_id = %d ORDER BY created_at ASC", intval($evento_id) )
-        );
+        $sql = $wpdb->prepare( "SELECT * FROM {$t} WHERE evento_id = %d ORDER BY created_at ASC", intval($evento_id) );
+        if ( $limite !== null ) {
+            $sql .= $wpdb->prepare( " LIMIT %d OFFSET %d", intval($limite), intval($offset) );
+        }
+        return $wpdb->get_results( $sql );
     }
 
     public static function get_todas_inscripciones( $limite = 50, $offset = 0 ) {

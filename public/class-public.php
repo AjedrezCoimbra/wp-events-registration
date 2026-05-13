@@ -66,19 +66,10 @@ class WPER_Public {
           <div class="wper-cal-content">
             <div class="wper-cal-card-head">
               <?php 
-                $estado_slug  = $ev->estado;
-                if ($ev->fecha_fin < $hoy) {
-                    $estado_label = __('Finalizado', 'wp-events-registration');
-                    $estado_slug  = 'finalizado';
-                } elseif ($abierto) {
-                    $estado_label = __('Inscripción abierta', 'wp-events-registration');
-                    $estado_slug  = 'abierto';
-                } else {
-                    $estado_label = __('Cerrado', 'wp-events-registration');
-                    $estado_slug  = 'cerrado';
-                }
+                $status_info  = WPER_DB::get_evento_status_info($ev);
+                $estado_label = ($status_info['slug'] === 'abierto') ? __('Inscripción abierta', 'wp-events-registration') : $status_info['label'];
               ?>
-              <span class="wper-cal-estado wper-estado-<?php echo esc_attr($estado_slug); ?>">
+              <span class="wper-cal-estado wper-estado-<?php echo esc_attr($status_info['slug']); ?>">
                 <?php echo esc_html($estado_label); ?>
               </span>
               <span class="wper-cal-modalidad"><?php echo esc_html($ev->modalidad); ?></span>

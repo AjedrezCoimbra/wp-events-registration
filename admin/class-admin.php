@@ -51,9 +51,11 @@ class WPER_Admin {
         $stats = WPER_DB::get_stats();
         $ultimas_inscripciones = WPER_DB::get_todas_inscripciones( 10, 0 );
         
-        $eventos_abiertos = $wpdb->get_results( $wpdb->prepare(
-            "SELECT * FROM {$te} WHERE estado = 'abierto' AND fecha_fin_inscripcion >= %s ORDER BY fecha_inicio ASC LIMIT 5",
-            $hoy
+        $eventos_abiertos = WPER_DB::get_eventos( array(
+            'estado'  => 'abierto',
+            'limite'  => 5,
+            'orderby' => 'fecha_inicio',
+            'order'   => 'ASC'
         ));
 
         include WPER_PLUGIN_DIR . 'admin/views/dashboard.php';
@@ -70,18 +72,32 @@ class WPER_Admin {
         $hoy = current_time( 'Y-m-d' );
         
         $where = "1=1";
+        $params = array();
+
         if ( $vista === 'borrador' ) {
-            $where = "estado = 'borrador'";
+            $where = "estado = %s";
+            $params[] = 'borrador';
         } elseif ( $vista === 'abierto' ) {
-            $where = "estado = 'abierto' AND fecha_fin_inscripcion >= '$hoy'";
+            $where = "estado = %s AND fecha_fin_inscripcion >= %s";
+            $params[] = 'abierto';
+            $params[] = $hoy;
         } elseif ( $vista === 'cerrado' ) {
-            $where = "(estado = 'cerrado' OR (estado = 'abierto' AND fecha_fin_inscripcion < '$hoy')) AND fecha_fin >= '$hoy'";
+            $where = "(estado = %s OR (estado = %s AND fecha_fin_inscripcion < %s)) AND fecha_fin >= %s";
+            $params[] = 'cerrado';
+            $params[] = 'abierto';
+            $params[] = $hoy;
+            $params[] = $hoy;
         } elseif ( $vista === 'finalizado' ) {
-            $where = "fecha_fin < '$hoy' AND estado != 'borrador'";
+            $where = "fecha_fin < %s AND estado != %s";
+            $params[] = $hoy;
+            $params[] = 'borrador';
         }
         
-        $eventos = $wpdb->get_results( "SELECT * FROM {$t} WHERE {$where} ORDER BY fecha_inicio DESC LIMIT {$limite} OFFSET {$offset}" );
-        $total   = $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE {$where}" );
+        $sql = $wpdb->prepare( "SELECT * FROM {$t} WHERE {$where} ORDER BY fecha_inicio DESC LIMIT %d OFFSET %d", array_merge( $params, array( $limite, $offset ) ) );
+        $eventos = $wpdb->get_results( $sql );
+
+        $count_sql = $wpdb->prepare( "SELECT COUNT(*) FROM {$t} WHERE {$where}", $params );
+        $total = $wpdb->get_var( $count_sql );
         $total_pages = ceil( $total / $limite );
         
         $mensaje = sanitize_text_field( $_GET['msg'] ?? '' );
@@ -103,13 +119,14 @@ class WPER_Admin {
 
         if ( $evento_id ) {
             $evento        = WPER_DB::get_evento( $evento_id );
-            $inscripciones = WPER_DB::get_inscripciones( $evento_id );
-            $total         = count( $inscripciones );
+            $total         = WPER_DB::count_inscripciones( $evento_id );
+            $inscripciones = WPER_DB::get_inscripciones( $evento_id, $limite, $offset );
         } else {
             $evento        = null;
-            $inscripciones = WPER_DB::get_todas_inscripciones( $limite, $offset );
             $total         = WPER_DB::count_inscripciones();
+            $inscripciones = WPER_DB::get_todas_inscripciones( $limite, $offset );
         }
+        $total_pages = ceil( $total / $limite );
 
         $eventos_lista = WPER_DB::get_eventos( array( 'limite' => 200, 'orderby' => 'nombre', 'order' => 'ASC' ) );
         $mensaje = sanitize_text_field( $_GET['msg'] ?? '' );
@@ -125,7 +142,7 @@ class WPER_Admin {
     // ── Handlers POST ────────────────────────────────────
 
     public function handle_save_evento() {
-        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
         check_admin_referer( 'wper_save_evento' );
 
         $post = wp_unslash( $_POST );
@@ -139,6 +156,21 @@ class WPER_Admin {
                 $url = admin_url( 'admin.php?page=wper-nuevo' . ($evento_id ? '&id='.$evento_id : '') . '&error=campos_obligatorios' );
                 wp_redirect( $url ); exit;
             }
+        }
+
+        // Validación de fechas
+        $f_inicio = strtotime( $post['fecha_inicio'] );
+        $f_fin    = strtotime( $post['fecha_fin'] );
+        $f_ins    = strtotime( $post['fecha_fin_inscripcion'] );
+
+        if ( $f_fin < $f_inicio ) {
+            $url = admin_url( 'admin.php?page=wper-nuevo' . ($evento_id ? '&id='.$evento_id : '') . '&error=fecha_invalida' );
+            wp_redirect( $url ); exit;
+        }
+
+        if ( $f_ins > $f_fin ) {
+            $url = admin_url( 'admin.php?page=wper-nuevo' . ($evento_id ? '&id='.$evento_id : '') . '&error=fecha_inscripcion_invalida' );
+            wp_redirect( $url ); exit;
         }
 
         $data = array(
@@ -177,7 +209,7 @@ class WPER_Admin {
     }
 
     public function handle_delete_evento() {
-        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
         $id = intval( $_GET['id'] ?? 0 );
         check_admin_referer( 'wper_delete_evento_' . $id );
         WPER_DB::delete_evento( $id );
@@ -186,7 +218,7 @@ class WPER_Admin {
     }
 
     public function handle_delete_inscripcion() {
-        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
         $id        = intval( $_GET['id'] ?? 0 );
         $evento_id = intval( $_GET['evento_id'] ?? 0 );
         check_admin_referer( 'wper_delete_inscripcion_' . $id );
@@ -198,21 +230,21 @@ class WPER_Admin {
     }
 
     public function handle_export_pdf() {
-        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
         $evento_id = intval( $_GET['evento_id'] ?? 0 );
         check_admin_referer( 'wper_export_pdf_' . $evento_id );
         WPER_PDF::generate_pdf( $evento_id );
     }
 
     public function handle_export_csv() {
-        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
         $evento_id = intval( $_GET['evento_id'] ?? 0 );
         check_admin_referer( 'wper_export_csv_' . $evento_id );
 
         $evento        = WPER_DB::get_evento( $evento_id );
         $inscripciones = WPER_DB::get_inscripciones( $evento_id );
 
-        if ( ! $evento ) wp_die( 'Evento no encontrado.' );
+        if ( ! $evento ) wp_die( __('Evento no encontrado.', 'wp-events-registration') );
 
         $filename = 'evento_' . sanitize_title( $evento->nombre ) . '_inscritos.csv';
         header( 'Content-Type: text/csv; charset=utf-8' );
@@ -240,7 +272,7 @@ class WPER_Admin {
     }
 
     public function handle_save_ajustes() {
-        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
         check_admin_referer( 'wper_save_ajustes' );
 
         update_option( 'wper_email_admin',    sanitize_email( $_POST['email_admin'] ?? '' ) );
@@ -268,7 +300,7 @@ class WPER_Admin {
     }
 
     public function handle_force_update_check() {
-        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
         check_admin_referer( 'wper_force_update' );
 
         // Eliminamos nuestro caché de GitHub
@@ -281,12 +313,12 @@ class WPER_Admin {
     }
 
     public function handle_duplicate_evento() {
-        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
         $id = intval( $_GET['id'] ?? 0 );
         check_admin_referer( 'wper_duplicate_evento_' . $id );
 
         $original = WPER_DB::get_evento( $id );
-        if ( ! $original ) wp_die( 'Evento no encontrado.' );
+        if ( ! $original ) wp_die( __('Evento no encontrado.', 'wp-events-registration') );
 
         $data = (array) $original;
         unset( $data['id'], $data['created_at'], $data['updated_at'] );
@@ -300,13 +332,13 @@ class WPER_Admin {
     }
 
     public function handle_toggle_estado_evento() {
-        if ( ! current_user_can( 'edit_pages' ) ) wp_die( 'Sin permisos.' );
+        if ( ! current_user_can( 'edit_pages' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
         $id     = intval( $_GET['id'] ?? 0 );
         $estado = sanitize_text_field( $_GET['estado'] ?? '' );
         check_admin_referer( 'wper_toggle_estado_' . $id );
 
         if ( ! in_array( $estado, array( 'abierto', 'cerrado', 'borrador' ), true ) ) {
-            wp_die( 'Estado no válido.' );
+            wp_die( __('Estado no válido.', 'wp-events-registration') );
         }
 
         WPER_DB::update_evento( $id, array( 'estado' => $estado ) );

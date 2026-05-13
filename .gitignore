@@ -8,8 +8,8 @@ Thumbs.db
 desktop.ini
 
 # IDEs
-.vscode/
-.claude/
+.vscode*
+.claude*
 
 # Otros
 node_modules/

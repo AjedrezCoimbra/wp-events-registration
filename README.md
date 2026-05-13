@@ -1,4 +1,4 @@
-# WP Events Registration (v1.7.0)
+# WP Events Registration (v2.0.0)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -110,6 +110,7 @@ CREATE TABLE {prefix}wper_eventos (
     PRIMARY KEY (id),
     INDEX idx_estado (estado),
     INDEX idx_fecha_inicio (fecha_inicio),
+    INDEX idx_fecha_fin (fecha_fin),
     INDEX idx_fecha_fin_insc (fecha_fin_inscripcion),
     INDEX idx_provincia (provincia)
 ) ENGINE=InnoDB;
@@ -152,6 +153,7 @@ CREATE TABLE {prefix}wper_inscripciones (
 
 | Versión | Cambios |
 |---|---|
+| **2.0.0** | **AUDITORÍA COMPLETA Y REFACTORIZACIÓN MAYOR** · Nueva implementación de **PDF basada en HTML nativo** (adiós a problemas de fuentes y memoria) · **Optimización de rendimiento**: Paginación en todos los listados y eliminación de problema N+1 queries · **Seguridad reforzada**: Validación de nonces en todas las llamadas AJAX, sanitización estricta y protección de inscripciones post-cierre · **Paginación premium** rediseñada para una mejor experiencia de usuario · Lógica de estados de evento centralizada · Limpieza total al desinstalar · Corrección de múltiples bugs y avisos de seguridad. |
 | **1.7.0** | Botón externo renombrado a 'Info64/ChessResults' · Fix cierre modal inscripción · PDF sin caracteres raros (conversión UTF-8 unificada) · Fix fecha inscripción en ficha pública · Eliminados botones Cerrar/Abrir del listado admin · Campo "Para" de notificación usa Email de Ajustes · Nueva columna "Fin evento" en listado admin · Nuevas variables en plantillas de correo (modalidad, cuota, ritmo, cartel_url…) · Carpeta .claude eliminada del repositorio |
 | **1.6.6** | Mejora visual en Calendario: Etiqueta FINALIZADO por fechas · Renombrado botón de listado externo a 'Ver todos los inscritos Info64/ChessResults' |
 | **1.6.5** | Unificación de clasificación en el Panel Admin (Dashboard y Listado) · Nuevos filtros por estado real · Contador de finalizados · Estilos corregidos en el admin |

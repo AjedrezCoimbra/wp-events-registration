@@ -141,7 +141,7 @@ class WPER_Shortcodes {
             wp_send_json_error( array( 'message' => __( 'Evento no encontrado.', 'wp-events-registration' ) ) );
         }
 
-        if ( $evento->estado !== 'abierto' ) {
+        if ( $evento->estado !== 'abierto' || strtotime($evento->fecha_fin_inscripcion) < strtotime(current_time('Y-m-d')) ) {
             wp_send_json_error( array( 'message' => __( 'Las inscripciones están cerradas.', 'wp-events-registration' ) ) );
         }
 
@@ -258,6 +258,10 @@ class WPER_Shortcodes {
     //  AJAX: obtener listado de inscritos
     // ══════════════════════════════════════════════════════
     public function ajax_get_inscritos() {
+        if ( ! check_ajax_referer( 'wper_inscribir_nonce', 'nonce', false ) ) {
+            wp_send_json_error( array( 'message' => __( 'Petición no válida.', 'wp-events-registration' ) ) );
+        }
+
         $evento_id = intval( $_POST['evento_id'] ?? 0 );
         if ( ! $evento_id ) {
             wp_send_json_error( array( 'message' => __( 'ID de evento no válido.', 'wp-events-registration' ) ) );

@@ -3,7 +3,7 @@
  * Plugin Name:       WP Events Registration
  * Plugin URI:        https://github.com/AjedrezCoimbra/wp-events-registration
  * Description:       Gestión completa de eventos: inscripciones, calendario público y exportación PDF.
- * Version:           1.7.0
+ * Version:           2.0.0
  * Author:            AjedrezCoimbra
  * Author URI:        https://ajedrezcoimbra.com
  * License:           GPL-2.0+
@@ -16,7 +16,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // ── Constantes ──────────────────────────────────────────────
-define( 'WPER_VERSION',    '1.7.0' );
+define( 'WPER_VERSION',    '2.0.0' );
 define( 'WPER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'WPER_PLUGIN_FILE', __FILE__ );
@@ -39,7 +39,8 @@ register_deactivation_hook( __FILE__, array( 'WPER_Deactivator', 'deactivate' ) 
 add_action( 'wper_daily_auto_close', array( 'WPER_DB', 'auto_close_eventos' ) );
 
 // ── Arrancar el plugin ───────────────────────────────────────
-function wper_run() {
+// ── Arrancar el plugin ───────────────────────────────────────
+function wper_plugin_run() {
     // Comprobar si hay que actualizar la base de datos
     $db_version = get_option( 'wper_version', '1.0.0' );
     if ( version_compare( $db_version, WPER_VERSION, '<' ) ) {
@@ -58,7 +59,7 @@ function wper_run() {
     $update->init();
 }
 if ( did_action( 'plugins_loaded' ) ) {
-    wper_run();
+    wper_plugin_run();
 } else {
-    add_action( 'plugins_loaded', 'wper_run' );
+    add_action( 'plugins_loaded', 'wper_plugin_run' );
 }

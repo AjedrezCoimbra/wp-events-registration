@@ -44,23 +44,8 @@
       <tr><td colspan="11" style="text-align:center;padding:2rem;"><?php _e('No hay eventos.', 'wp-events-registration'); ?></td></tr>
     <?php else : ?>
       <?php foreach ( $eventos as $ev ) :
-        $n_inscritos = WPER_DB::count_inscripciones( $ev->id );
-        
-        // Lógica de clasificación igual que el frontend
-        $hoy = current_time( 'Y-m-d' );
-        if ( $ev->estado === 'borrador' ) {
-            $estado_label = __('Borrador', 'wp-events-registration');
-            $estado_class = 'wper-badge-borrador';
-        } elseif ( $ev->fecha_fin < $hoy ) {
-            $estado_label = __('Finalizado', 'wp-events-registration');
-            $estado_class = 'wper-badge-finalizado';
-        } elseif ( $ev->estado === 'cerrado' || $ev->fecha_fin_inscripcion < $hoy ) {
-            $estado_label = __('Cerrado', 'wp-events-registration');
-            $estado_class = 'wper-badge-cerrado';
-        } else {
-            $estado_label = __('Abierto', 'wp-events-registration');
-            $estado_class = 'wper-badge-abierto';
-        }
+        $n_inscritos = $ev->n_inscritos;
+        $status_info = WPER_DB::get_evento_status_info( $ev );
       ?>
       <tr>
         <td>
@@ -77,7 +62,7 @@
         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_fin_inscripcion))); ?></td>
         <td><?php echo esc_html($ev->ritmo_juego ?: ''); ?></td>
         <td><?php echo $ev->elo_fide ? __('Sí', 'wp-events-registration') : ''; ?></td>
-        <td><span class="wper-badge <?php echo $estado_class; ?>"><?php echo esc_html($estado_label); ?></span></td>
+        <td><span class="wper-badge <?php echo $status_info['class']; ?>"><?php echo esc_html($status_info['label']); ?></span></td>
         <td>
           <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ev->id); ?>">
             <?php echo $n_inscritos; ?> <?php _e('inscritos', 'wp-events-registration'); ?>
@@ -105,17 +90,26 @@
   </div>
 
   <?php if ( $total_pages > 1 ) : ?>
-    <div class="tablenav bottom">
-      <div class="tablenav-pages">
-        <?php
-        echo paginate_links( array(
-            'base'      => add_query_arg( 'paged', '%#%' ),
-            'format'    => '',
-            'current'   => $paged,
-            'total'     => $total_pages,
-        ) );
-        ?>
-      </div>
+    <div class="wper-pagination">
+      <?php
+      echo paginate_links( array(
+          'base'      => add_query_arg( 'paged', '%#%' ),
+          'format'    => '',
+          'current'   => $paged,
+          'total'     => $total_pages,
+          'prev_text' => '&laquo; ' . __('Anterior', 'wp-events-registration'),
+          'next_text' => __('Siguiente', 'wp-events-registration') . ' &raquo;',
+          'type'      => 'plain',
+      ) );
+      ?>
+    </div>
+    <div class="wper-pagination-info">
+      <?php printf( 
+        __('Mostrando %d - %d de %d eventos.', 'wp-events-registration'), 
+        $offset + 1, 
+        min( $offset + $limite, $total ), 
+        $total 
+      ); ?>
     </div>
   <?php endif; ?>
 
