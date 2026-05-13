@@ -3,20 +3,20 @@
  * Plugin Name:       WP Events Registration
  * Plugin URI:        https://github.com/AjedrezCoimbra/wp-events-registration
  * Description:       Gestión completa de eventos: inscripciones, calendario público y exportación PDF.
- * Version:           2.0.0
+ * Version:           2.0.1
  * Author:            AjedrezCoimbra
  * Author URI:        https://ajedrezcoimbra.com
  * License:           GPL-2.0+
  * Text Domain:       wp-events-registration
  * Domain Path:       /languages
  * Requires at least: 5.8
- * Tested up to:      6.4
+ * Tested up to:      6.5
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // ── Constantes ──────────────────────────────────────────────
-define( 'WPER_VERSION',    '2.0.0' );
+define( 'WPER_VERSION',    '2.0.1' );
 define( 'WPER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'WPER_PLUGIN_FILE', __FILE__ );

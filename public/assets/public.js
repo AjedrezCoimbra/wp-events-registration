@@ -39,6 +39,7 @@ jQuery(function ($) {
 
         $.post(wperData.ajax_url, {
             action: 'wper_get_inscritos',
+            nonce: wperData.nonce,
             evento_id: eventoId
         }, function(response) {
             if (response.success) {
