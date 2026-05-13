@@ -131,7 +131,7 @@ class WPER_DB {
             'nombre', 'modalidad', 'cuota_inscripcion', 'numero_rondas',
             'tiempo_juego', 'elo_fide', 'ritmo_juego',
             'poblacion', 'provincia', 'fecha_inicio', 'fecha_fin',
-            'fecha_fin_inscripcion',
+            'fecha_inicio_inscripcion', 'fecha_fin_inscripcion',
             'estado', 'url_bases', 'url_inscritos', 'google_maps', 'cartel_url', 'subvencionable', 'enviar_confirmacion'
         );
         foreach ( $allowed as $field ) {
