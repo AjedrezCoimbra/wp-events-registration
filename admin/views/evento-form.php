@@ -142,15 +142,6 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
       </tr>
 
       <tr>
-        <th><label for="fecha_inicio_inscripcion"><?php _e('Inicio inscripción', 'wp-events-registration'); ?></label></th>
-        <td>
-          <input type="date" id="fecha_inicio_inscripcion" name="fecha_inicio_inscripcion"
-              value="<?php echo $editing ? esc_attr($evento->fecha_inicio_inscripcion) : ''; ?>">
-          <p class="description"><?php _e('Opcional. Si no se indica, se muestra solo la fecha de cierre.', 'wp-events-registration'); ?></p>
-        </td>
-      </tr>
-
-      <tr>
         <th><label for="fecha_fin_inscripcion"><?php _e('Fin inscripción', 'wp-events-registration'); ?> <span class="required">*</span></label></th>
         <td><input type="date" id="fecha_fin_inscripcion" name="fecha_fin_inscripcion" required
               value="<?php echo $editing ? esc_attr($evento->fecha_fin_inscripcion) : ''; ?>"></td>
