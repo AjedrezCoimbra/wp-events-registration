@@ -28,12 +28,7 @@ class WPER_PDF {
         $f_fin     = date_i18n( 'd/m/Y', strtotime( $evento->fecha_fin ) );
 
         $ff_ins    = date_i18n( 'd/m/Y', strtotime( $evento->fecha_fin_inscripcion ) );
-        $fi_ins_raw = $evento->fecha_inicio_inscripcion ?? '';
-        $fi_ins_valida = ! empty( $fi_ins_raw ) && $fi_ins_raw !== '0000-00-00' && $fi_ins_raw !== $evento->fecha_fin_inscripcion;
-        $periodo_ins = $fi_ins_valida
-            ? sprintf( __( 'Del %s hasta %s', 'wp-events-registration' ),
-                date_i18n( 'd/m/Y', strtotime( $fi_ins_raw ) ), $ff_ins )
-            : sprintf( __( 'Hasta el %s', 'wp-events-registration' ), $ff_ins );
+        $periodo_ins = sprintf( __( 'Hasta el %s', 'wp-events-registration' ), $ff_ins );
 
         $rondas    = $evento->numero_rondas ? (int) $evento->numero_rondas : '—';
         $cuota     = $evento->cuota_inscripcion

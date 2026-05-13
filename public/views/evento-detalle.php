@@ -60,21 +60,7 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
     <div class="wper-ficha-item">
       <span class="wper-ficha-label"><?php _e('Inscripción', 'wp-events-registration'); ?></span>
       <span class="wper-ficha-value">
-    <?php
-    $fi_ins = $evento->fecha_inicio_inscripcion;
-    $ff_ins = $evento->fecha_fin_inscripcion;
-    $fi_valida = ! empty($fi_ins) && $fi_ins !== '0000-00-00' && $fi_ins !== $ff_ins;
-    if ( $fi_valida ) :
-        printf( __('Del %s hasta %s', 'wp-events-registration'),
-            date_i18n('d/m/Y', strtotime($fi_ins)),
-            date_i18n('d/m/Y', strtotime($ff_ins))
-        );
-    else :
-        printf( __('Hasta el %s', 'wp-events-registration'),
-            date_i18n('d/m/Y', strtotime($ff_ins))
-        );
-    endif;
-    ?>
+        <?php printf( __('Hasta el %s', 'wp-events-registration'), date_i18n('d/m/Y', strtotime($evento->fecha_fin_inscripcion)) ); ?>
       </span>
     </div>
     <?php if ($evento->url_bases): ?>

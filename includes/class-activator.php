@@ -45,7 +45,6 @@ class WPER_Activator {
             provincia                 VARCHAR(100)     NOT NULL,
             fecha_inicio              DATE             NOT NULL COMMENT 'Inicio del evento',
             fecha_fin                 DATE             NOT NULL COMMENT 'Fin del evento',
-            fecha_inicio_inscripcion  DATE             NOT NULL COMMENT 'Apertura de inscripciones',
             fecha_fin_inscripcion     DATE             NOT NULL COMMENT 'Cierre de inscripciones',
             estado                    ENUM('borrador','abierto','cerrado') NOT NULL DEFAULT 'borrador',
             url_bases                 VARCHAR(500)     NULL,
@@ -87,5 +86,11 @@ class WPER_Activator {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql_eventos );
         dbDelta( $sql_inscripciones );
+
+        // dbDelta no elimina columnas; lo hacemos explícitamente para instalaciones existentes.
+        $cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->prefix}wper_eventos LIKE 'fecha_inicio_inscripcion'" );
+        if ( ! empty( $cols ) ) {
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}wper_eventos DROP COLUMN fecha_inicio_inscripcion" );
+        }
     }
 }

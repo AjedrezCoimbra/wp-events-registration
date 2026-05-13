@@ -96,7 +96,6 @@ CREATE TABLE {prefix}wper_eventos (
     provincia                 VARCHAR(100)     NOT NULL,
     fecha_inicio              DATE             NOT NULL,
     fecha_fin                 DATE             NOT NULL,
-    fecha_inicio_inscripcion  DATE             NOT NULL,
     fecha_fin_inscripcion     DATE             NOT NULL,
     estado                    ENUM('borrador','abierto','cerrado') NOT NULL DEFAULT 'borrador',
     url_bases                 VARCHAR(500)     NULL,
