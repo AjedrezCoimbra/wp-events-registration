@@ -199,6 +199,18 @@ class WPER_Shortcodes {
             'alojamiento'          => $inscripcion_data['alojamiento'] ? __('Sí','wp-events-registration') : __('No','wp-events-registration'),
             'observaciones'        => $inscripcion_data['observaciones'] ?? '',
             'evento_nombre'        => $evento->nombre,
+            'evento_modalidad'      => $evento->modalidad,
+            'evento_lugar'          => $evento->poblacion . ', ' . $evento->provincia,
+            'evento_rondas'         => $evento->numero_rondas ? (string) $evento->numero_rondas : '',
+            'evento_cuota'          => $evento->cuota_inscripcion
+                                           ? number_format( $evento->cuota_inscripcion, 2 ) . ' €'
+                                           : __('Gratuito','wp-events-registration'),
+            'evento_ritmo'          => $evento->ritmo_juego     ?: '',
+            'evento_tiempo'         => $evento->tiempo_juego    ?: '',
+            'evento_url_bases'      => $evento->url_bases       ?: '',
+            'evento_url_inscritos'  => $evento->url_inscritos   ?: '',
+            'evento_cartel_url'     => $evento->cartel_url      ?: '',
+            'evento_estado'         => $evento->estado,
             'evento_fecha_inicio'  => date_i18n( 'd/m/Y', strtotime( $evento->fecha_inicio ) ),
             'evento_fecha_fin'     => date_i18n( 'd/m/Y', strtotime( $evento->fecha_fin ) ),
             'evento_poblacion'     => $evento->poblacion,

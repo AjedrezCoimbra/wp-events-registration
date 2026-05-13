@@ -184,7 +184,7 @@ class WPER_Public {
               <?php endif; ?>
               <?php if ( ! empty($ev->url_inscritos) ): ?>
                 <a href="<?php echo esc_url($ev->url_inscritos); ?>" target="_blank" rel="noopener noreferrer" class="wper-btn wper-btn-listado">
-                  🌐 <?php _e('Ver todos los inscritos Info64/ChessResults', 'wp-events-registration'); ?>
+                  🌐 <?php _e('Info64/ChessResults', 'wp-events-registration'); ?>
                 </a>
               <?php endif; ?>
             </div>

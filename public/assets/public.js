@@ -49,6 +49,10 @@ jQuery(function ($) {
         });
     });
 
+    $(document).on('click', '.wper-modal-content', function (e) {
+        e.stopPropagation();
+    });
+
     $(document).on('click', '.wper-modal-close, .wper-modal', function (e) {
         if (e.target !== this && !$(e.target).hasClass('wper-modal-close')) return;
         $('.wper-modal').hide();

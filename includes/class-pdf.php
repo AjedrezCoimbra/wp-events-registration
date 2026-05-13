@@ -40,10 +40,10 @@ class WPER_PDF {
         $modalidad = wp_strip_all_tags( $evento->modalidad );
         $estado   = ucfirst( wp_strip_all_tags( $evento->estado ) );
         $lugar    = wp_strip_all_tags( $evento->poblacion ) . ', ' . wp_strip_all_tags( $evento->provincia );
-        $f_inicio = date_i18n( 'd/m/Y', strtotime( $evento->fecha_inicio ) );
-        $f_fin    = date_i18n( 'd/m/Y', strtotime( $evento->fecha_fin ) );
-        $fi_ins   = date_i18n( 'd/m/Y', strtotime( $evento->fecha_inicio_inscripcion ) );
-        $ff_ins   = date_i18n( 'd/m/Y', strtotime( $evento->fecha_fin_inscripcion ) );
+        $f_inicio = date( 'd/m/Y', strtotime( $evento->fecha_inicio ) );
+        $f_fin    = date( 'd/m/Y', strtotime( $evento->fecha_fin ) );
+        $fi_ins   = date( 'd/m/Y', strtotime( $evento->fecha_inicio_inscripcion ) );
+        $ff_ins   = date( 'd/m/Y', strtotime( $evento->fecha_fin_inscripcion ) );
         $rondas   = $evento->numero_rondas ? $evento->numero_rondas : '—';
         $cuota    = $evento->cuota_inscripcion ? number_format( $evento->cuota_inscripcion, 2 ) . ' €' : 'Gratuito';
         $bases    = $evento->url_bases ? $evento->url_bases : '—';
@@ -76,9 +76,15 @@ class WPER_PDF {
         $objects  = array();
         $xref_pos = array();
 
-        // Helper para escapar strings PDF
-        $esc = function( $str ) {
-            return str_replace( array('\\','(',')',"\n","\r"), array('\\\\','\\(','\\)','\\n','\\r'), $str );
+        // Helper para escapar y convertir strings al formato de texto PDF
+        $pdf_str = function( $str ) {
+            // Convierte UTF-8 → ISO-8859-1 y escapa caracteres especiales PDF
+            $str = mb_convert_encoding( (string) $str, 'ISO-8859-1', 'UTF-8' );
+            return str_replace(
+                array( '\\', '(', ')', "\n", "\r" ),
+                array( '\\\\', '\\(', '\\)', ' ', ' ' ),
+                $str
+            );
         };
 
         // Objeto 1: Catálogo
@@ -92,10 +98,10 @@ class WPER_PDF {
         $stream_parts[] = "BT";
         $stream_parts[] = "/F1 18 Tf";
         $stream_parts[] = "50 780 Td";
-        $stream_parts[] = "(" . $esc( mb_convert_encoding( 'EVENTO DE AJEDREZ', 'ISO-8859-1', 'UTF-8' ) ) . ") Tj";
+        $stream_parts[] = "(" . $pdf_str( 'EVENTO DE AJEDREZ' ) . ") Tj";
         $stream_parts[] = "/F1 14 Tf";
         $stream_parts[] = "0 -25 Td";
-        $stream_parts[] = "(" . $esc( mb_convert_encoding( $titulo, 'ISO-8859-1', 'UTF-8' ) ) . ") Tj";
+        $stream_parts[] = "(" . $pdf_str( $titulo ) . ") Tj";
         $stream_parts[] = "/F1 10 Tf";
         $stream_parts[] = "0 -30 Td";
 
@@ -120,35 +126,37 @@ class WPER_PDF {
         $info_lines[] = '';
 
         foreach ( $info_lines as $line ) {
-            $stream_parts[] = "(" . $esc( mb_convert_encoding( $line, 'ISO-8859-1', 'UTF-8' ) ) . ") Tj";
+            $stream_parts[] = "(" . $pdf_str( $line ) . ") Tj";
             $stream_parts[] = "0 -14 Td";
         }
 
         $i = 1;
         foreach ( $inscripciones as $ins ) {
-            $line = $i . '. ' .
-                mb_convert_encoding( $ins->nombre . ' ' . $ins->apellidos, 'ISO-8859-1', 'UTF-8' ) .
+            $line_raw = $i . '. ' .
+                $ins->nombre . ' ' . $ins->apellidos .
                 ' | FIDE: ' . ( $ins->fide_id ?: '—' ) .
                 ' | ' . ( $ins->email ?: '—' ) .
                 ' | Aloj: ' . ( $ins->alojamiento ? 'Si' : 'No' ) .
-                ( $ins->observaciones ? ' | Obs: ' . mb_convert_encoding( $ins->observaciones, 'ISO-8859-1', 'UTF-8' ) : '' );
+                ( $ins->observaciones ? ' | Obs: ' . $ins->observaciones : '' );
+            
+            $line = $pdf_str( $line_raw );
             
             // Truncar si es muy larga para una sola línea PDF básica
             if ( strlen( $line ) > 100 ) $line = substr( $line, 0, 97 ) . '...';
             
-            $stream_parts[] = "(" . $esc( $line ) . ") Tj";
+            $stream_parts[] = "(" . $line . ") Tj";
             $stream_parts[] = "0 -13 Td";
             $i++;
         }
 
         if ( empty( $inscripciones ) ) {
-            $stream_parts[] = "(" . $esc( mb_convert_encoding( 'Sin inscripciones registradas.', 'ISO-8859-1', 'UTF-8' ) ) . ") Tj";
+            $stream_parts[] = "(" . $pdf_str( 'Sin inscripciones registradas.' ) . ") Tj";
             $stream_parts[] = "0 -13 Td";
         }
 
-        $gen_date = date('d/m/Y H:i');
+        $gen_date = date( 'd/m/Y H:i' );
         $stream_parts[] = "0 -20 Td";
-        $stream_parts[] = "(" . $esc( mb_convert_encoding( "Generado el $gen_date", 'ISO-8859-1', 'UTF-8' ) ) . ") Tj";
+        $stream_parts[] = "(" . $pdf_str( "Generado el $gen_date" ) . ") Tj";
         $stream_parts[] = "ET";
 
         $stream = implode( "\n", $stream_parts );

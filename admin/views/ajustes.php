@@ -61,8 +61,10 @@
         <h2><?php _e('Plantillas de Correos', 'wp-events-registration'); ?></h2>
         <p class="description"><?php _e('Configura el contenido de los correos automáticos. Estos son los campos que puedes usar en el Expression Language:', 'wp-events-registration'); ?></p>
         <div style="background: #f0f0f1; padding: 10px; border-radius: 4px; border-left: 4px solid #0073aa; margin-bottom: 20px;">
-          <code>{{nombre}}</code>, <code>{{apellidos}}</code>, <code>{{email}}</code>, <code>{{fide_id}}</code>, <code>{{telefono}}</code>, <code>{{alojamiento}}</code>, <code>{{observaciones}}</code>,<br>
-          <code>{{evento_nombre}}</code>, <code>{{evento_fecha_inicio}}</code>, <code>{{evento_fecha_fin}}</code>, <code>{{evento_poblacion}}</code>, <code>{{evento_provincia}}</code>
+          <strong><?php _e('Datos del inscrito:', 'wp-events-registration'); ?></strong><br>
+          <code>{{nombre}}</code>, <code>{{apellidos}}</code>, <code>{{email}}</code>, <code>{{fide_id}}</code>, <code>{{telefono}}</code>, <code>{{alojamiento}}</code>, <code>{{observaciones}}</code><br><br>
+          <strong><?php _e('Datos del evento:', 'wp-events-registration'); ?></strong><br>
+          <code>{{evento_nombre}}</code>, <code>{{evento_modalidad}}</code>, <code>{{evento_estado}}</code>, <code>{{evento_lugar}}</code>, <code>{{evento_fecha_inicio}}</code>, <code>{{evento_fecha_fin}}</code>, <code>{{evento_poblacion}}</code>, <code>{{evento_provincia}}</code>, <code>{{evento_rondas}}</code>, <code>{{evento_cuota}}</code>, <code>{{evento_ritmo}}</code>, <code>{{evento_tiempo}}</code>, <code>{{evento_url_bases}}</code>, <code>{{evento_url_inscritos}}</code>, <code>{{evento_cartel_url}}</code>
         </div>
 
         <div class="wper-email-template-box" style="margin-bottom: 30px;">
@@ -94,7 +96,7 @@
           <table class="form-table wper-form-table">
             <tr>
               <th><label><?php _e('Para', 'wp-events-registration'); ?></label></th>
-              <td><input type="email" name="email_notificacion_para" class="regular-text" value="<?php echo esc_attr(get_option('wper_email_notificacion_para', get_option('admin_email'))); ?>"></td>
+              <td><input type="email" name="email_notificacion_para" class="regular-text" value="<?php echo esc_attr(get_option('wper_email_notificacion_para', get_option('wper_email_admin', get_option('admin_email')))); ?>"></td>
             </tr>
             <tr>
               <th><label><?php _e('Asunto', 'wp-events-registration'); ?></label></th>

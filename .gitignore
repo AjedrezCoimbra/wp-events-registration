@@ -9,6 +9,7 @@ desktop.ini
 
 # IDEs
 .vscode/
+.claude/
 
 # Otros
 node_modules/

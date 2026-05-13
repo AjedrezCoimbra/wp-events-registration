@@ -31,6 +31,7 @@
       <th><?php _e('Modalidad', 'wp-events-registration'); ?></th>
       <th><?php _e('Lugar', 'wp-events-registration'); ?></th>
       <th><?php _e('Inicio evento', 'wp-events-registration'); ?></th>
+      <th><?php _e('Fin evento', 'wp-events-registration'); ?></th>
       <th><?php _e('Fin inscripción', 'wp-events-registration'); ?></th>
       <th><?php _e('Ritmo', 'wp-events-registration'); ?></th>
       <th><?php _e('ELO FIDE', 'wp-events-registration'); ?></th>
@@ -40,7 +41,7 @@
     </tr></thead>
     <tbody>
     <?php if ( empty( $eventos ) ) : ?>
-      <tr><td colspan="10" style="text-align:center;padding:2rem;"><?php _e('No hay eventos.', 'wp-events-registration'); ?></td></tr>
+      <tr><td colspan="11" style="text-align:center;padding:2rem;"><?php _e('No hay eventos.', 'wp-events-registration'); ?></td></tr>
     <?php else : ?>
       <?php foreach ( $eventos as $ev ) :
         $n_inscritos = WPER_DB::count_inscripciones( $ev->id );
@@ -72,6 +73,7 @@
         <td><?php echo esc_html($ev->modalidad); ?></td>
         <td><?php echo esc_html($ev->poblacion.', '.$ev->provincia); ?></td>
         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_inicio))); ?></td>
+        <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_fin))); ?></td>
         <td><?php echo esc_html(date_i18n('d/m/Y', strtotime($ev->fecha_fin_inscripcion))); ?></td>
         <td><?php echo esc_html($ev->ritmo_juego ?: ''); ?></td>
         <td><?php echo $ev->elo_fide ? __('Sí', 'wp-events-registration') : ''; ?></td>
@@ -84,13 +86,7 @@
         <td class="wper-actions">
           <a href="<?php echo admin_url('admin.php?page=wper-nuevo&id='.$ev->id); ?>" class="button button-small">✏️ <?php _e('Editar', 'wp-events-registration'); ?></a>
           <a href="<?php echo admin_url('admin.php?page=wper-inscripciones&evento_id='.$ev->id); ?>" class="button button-small">👥 <?php _e('Inscritos', 'wp-events-registration'); ?></a>
-          <?php if ( $ev->estado === 'abierto' ) : ?>
-            <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_toggle_estado&id='.$ev->id.'&estado=cerrado'), 'wper_toggle_estado_'.$ev->id ); ?>"
-               class="button button-small" title="<?php _e('Cerrar inscripciones', 'wp-events-registration'); ?>">🔒 <?php _e('Cerrar', 'wp-events-registration'); ?></a>
-          <?php elseif ( $ev->estado === 'cerrado' || $ev->estado === 'borrador' ) : ?>
-            <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_toggle_estado&id='.$ev->id.'&estado=abierto'), 'wper_toggle_estado_'.$ev->id ); ?>"
-               class="button button-small" title="<?php _e('Abrir inscripciones', 'wp-events-registration'); ?>">🟢 <?php _e('Abrir', 'wp-events-registration'); ?></a>
-          <?php endif; ?>
+
           <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_duplicate_evento&id='.$ev->id), 'wper_duplicate_evento_'.$ev->id ); ?>"
              class="button button-small" title="<?php _e('Duplicar como borrador', 'wp-events-registration'); ?>">📋 <?php _e('Duplicar', 'wp-events-registration'); ?></a>
           <a href="<?php echo wp_nonce_url( admin_url('admin-post.php?action=wper_export_pdf&evento_id='.$ev->id), 'wper_export_pdf_'.$ev->id ); ?>" class="button button-small" target="_blank">📄 PDF</a>

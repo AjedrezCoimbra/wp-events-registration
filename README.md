@@ -1,4 +1,4 @@
-# WP Events Registration (v1.6.6)
+# WP Events Registration (v1.7.0)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -25,7 +25,7 @@ Ve a **Eventos** en el menú lateral de WordPress.
 - **Dashboard** — Estadísticas generales e inscripciones recientes. Clasificación unificada de eventos en **Abiertos, Cerrados y Finalizados**.
 - **Eventos** — Gestión completa de eventos (alta, edición con editor visual, borrado, subida de carteles). El formulario está organizado en secciones: *Datos generales*, *Fechas*, *Enlaces y multimedia* y *Observaciones*. Desde la lista se puede filtrar por el estado real del evento basado en fechas.
 - **Inscripciones** — Listado de inscritos, exportar PDF y CSV.
-- **Ajustes** — Configuración de email de notificaciones, moneda, **plantillas enriquecidas de correo** (con variables `{{nombre}}`, `{{evento_nombre}}`, etc.) y forzado de comprobación de actualizaciones.
+- **Ajustes** — Configuración de email de notificaciones, moneda, **plantillas enriquecidas de correo** (con variables `{{nombre}}`, `{{evento_nombre}}`, `{{evento_cuota}}`, `{{evento_lugar}}`, etc.) y forzado de comprobación de actualizaciones.
 
 ### Shortcodes
 
@@ -51,7 +51,7 @@ Cada tarjeta del calendario puede mostrar hasta cuatro botones de acción según
 | **Ver bases** | Si el campo *URL de las bases* está relleno |
 | **Inscribirse** | Si el evento permite inscripciones (Tab de Abiertos) |
 | **Ver inscritos** | Siempre en eventos abiertos/cerrados (muestra la lista interna de la BD) |
-| **Ver todos los inscritos Info64/ChessResults** | Si el campo *URL lista de inscritos (externa)* está relleno |
+| **Info64/ChessResults** | Si el campo *URL lista de inscritos (externa)* está relleno |
 
 ## Campos de un evento
 
@@ -153,6 +153,7 @@ CREATE TABLE {prefix}wper_inscripciones (
 
 | Versión | Cambios |
 |---|---|
+| **1.7.0** | Botón externo renombrado a 'Info64/ChessResults' · Fix cierre modal inscripción · PDF sin caracteres raros (conversión UTF-8 unificada) · Fix fecha inscripción en ficha pública · Eliminados botones Cerrar/Abrir del listado admin · Campo "Para" de notificación usa Email de Ajustes · Nueva columna "Fin evento" en listado admin · Nuevas variables en plantillas de correo (modalidad, cuota, ritmo, cartel_url…) · Carpeta .claude eliminada del repositorio |
 | **1.6.6** | Mejora visual en Calendario: Etiqueta FINALIZADO por fechas · Renombrado botón de listado externo a 'Ver todos los inscritos Info64/ChessResults' |
 | **1.6.5** | Unificación de clasificación en el Panel Admin (Dashboard y Listado) · Nuevos filtros por estado real · Contador de finalizados · Estilos corregidos en el admin |
 | **1.6.0** | Nueva clasificación de 3 pestañas (Abiertos, Cerrados, Finalizados) basada en fechas · Paginación independiente para cerrados/finalizados · Eliminado filtro de provincia · Mejoras visuales en el calendario |
