@@ -1,4 +1,4 @@
-# WP Events Registration (v2.0.1)
+# WP Events Registration (v2.0.3)
 
 Plugin de gestión de eventos de ajedrez y sus inscripciones para sitios de WordPress.
 Creado, optimizado y diseñado por el Club de Ajedrez Coimbra.
@@ -74,6 +74,7 @@ Cada tarjeta del calendario puede mostrar hasta cuatro botones de acción según
 | Google Maps | URL del mapa del lugar |
 | Imagen del cartel | Sube desde la biblioteca de medios |
 | Observaciones | Editor visual con HTML enriquecido |
+| Habilitar Inscripción Web | Si se desmarca, oculta el botón y el formulario de inscripción público |
 | Enviar email de confirmación | Si está activo, se envía email al inscribirse |
 
 ## Estructura de Datos (SQL)
@@ -105,6 +106,7 @@ CREATE TABLE {prefix}wper_eventos (
     observaciones             TEXT             NULL,
     subvencionable            TINYINT(1)       NOT NULL DEFAULT 0,
     enviar_confirmacion       TINYINT(1)       NOT NULL DEFAULT 1,
+    permitir_inscripcion_web  TINYINT(1)       NOT NULL DEFAULT 1,
     created_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
@@ -153,6 +155,7 @@ CREATE TABLE {prefix}wper_inscripciones (
 
 | Versión | Cambios |
 |---|---|
+| **2.0.3** | **NUEVA FUNCIONALIDAD**: Añadido check opcional para habilitar/deshabilitar temporalmente la inscripción web en eventos abiertos. · Ajustes internos: Requerimiento PHP 7.4 y testeo confirmado en WordPress 6.7. |
 | **2.0.1** | **FIX QUIRÚRGICO**: Corregido error "Petición no válida" al intentar ver el listado de inscritos desde el calendario público. El error se debía a la falta del token de seguridad (nonce) en la petición AJAX. |
 | **2.0.0** | **AUDITORÍA COMPLETA Y REFACTORIZACIÓN MAYOR** · Nueva implementación de **PDF basada en HTML nativo** (adiós a problemas de fuentes y memoria) · **Optimización de rendimiento**: Paginación en todos los listados y eliminación de problema N+1 queries · **Seguridad reforzada**: Validación de nonces en todas las llamadas AJAX, sanitización estricta y protección de inscripciones post-cierre · **Paginación premium** rediseñada para una mejor experiencia de usuario · Lógica de estados de evento centralizada · Limpieza total al desinstalar · Corrección de múltiples bugs y avisos de seguridad. |
 | **1.7.0** | Botón externo renombrado a 'Info64/ChessResults' · Fix cierre modal inscripción · PDF sin caracteres raros (conversión UTF-8 unificada) · Fix fecha inscripción en ficha pública · Eliminados botones Cerrar/Abrir del listado admin · Campo "Para" de notificación usa Email de Ajustes · Nueva columna "Fin evento" en listado admin · Nuevas variables en plantillas de correo (modalidad, cuota, ritmo, cartel_url…) · Carpeta .claude eliminada del repositorio |
