@@ -111,6 +111,14 @@ $title   = $editing ? __('Editar Evento', 'wp-events-registration') : __('Nuevo 
       </tr>
 
       <tr>
+        <th><label for="permitir_inscripcion_web"><?php _e('Habilitar Inscripción Web', 'wp-events-registration'); ?></label></th>
+        <td>
+          <input type="checkbox" id="permitir_inscripcion_web" name="permitir_inscripcion_web" value="1" <?php checked($editing ? ($evento->permitir_inscripcion_web ?? 1) : 1, 1); ?>>
+          <?php _e('Sí, mostrar el botón y formulario de inscripción en la web', 'wp-events-registration'); ?>
+        </td>
+      </tr>
+
+      <tr>
         <th><label for="ritmo_juego"><?php _e('Ritmo de juego', 'wp-events-registration'); ?></label></th>
         <td>
           <select id="ritmo_juego" name="ritmo_juego">

@@ -54,6 +54,7 @@ class WPER_Activator {
             observaciones             TEXT             NULL,
             subvencionable            TINYINT(1)       NOT NULL DEFAULT 0 COMMENT '1=Sí, 0=No',
             enviar_confirmacion       TINYINT(1)       NOT NULL DEFAULT 1 COMMENT '1=Sí, 0=No',
+            permitir_inscripcion_web  TINYINT(1)       NOT NULL DEFAULT 1 COMMENT '1=Sí, 0=No',
             created_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at                DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
@@ -92,6 +93,12 @@ class WPER_Activator {
         $cols = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->prefix}wper_eventos LIKE 'fecha_inicio_inscripcion'" );
         if ( ! empty( $cols ) ) {
             $wpdb->query( "ALTER TABLE {$wpdb->prefix}wper_eventos DROP COLUMN fecha_inicio_inscripcion" );
+        }
+
+        // Añadir columna permitir_inscripcion_web si no existe (para actualizaciones)
+        $col_permitir = $wpdb->get_col( "SHOW COLUMNS FROM {$wpdb->prefix}wper_eventos LIKE 'permitir_inscripcion_web'" );
+        if ( empty( $col_permitir ) ) {
+            $wpdb->query( "ALTER TABLE {$wpdb->prefix}wper_eventos ADD COLUMN permitir_inscripcion_web TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1=Sí, 0=No'" );
         }
     }
 }

@@ -14,7 +14,6 @@ class WPER_Admin {
         add_action( 'admin_post_wper_save_ajustes',      array( $this, 'handle_save_ajustes' ) );
         add_action( 'admin_post_wper_force_update_check',array( $this, 'handle_force_update_check' ) );
         add_action( 'admin_post_wper_duplicate_evento',  array( $this, 'handle_duplicate_evento' ) );
-        add_action( 'admin_post_wper_toggle_estado',     array( $this, 'handle_toggle_estado_evento' ) );
     }
 
     // ── Menús ────────────────────────────────────────────
@@ -40,6 +39,14 @@ class WPER_Admin {
         wp_enqueue_media();
         wp_enqueue_style(  'wper-admin', WPER_PLUGIN_URL . 'admin/assets/admin.css', array(), WPER_VERSION );
         wp_enqueue_script( 'wper-admin', WPER_PLUGIN_URL . 'admin/assets/admin.js',  array('jquery'), WPER_VERSION, true );
+        wp_localize_script( 'wper-admin', 'wperAdminData', array(
+            'i18n' => array(
+                'shortcode_copiado' => __( 'Shortcode copiado: ', 'wp-events-registration' ),
+                'copia_shortcode'   => __( 'Copia este shortcode:', 'wp-events-registration' ),
+                'seleccionar_img'   => __( 'Seleccionar imagen para el cartel', 'wp-events-registration' ),
+                'usar_imagen'       => __( 'Usar esta imagen', 'wp-events-registration' ),
+            ),
+        ) );
     }
 
     // ── Páginas ──────────────────────────────────────────
@@ -194,6 +201,7 @@ class WPER_Admin {
             'subvencionable'           => isset( $post['subvencionable'] ) ? 1 : 0,
             'ritmo_juego'              => sanitize_text_field( $post['ritmo_juego'] ?? '' ),
             'enviar_confirmacion'      => isset( $post['enviar_confirmacion'] ) ? 1 : 0,
+            'permitir_inscripcion_web' => isset( $post['permitir_inscripcion_web'] ) ? 1 : 0,
         );
 
         if ( $evento_id ) {
@@ -280,19 +288,31 @@ class WPER_Admin {
         update_option( 'wper_moneda',          sanitize_text_field( $_POST['moneda'] ?? 'EUR' ) );
         update_option( 'wper_github_token',    sanitize_text_field( $_POST['github_token'] ?? '' ) );
 
+        // Validar emails en CC/BCC
+        $validate_emails = function( $csv ) {
+            if ( empty( $csv ) ) return '';
+            $parts = array_map( 'trim', explode( ',', $csv ) );
+            $valid = array();
+            foreach ( $parts as $email ) {
+                if ( is_email( $email ) ) {
+                    $valid[] = $email;
+                }
+            }
+            return implode( ', ', $valid );
+        };
         // Plantillas de correos
         if ( isset( $_POST['email_confirmacion_asunto'] ) ) {
             update_option( 'wper_email_confirmacion_asunto', sanitize_text_field( $_POST['email_confirmacion_asunto'] ) );
             update_option( 'wper_email_confirmacion_cuerpo', wp_kses_post( $_POST['email_confirmacion_cuerpo'] ) );
-            update_option( 'wper_email_confirmacion_cc',     sanitize_text_field( $_POST['email_confirmacion_cc'] ?? '' ) );
-            update_option( 'wper_email_confirmacion_bcc',    sanitize_text_field( $_POST['email_confirmacion_bcc'] ?? '' ) );
+            update_option( 'wper_email_confirmacion_cc',     $validate_emails( sanitize_text_field( $_POST['email_confirmacion_cc'] ?? '' ) ) );
+            update_option( 'wper_email_confirmacion_bcc',    $validate_emails( sanitize_text_field( $_POST['email_confirmacion_bcc'] ?? '' ) ) );
         }
         if ( isset( $_POST['email_notificacion_asunto'] ) ) {
             update_option( 'wper_email_notificacion_para',   sanitize_text_field( $_POST['email_notificacion_para'] ?? '' ) );
             update_option( 'wper_email_notificacion_asunto', sanitize_text_field( $_POST['email_notificacion_asunto'] ) );
             update_option( 'wper_email_notificacion_cuerpo', wp_kses_post( $_POST['email_notificacion_cuerpo'] ) );
-            update_option( 'wper_email_notificacion_cc',     sanitize_text_field( $_POST['email_notificacion_cc'] ?? '' ) );
-            update_option( 'wper_email_notificacion_bcc',    sanitize_text_field( $_POST['email_notificacion_bcc'] ?? '' ) );
+            update_option( 'wper_email_notificacion_cc',     $validate_emails( sanitize_text_field( $_POST['email_notificacion_cc'] ?? '' ) ) );
+            update_option( 'wper_email_notificacion_bcc',    $validate_emails( sanitize_text_field( $_POST['email_notificacion_bcc'] ?? '' ) ) );
         }
 
         wp_redirect( admin_url( 'admin.php?page=wper-ajustes&saved=1' ) );
@@ -331,20 +351,4 @@ class WPER_Admin {
         exit;
     }
 
-    public function handle_toggle_estado_evento() {
-        if ( ! current_user_can( 'edit_pages' ) ) wp_die( __('Sin permisos.', 'wp-events-registration') );
-        $id     = intval( $_GET['id'] ?? 0 );
-        $estado = sanitize_text_field( $_GET['estado'] ?? '' );
-        check_admin_referer( 'wper_toggle_estado_' . $id );
-
-        if ( ! in_array( $estado, array( 'abierto', 'cerrado', 'borrador' ), true ) ) {
-            wp_die( __('Estado no válido.', 'wp-events-registration') );
-        }
-
-        WPER_DB::update_evento( $id, array( 'estado' => $estado ) );
-
-        $redirect = remove_query_arg( array( 'msg' ), wp_get_referer() );
-        wp_redirect( $redirect ? $redirect . '&msg=estado_cambiado' : admin_url( 'admin.php?page=wper-eventos&msg=estado_cambiado' ) );
-        exit;
-    }
 }

@@ -178,6 +178,9 @@ class WPER_DB {
         if ( isset( $data['enviar_confirmacion'] ) ) {
             $clean['enviar_confirmacion'] = $data['enviar_confirmacion'] ? 1 : 0;
         }
+        if ( isset( $data['permitir_inscripcion_web'] ) ) {
+            $clean['permitir_inscripcion_web'] = $data['permitir_inscripcion_web'] ? 1 : 0;
+        }
         if ( isset( $clean['cuota_inscripcion'] ) && $clean['cuota_inscripcion'] !== null ) {
             $clean['cuota_inscripcion'] = floatval( $clean['cuota_inscripcion'] );
         }

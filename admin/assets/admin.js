@@ -4,9 +4,9 @@ jQuery(function($) {
         var sc = $(this).data('shortcode') || $(this).closest('.wper-shortcode-box').find('.wper-shortcode-copy').data('shortcode');
         if (!sc) return;
         navigator.clipboard.writeText(sc).then(function() {
-            alert('Shortcode copiado: ' + sc);
+            alert(wperAdminData.i18n.shortcode_copiado + sc);
         }).catch(function() {
-            prompt('Copia este shortcode:', sc);
+            prompt(wperAdminData.i18n.copia_shortcode, sc);
         });
     });
 
@@ -24,8 +24,8 @@ jQuery(function($) {
         }
 
         frame = wp.media({
-            title: 'Seleccionar imagen para el cartel',
-            button: { text: 'Usar esta imagen' },
+            title: wperAdminData.i18n.seleccionar_img,
+            button: { text: wperAdminData.i18n.usar_imagen },
             multiple: false
         });
 

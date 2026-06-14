@@ -228,6 +228,11 @@ class WPER_Updater {
             return false;
         }
 
+        $code = wp_remote_retrieve_response_code( $response );
+        if ( $code < 200 || $code >= 300 ) {
+            return false;
+        }
+
         $body = wp_remote_retrieve_body( $response );
         $data = json_decode( $body );
 

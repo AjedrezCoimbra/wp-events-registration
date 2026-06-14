@@ -36,8 +36,9 @@ class WPER_Public {
         );
 
         wp_localize_script( 'wper-public', 'wperData', array(
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'wper_inscribir_nonce' ),
+            'ajax_url'        => admin_url( 'admin-ajax.php' ),
+            'nonce'           => wp_create_nonce( 'wper_inscribir_nonce' ),
+            'nonce_inscritos' => wp_create_nonce( 'wper_get_inscritos_nonce' ),
             'i18n'     => array(
                 'enviando'  => __( 'Enviando...', 'wp-events-registration' ),
                 'error_gen' => __( 'Error al procesar la inscripción.', 'wp-events-registration' ),
@@ -50,8 +51,10 @@ class WPER_Public {
 
     public static function render_event_card($ev) {
         $hoy     = current_time( 'Y-m-d' );
-        $abierto = ( $ev->estado === 'abierto' && $ev->fecha_fin_inscripcion >= $hoy );
-        $cuota   = $ev->cuota_inscripcion ? number_format($ev->cuota_inscripcion,2).' €' : __('Gratuito','wp-events-registration');
+        $abierto = ( $ev->estado === 'abierto' && $ev->fecha_fin_inscripcion >= $hoy && (!isset($ev->permitir_inscripcion_web) || $ev->permitir_inscripcion_web == 1) );
+        $simbolo = array( 'EUR' => '€', 'USD' => '$', 'GBP' => '£' );
+        $moneda  = $simbolo[ get_option( 'wper_moneda', 'EUR' ) ] ?? '€';
+        $cuota   = $ev->cuota_inscripcion ? number_format($ev->cuota_inscripcion,2) . ' ' . $moneda : __('Gratuito','wp-events-registration');
         $rondas  = $ev->numero_rondas ? $ev->numero_rondas . ' ' . __('rondas','wp-events-registration') : null;
         $poster  = $ev->cartel_url ?: WPER_PLUGIN_URL . 'public/assets/images/default-poster.png';
         ?>

@@ -47,12 +47,12 @@
             </td>
           </tr>
           <tr>
-            <th><label for="github_token">GitHub Token (opcional)</label></th>
+            <th><label for="github_token"><?php _e('GitHub Token (opcional)', 'wp-events-registration'); ?></label></th>
             <td>
               <input type="password" name="github_token" id="github_token" 
                      value="<?php echo esc_attr(get_option('wper_github_token','')); ?>" 
                      class="regular-text">
-              <p class="description">Personal Access Token para evitar límites de la API de GitHub.</p>
+              <p class="description"><?php _e('Personal Access Token para evitar límites de la API de GitHub.', 'wp-events-registration'); ?></p>
             </td>
           </tr>
         </table>
@@ -129,7 +129,7 @@
       <h2><?php _e('Sistema de Actualización', 'wp-events-registration'); ?></h2>
       <p><?php _e('El plugin busca automáticamente nuevas versiones en GitHub cada 12 horas.', 'wp-events-registration'); ?></p>
       <p><strong><?php _e('Versión actual:', 'wp-events-registration'); ?></strong> <code>v<?php echo WPER_VERSION; ?></code></p>
-      <p><strong><?php _e('Compatibilidad WP:', 'wp-events-registration'); ?></strong> <code><?php _e('Hasta 6.5', 'wp-events-registration'); ?></code></p>
+      <p><strong><?php _e('Compatibilidad WP:', 'wp-events-registration'); ?></strong> <code>6.7</code></p>
       
       <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
         <input type="hidden" name="action" value="wper_force_update_check">

@@ -1,8 +1,5 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
-
-// Aseguramos que $eventos sea un array
-$eventos = is_array($eventos) ? $eventos : array();
 ?>
 
 <div class="wper-calendario">

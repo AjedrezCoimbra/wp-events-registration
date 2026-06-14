@@ -100,7 +100,7 @@ $cuota = $evento->cuota_inscripcion ? number_format($evento->cuota_inscripcion,2
     </div>
   <?php endif; ?>
 
-  <?php if ($evento->estado === 'abierto'): ?>
+  <?php if ($evento->estado === 'abierto' && (!isset($evento->permitir_inscripcion_web) || $evento->permitir_inscripcion_web == 1)): ?>
     <div class="wper-ficha-inscripcion">
       <h3><?php _e('Inscribirse al evento', 'wp-events-registration'); ?></h3>
       <?php echo do_shortcode('[wper_inscripcion id="'.$evento->id.'"]'); ?>

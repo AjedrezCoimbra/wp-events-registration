@@ -28,54 +28,64 @@ class WPER_Shortcodes {
     //  Atributos: provincia, limite
     // ══════════════════════════════════════════════════════
     public function shortcode_calendario( $atts ) {
-        $atts = shortcode_atts( array(), $atts, 'wper_calendario' );
+        $atts = shortcode_atts( array(
+            'provincia' => '',
+            'limite'    => 12,
+        ), $atts, 'wper_calendario' );
         
         global $wpdb;
         $t = WPER_DB::tabla_eventos();
         $hoy = current_time( 'Y-m-d' );
+        $provincia_where = '';
+        $provincia_params = array();
+        if ( ! empty( $atts['provincia'] ) ) {
+            $provincia_where  = ' AND provincia = %s';
+            $provincia_params = array( sanitize_text_field( $atts['provincia'] ) );
+        }
 
         // 1. EVENTOS ABIERTOS (Inscripción abierta)
         // estado = 'abierto' AND hoy <= fecha_fin_inscripcion
         $eventos_abiertos = $wpdb->get_results( $wpdb->prepare(
-            "SELECT * FROM {$t} WHERE estado = 'abierto' AND fecha_fin_inscripcion >= %s ORDER BY fecha_inicio ASC",
-            $hoy
+            "SELECT * FROM {$t} WHERE estado = 'abierto' AND fecha_fin_inscripcion >= %s{$provincia_where} ORDER BY fecha_inicio ASC",
+            array_merge( array( $hoy ), $provincia_params )
         ) );
 
         // Paginación para las otras pestañas
         $paged_cerrados    = max( 1, intval( $_GET['wper_paged_c'] ?? 1 ) );
         $paged_finalizados = max( 1, intval( $_GET['wper_paged_f'] ?? 1 ) );
-        $limite = 12;
+        $limite = max( 1, intval( $atts['limite'] ) );
 
         // 2. EVENTOS CERRADOS (Inscripción cerrada pero torneo NO finalizado)
         // (estado = 'cerrado' OR (estado = 'abierto' AND hoy > fecha_fin_inscripcion)) AND hoy <= fecha_fin
         $offset_c = ( $paged_cerrados - 1 ) * $limite;
+        $where_cerrados = "(estado = 'cerrado' OR (estado = 'abierto' AND fecha_fin_inscripcion < %s)) AND fecha_fin >= %s";
         $eventos_cerrados = $wpdb->get_results( $wpdb->prepare(
             "SELECT * FROM {$t} 
-             WHERE (estado = 'cerrado' OR (estado = 'abierto' AND fecha_fin_inscripcion < %s)) 
-             AND fecha_fin >= %s 
+             WHERE {$where_cerrados}{$provincia_where} 
              ORDER BY fecha_inicio ASC 
              LIMIT %d OFFSET %d",
-            $hoy, $hoy, $limite, $offset_c
+            array_merge( array( $hoy, $hoy ), $provincia_params, array( $limite, $offset_c ) )
         ) );
         $total_cerrados = $wpdb->get_var( $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$t} WHERE (estado = 'cerrado' OR (estado = 'abierto' AND fecha_fin_inscripcion < %s)) AND fecha_fin >= %s",
-            $hoy, $hoy
+            "SELECT COUNT(*) FROM {$t} WHERE {$where_cerrados}{$provincia_where}",
+            array_merge( array( $hoy, $hoy ), $provincia_params )
         ) );
         $total_pages_cerrados = ceil( $total_cerrados / $limite );
 
         // 3. EVENTOS FINALIZADOS (Torneo terminado)
         // hoy > fecha_fin AND estado != 'borrador'
         $offset_f = ( $paged_finalizados - 1 ) * $limite;
+        $where_finalizados = "fecha_fin < %s AND estado != 'borrador'";
         $eventos_finalizados = $wpdb->get_results( $wpdb->prepare(
             "SELECT * FROM {$t} 
-             WHERE fecha_fin < %s AND estado != 'borrador' 
+             WHERE {$where_finalizados}{$provincia_where} 
              ORDER BY fecha_fin DESC 
              LIMIT %d OFFSET %d",
-            $hoy, $limite, $offset_f
+            array_merge( array( $hoy ), $provincia_params, array( $limite, $offset_f ) )
         ) );
         $total_finalizados = $wpdb->get_var( $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$t} WHERE fecha_fin < %s AND estado != 'borrador'",
-            $hoy
+            "SELECT COUNT(*) FROM {$t} WHERE {$where_finalizados}{$provincia_where}",
+            array_merge( array( $hoy ), $provincia_params )
         ) );
         $total_pages_finalizados = ceil( $total_finalizados / $limite );
 
@@ -134,6 +144,17 @@ class WPER_Shortcodes {
             wp_send_json_error( array( 'message' => __( 'Petición no válida.', 'wp-events-registration' ) ) );
         }
 
+        // Rate limiting: max 5 registros por IP cada hora
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        if ( $ip ) {
+            $rate_key = 'wper_rate_' . md5( $ip );
+            $attempts = (int) get_transient( $rate_key );
+            if ( $attempts >= 5 ) {
+                wp_send_json_error( array( 'message' => __( 'Demasiados intentos. Inténtalo de nuevo más tarde.', 'wp-events-registration' ) ) );
+            }
+            set_transient( $rate_key, $attempts + 1, HOUR_IN_SECONDS );
+        }
+
         $evento_id = intval( $_POST['evento_id'] ?? 0 );
         $evento    = WPER_DB::get_evento( $evento_id );
 
@@ -157,6 +178,11 @@ class WPER_Shortcodes {
 
         if ( empty( $email ) || ! is_email( $email ) ) {
             wp_send_json_error( array( 'message' => __( 'El email es obligatorio y debe ser válido.', 'wp-events-registration' ) ) );
+        }
+
+        // Comprobar si el email ya está registrado en este evento
+        if ( WPER_DB::existe_inscripcion( $evento_id, $email ) ) {
+            wp_send_json_error( array( 'message' => __( 'Este email ya está registrado en este evento.', 'wp-events-registration' ) ) );
         }
 
         $inscripcion_data = array(
@@ -203,7 +229,7 @@ class WPER_Shortcodes {
             'evento_lugar'          => $evento->poblacion . ', ' . $evento->provincia,
             'evento_rondas'         => $evento->numero_rondas ? (string) $evento->numero_rondas : '',
             'evento_cuota'          => $evento->cuota_inscripcion
-                                           ? number_format( $evento->cuota_inscripcion, 2 ) . ' €'
+                                           ? number_format( $evento->cuota_inscripcion, 2 ) . ' ' . self::simbolo_moneda()
                                            : __('Gratuito','wp-events-registration'),
             'evento_ritmo'          => $evento->ritmo_juego     ?: '',
             'evento_tiempo'         => $evento->tiempo_juego    ?: '',
@@ -258,7 +284,7 @@ class WPER_Shortcodes {
     //  AJAX: obtener listado de inscritos
     // ══════════════════════════════════════════════════════
     public function ajax_get_inscritos() {
-        if ( ! check_ajax_referer( 'wper_inscribir_nonce', 'nonce', false ) ) {
+        if ( ! check_ajax_referer( 'wper_get_inscritos_nonce', 'nonce', false ) ) {
             wp_send_json_error( array( 'message' => __( 'Petición no válida.', 'wp-events-registration' ) ) );
         }
 
@@ -293,5 +319,15 @@ class WPER_Shortcodes {
             $template = str_replace( '{{' . $key . '}}', $value, $template );
         }
         return $template;
+    }
+
+    private static function simbolo_moneda() {
+        $moneda = get_option( 'wper_moneda', 'EUR' );
+        $simbolos = array(
+            'EUR' => '€',
+            'USD' => '$',
+            'GBP' => '£',
+        );
+        return $simbolos[ $moneda ] ?? '€';
     }
 }
